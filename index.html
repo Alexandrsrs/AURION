@@ -413,6 +413,121 @@ footer{
   letter-spacing:0.08em;text-transform:uppercase;
 }
 
+
+/* ─── PHILOSOPHY ─────────────────────────────────────────────── */
+.phil-block {
+  margin-top: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg1);
+  transition: border-color .2s;
+}
+.phil-block:hover { border-color: rgba(247,183,49,0.28); }
+.phil-block-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(247,183,49,0.03);
+}
+.phil-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  color: var(--gold); letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+.phil-block-header h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--text); line-height: 1.3;
+}
+.phil-body {
+  padding: 20px 24px;
+}
+.phil-body p {
+  font-size: 15px; color: var(--muted);
+  line-height: 1.75;
+}
+.phil-body strong { color: var(--text); font-weight: 500; }
+.phil-note {
+  font-size: 14px !important;
+  color: rgba(247,183,49,0.7) !important;
+  border-left: 2px solid rgba(247,183,49,0.3);
+  padding-left: 14px;
+  margin-top: 14px !important;
+}
+.code-block {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; line-height: 1.8;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: 14px 18px;
+  margin: 16px 0;
+}
+.phil-list { display: flex; flex-direction: column; gap: 12px; }
+.phil-list-item {
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.phil-arrow {
+  color: var(--gold); font-size: 14px;
+  flex-shrink: 0; margin-top: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.fee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.fee-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.fee-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--gold); font-weight: 500;
+}
+.fee-arrow { font-size: 18px; color: var(--muted); }
+.fee-dest { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.addr-grid {
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden;
+}
+.addr-row {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  transition: background .15s;
+}
+.addr-row:last-child { border-bottom: none; }
+.addr-row:hover { background: var(--bg2); }
+.addr-label {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--muted); flex-shrink: 0;
+}
+.addr-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--gold);
+  text-decoration: none;
+  transition: color .15s;
+  white-space: nowrap;
+}
+.addr-val:hover { color: var(--gold-light, #FFD566); }
+.addr-note {
+  font-size: 11px; color: var(--green);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+@media(max-width:600px) {
+  .addr-row { grid-template-columns: 1fr; gap: 4px; }
+  .addr-note { display: none; }
+}
+
 /* ─── REVEAL ─────────────────────────────────── */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
 .reveal.visible{opacity:1;transform:translateY(0)}
@@ -425,6 +540,32 @@ footer{
 @keyframes pulse{
   0%,100%{opacity:1}
   50%{opacity:0.4}
+}
+
+
+/* ─── LEGAL ──────────────────────────────────────────────────── */
+.legal-block {
+  margin-top: 32px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(247,183,49,0.07);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.legal-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(100,116,139,0.6);
+  margin-bottom: 10px;
+}
+.legal-text {
+  font-size: 10.5px;
+  line-height: 1.75;
+  color: rgba(100,116,139,0.5);
+  text-align: justify;
+  hyphens: auto;
 }
 
 /* ─── MOBILE ─────────────────────────────────── */
@@ -455,7 +596,10 @@ footer{
 ║     Замените ссылку                                            ║
 ║                                                                ║
 ║  3. ПАРАМЕТРЫ ПУЛА DLMM:                                       ║
-║     Найдите: const POOL_CONFIG = {...}                       ║
+║     Найдите: const POOL_ADDR  = '9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof';
+const VAULT_ADDR = 'EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy';
+const PROGRAM_ADDR = 'AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t';
+const POOL_CONFIG = {...}                       ║
 ║     Обновите binStep, startPrice, startBinUsdc, fee            ║
 ║                                                                ║
 ║  4. ТЕКСТЫ НА ВСЕХ ЯЗЫКАХ:                                     ║
@@ -481,6 +625,7 @@ footer{
     <span class="nav-brand-name">AURI</span>
   </a>
   <div class="nav-links">
+    <a href="#philosophy" data-i18n="nav_phil">Философия</a>
     <a href="#about"      data-i18n="nav_about">О токене</a>
     <a href="#tokenomics" data-i18n="nav_token">Токеномика</a>
     <a href="#pool"       data-i18n="nav_pool">Пул</a>
@@ -488,9 +633,9 @@ footer{
     <a href="#contract"   data-i18n="nav_contract">Контракт</a>
     <a href="#community"  data-i18n="nav_community">Сообщество</a>
     <div class="lang-bar">
-      <button class="lang-btn" onclick="setLang('ru')" data-lang-code="ru">RU</button>
       <button class="lang-btn" onclick="setLang('en')" data-lang-code="en">EN</button>
       <button class="lang-btn" onclick="setLang('zh')" data-lang-code="zh">中文</button>
+      <button class="lang-btn" onclick="setLang('ru')" data-lang-code="ru">RU</button>
       <button class="lang-btn" onclick="setLang('hi')" data-lang-code="hi">हिं</button>
     </div>
   </div>
@@ -506,6 +651,129 @@ footer{
     <div class="badge"><span class="badge-dot"></span><span data-i18n="badge2">Без командных токенов</span></div>
     <div class="badge"><span class="badge-dot"></span><span data-i18n="badge3">Ликвидность навсегда</span></div>
     <div class="badge"><span class="badge-dot"></span><span data-i18n="badge4">100% On-chain</span></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ── PHILOSOPHY ───────────────────────────────────────────────── -->
+<section id="philosophy" class="section">
+  <div class="section-label" data-i18n="sec_phil">00 · Философия</div>
+  <h2 data-i18n="phil_title">Зачем читать про токеномику?</h2>
+  <p class="lead" style="margin-top:16px;max-width:680px;" data-i18n="phil_intro">
+    Потому что большинство проектов говорят «у нас честная токеномика» — и врут. Мы решили сделать иначе: зафиксировать правила в коде, убрать возможность их нарушить и объяснить всё нормальным языком.
+  </p>
+
+  <!-- Block: emission -->
+  <div class="phil-block reveal">
+    <div class="phil-block-header">
+      <span class="phil-num">01</span>
+      <h3 data-i18n="phil_b1_t">Эмиссия: зафиксирована навсегда</h3>
+    </div>
+    <div class="phil-body">
+      <p data-i18n="phil_b1_p">Всего выпущено <strong>1 000 000 000 AURI</strong>. Больше не будет — это физически невозможно. Право на выпуск новых токенов (mint authority) отозвано и уничтожено сразу после эмиссии. Проверить это на блокчейне можно за 10 секунд.</p>
+      <div class="code-block">
+        <span style="color:#64748B;">Mint Authority:</span> <span style="color:#EF4444;">null</span><br>
+        <span style="color:#64748B;">Freeze Authority:</span> <span style="color:#EF4444;">null</span>
+      </div>
+      <p class="phil-note" data-i18n="phil_b1_note">Никакой инфляции. Никогда. Не потому, что мы так обещали, — а потому, что технически это невозможно.</p>
+    </div>
+  </div>
+
+  <!-- Block: no team tokens -->
+  <div class="phil-block reveal">
+    <div class="phil-block-header">
+      <span class="phil-num">02</span>
+      <h3 data-i18n="phil_b2_t">У команды нет токенов</h3>
+    </div>
+    <div class="phil-body">
+      <p data-i18n="phil_b2_p">Буквально. Все токены находятся в защищённом хранилище протокола — смарт-контракте на Solana. Команда не может взять оттуда AURI и продать на рынке напрямую. Единственный путь для токенов из хранилища — в пул ликвидности.</p>
+      <p class="phil-note" data-i18n="phil_b2_note">Это не обещание. Это архитектурное ограничение, зашитое в код программы.</p>
+    </div>
+  </div>
+
+  <!-- Block: how liquidity works -->
+  <div class="phil-block reveal">
+    <div class="phil-block-header">
+      <span class="phil-num">03</span>
+      <h3 data-i18n="phil_b3_t">Как устроена ликвидность</h3>
+    </div>
+    <div class="phil-body">
+      <div class="phil-list">
+        <div class="phil-list-item"><span class="phil-arrow">→</span><p data-i18n="phil_b3_i1"><strong>Цена начинается с 1 USDC за 1 AURI.</strong> Каждый следующий ценовой уровень (бин) на 0,15% выше предыдущего.</p></div>
+        <div class="phil-list-item"><span class="phil-arrow">→</span><p data-i18n="phil_b3_i2"><strong>В каждый бин поступает только AURI</strong> из хранилища — строго по формуле, без какого-либо ручного управления.</p></div>
+        <div class="phil-list-item"><span class="phil-arrow">→</span><p data-i18n="phil_b3_i3"><strong>USDC, которые трейдеры платят за AURI, навсегда остаются в пуле</strong> — протокол запрещает их вывод. Это обеспечивает постоянную глубину рынка для всех участников.</p></div>
+        <div class="phil-list-item"><span class="phil-arrow">→</span><p data-i18n="phil_b3_i4"><strong>Пополнение ликвидности происходит автоматически:</strong> протокол следит за глубиной рынка и пополняет пул из хранилища по мере необходимости.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block: fees -->
+  <div class="phil-block reveal">
+    <div class="phil-block-header">
+      <span class="phil-num">04</span>
+      <h3 data-i18n="phil_b4_t">Комиссии: куда они идут</h3>
+    </div>
+    <div class="phil-body">
+      <div class="fee-grid">
+        <div class="fee-card">
+          <div class="fee-label" data-i18n="phil_fee1_l">Комиссии в USDC</div>
+          <div class="fee-arrow">→</div>
+          <div class="fee-dest" data-i18n="phil_fee1_d">Команде. Это единственный доход команды от токена.</div>
+        </div>
+        <div class="fee-card">
+          <div class="fee-label" data-i18n="phil_fee2_l">Комиссии в AURI</div>
+          <div class="fee-arrow">→</div>
+          <div class="fee-dest" data-i18n="phil_fee2_d">Обратно в хранилище. Реинвестируются в следующие раунды пополнения ликвидности.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block: for buyer -->
+  <div class="phil-block reveal">
+    <div class="phil-block-header">
+      <span class="phil-num">05</span>
+      <h3 data-i18n="phil_b5_t">Что это значит для вас как для покупателя</h3>
+    </div>
+    <div class="phil-body">
+      <p data-i18n="phil_b5_p1">Когда вы покупаете AURI за USDC — эти USDC остаются в пуле и поддерживают цену. Чем больше покупок, тем глубже рынок и тем устойчивее цена при продажах.</p>
+      <p class="phil-note" style="margin-top:12px;" data-i18n="phil_b5_p2">Это не обещание роста. Это механика, которая работает в вашу сторону. При этом вы в любой момент можете продать AURI обратно за USDC через тот же пул — ликвидность там гарантирована самой конструкцией протокола.</p>
+    </div>
+  </div>
+
+  <!-- Block: verify -->
+  <div class="phil-block reveal" style="border-color:rgba(247,183,49,0.25);background:rgba(247,183,49,0.03);">
+    <div class="phil-block-header">
+      <span class="phil-num" style="color:var(--gold);">✓</span>
+      <h3 data-i18n="phil_b6_t">Проверьте сами</h3>
+    </div>
+    <div class="phil-body">
+      <p style="margin-bottom:20px;" data-i18n="phil_b6_intro">Всё, что написано выше, верифицируется on-chain прямо сейчас. Мы не просим верить нам на слово — мы предлагаем проверить.</p>
+      <div class="addr-grid">
+        <div class="addr-row">
+          <span class="addr-label" data-i18n="addr_mint">Mint токена</span>
+          <a class="addr-val" href="https://solscan.io/token/5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank" rel="noopener">5KGXQoYY…Mdx5mJ<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;margin-left:4px;vertical-align:middle;"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+          <span class="addr-note" data-i18n="addr_mint_note">→ mint authority: null</span>
+        </div>
+        <div class="addr-row">
+          <span class="addr-label" data-i18n="addr_pool">Пул Meteora</span>
+          <a class="addr-val" href="https://solscan.io/account/9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof" target="_blank" rel="noopener">9kCyXTNB…trPuof<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;margin-left:4px;vertical-align:middle;"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+          <span class="addr-note" data-i18n="addr_pool_note">→ DLMM пул</span>
+        </div>
+        <div class="addr-row">
+          <span class="addr-label" data-i18n="addr_vault">Хранилище</span>
+          <a class="addr-val" href="https://solscan.io/account/EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy" target="_blank" rel="noopener">EQxpkhQE…zmBPjy<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;margin-left:4px;vertical-align:middle;"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+          <span class="addr-note" data-i18n="addr_vault_note">→ владелец: программа, не кошелёк</span>
+        </div>
+        <div class="addr-row">
+          <span class="addr-label" data-i18n="addr_prog">Программа</span>
+          <a class="addr-val" href="https://solscan.io/account/AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t" target="_blank" rel="noopener">AZtBB5RU…qC5k6t<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;margin-left:4px;vertical-align:middle;"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+          <span class="addr-note" data-i18n="addr_prog_note">→ открытый код</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -601,6 +869,9 @@ footer{
       <tr><td data-i18n="pt6">Стартовая цена</td><td>1.0000 USDC / AURI</td></tr>
       <tr><td data-i18n="pt7">Базовая пара</td><td>AURI / USDC</td></tr>
       <tr><td data-i18n="pt8">Вывод ликвидности</td><td data-i18n="pt8v" style="color:#EF4444;">Заблокирован навсегда</td></tr>
+      <tr><td data-i18n="pt_pool">Адрес пула</td><td><a href="https://solscan.io/account/9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof" target="_blank" rel="noopener" style="color:var(--gold);font-size:11px;">9kCyXTNB…trPuof</a></td></tr>
+      <tr><td data-i18n="pt_vault">Хранилище</td><td><a href="https://solscan.io/account/EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy" target="_blank" rel="noopener" style="color:var(--gold);font-size:11px;">EQxpkhQE…zmBPjy</a></td></tr>
+      <tr><td data-i18n="pt_prog">Программа</td><td><a href="https://solscan.io/account/AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t" target="_blank" rel="noopener" style="color:var(--gold);font-size:11px;">AZtBB5RU…qC5k6t</a></td></tr>
     </table>
   </div>
 </section>
@@ -753,9 +1024,15 @@ footer{
 <footer>
   <div class="footer-logo">AURI</div>
   <p class="footer-note" data-i18n="footer_disc">
-    AURI не является инвестиционным инструментом и не даёт права на долю дохода или управление протоколом. Торговля криптоактивами сопряжена с рисками. Проводите собственный анализ.
+    AURI не является инвестиционным инструментом и не даёт прав на доход или участие в управлении протоколом. Торговля криптоактивами сопряжена с рисками. Проводите собственный анализ.
   </p>
   <div class="footer-chain">Built on Solana · Meteora DLMM · 5KGXQoYY…Mdx5mJ</div>
+
+  <!-- Legal disclaimer -->
+  <div class="legal-block">
+    <div class="legal-title" data-i18n="legal_title">Юридическое уведомление</div>
+    <p class="legal-text" data-i18n="legal_text">Настоящий сайт носит исключительно информационный характер и не является офертой, приглашением к оферте, инвестиционной рекомендацией или предложением о покупке, продаже или хранении каких-либо цифровых активов либо ценных бумаг. Токен AURI не является ценной бумагой, инвестиционным продуктом или инструментом привлечения капитала в какой-либо юрисдикции. Ничто на данном сайте не является финансовым, инвестиционным, налоговым или юридическим советом. Цифровые активы — высокорискованный класс инструментов: их стоимость может существенно снизиться вплоть до нуля. Прошлые результаты не гарантируют будущих. Ни одна часть настоящего сайта не создаёт договорных обязательств между создателями токена и какими-либо третьими лицами. Создатели токена AURI не несут ответственности за убытки, прямые или косвенные, возникшие в результате использования информации, размещённой на данном сайте. Перед совершением каких-либо действий с цифровыми активами рекомендуется получить консультацию квалифицированных специалистов в области финансов, права и налогообложения. Использование данного сайта означает согласие с настоящим уведомлением.</p>
+  </div>
 </footer>
 
 <!-- ── CHART.JS ───────────────────────────────────────────────── -->
@@ -767,6 +1044,9 @@ footer{
 // ═══════════════════════════════════════════════════════════════
 const MINT      = '5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ';
 const TG_LINK   = 'https://t.me/AURION2025';
+const POOL_ADDR  = '9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof';
+const VAULT_ADDR = 'EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy';
+const PROGRAM_ADDR = 'AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t';
 const POOL_CONFIG = {
   binStep:      0.0015,   // 0.15% per bin
   startPrice:   1.0,      // 1 USDC
@@ -780,50 +1060,108 @@ const POOL_CONFIG = {
 // ═══════════════════════════════════════════════════════════════
 const T = {
   ru: {
+    nav_phil:'Философия',
+    sec_phil:'00 · Философия',
+    phil_title:'Зачем читать про токеномику?',
+    phil_intro:'Потому что большинство проектов говорят «у нас честная токеномика» — и врут. Мы решили сделать иначе: зафиксировать правила в коде, убрать возможность их нарушить и объяснить всё нормальным языком.',
+    phil_b1_t:'Эмиссия: зафиксирована навсегда',
+    phil_b1_p:'Всего выпущено 1 000 000 000 AURI. Больше не будет — это физически невозможно. Право на выпуск новых токенов (mint authority) отозвано и уничтожено сразу после эмиссии. Проверить это на блокчейне можно за 10 секунд.',
+    phil_b1_note:'Никакой инфляции. Никогда. Не потому, что мы так обещали, — а потому, что технически это невозможно.',
+    phil_b2_t:'У команды нет токенов',
+    phil_b2_p:'Буквально. Все токены находятся в защищённом хранилище протокола — смарт-контракте на Solana. Команда не может взять оттуда AURI и продать на рынке напрямую. Единственный путь для токенов из хранилища — в пул ликвидности.',
+    phil_b2_note:'Это не обещание. Это архитектурное ограничение, зашитое в код программы.',
+    phil_b3_t:'Как устроена ликвидность',
+    phil_b3_i1:'Цена начинается с 1 USDC за 1 AURI. Каждый следующий ценовой уровень (бин) на 0,15% выше предыдущего.',
+    phil_b3_i2:'В каждый бин поступает только AURI из хранилища — строго по формуле, без какого-либо ручного управления.',
+    phil_b3_i3:'USDC, которые трейдеры платят за AURI, навсегда остаются в пуле — протокол запрещает их вывод. Это обеспечивает постоянную глубину рынка для всех участников.',
+    phil_b3_i4:'Пополнение ликвидности происходит автоматически: протокол следит за глубиной рынка и пополняет пул из хранилища по мере необходимости.',
+    phil_b4_t:'Комиссии: куда они идут',
+    phil_fee1_l:'Комиссии в USDC', phil_fee1_d:'Команде. Это единственный доход команды от токена.',
+    phil_fee2_l:'Комиссии в AURI', phil_fee2_d:'Обратно в хранилище. Реинвестируются в следующие раунды пополнения ликвидности.',
+    phil_b5_t:'Что это значит для вас как для покупателя',
+    phil_b5_p1:'Когда вы покупаете AURI за USDC — эти USDC остаются в пуле и поддерживают цену. Чем больше покупок, тем глубже рынок и тем устойчивее цена при продажах.',
+    phil_b5_p2:'Это не обещание роста. Это механика, которая работает в вашу сторону. При этом вы в любой момент можете продать AURI обратно за USDC через тот же пул — ликвидность там гарантирована самой конструкцией протокола.',
+    phil_b6_t:'Проверьте сами',
+    phil_b6_intro:'Всё, что написано выше, верифицируется on-chain прямо сейчас. Мы не просим верить нам на слово — мы предлагаем проверить.',
+    addr_mint:'Mint токена', addr_mint_note:'→ mint authority: null',
+    addr_pool:'Пул Meteora', addr_pool_note:'→ DLMM пул',
+    addr_vault:'Хранилище', addr_vault_note:'→ владелец: программа, не кошелёк',
+    addr_prog:'Программа', addr_prog_note:'→ открытый код',
+    pt_pool:'Адрес пула', pt_vault:'Хранилище', pt_prog:'Программа',
     nav_about:'О токене', nav_token:'Токеномика', nav_pool:'Пул',
     nav_chart:'График', nav_contract:'Контракт', nav_community:'Сообщество',
-    hero_sub:'Честный токен на Solana. Правила закреплены кодом, не обещаниями.',
+    hero_sub:'Честный токен на Solana. Правила закреплены кодом, а не обещаниями.',
     badge1:'Эмиссия заморожена', badge2:'Без командных токенов',
     badge3:'Ликвидность навсегда', badge4:'100% On-chain',
     sec_about:'01 · О токене',
     about_title:'Честный токен. Без исключений.',
-    about_p1:'AURI создан с одной целью: дать держателям актив, где ни один участник — включая создателей — не имеет привилегий перед рынком. Единственный способ получить AURI — купить на открытом рынке по текущей цене.',
+    about_p1:'AURI создан с одной целью: дать держателям актив, в котором ни один участник — включая создателей — не имеет привилегий перед остальными. Единственный способ получить AURI — купить его на открытом рынке по текущей цене.',
     about_p2:'Все ключевые ограничения закреплены на программном уровне в блокчейне Solana. Дополнительная эмиссия невозможна. Ликвидность пула заблокирована без права вывода. Никаких ручных рычагов.',
-    card1_t:'Frozen Mint', card1_d:'Право на выпуск новых токенов безвозвратно отозвано. Общее предложение зафиксировано навсегда на уровне 1 000 000 000 AURI.',
-    card2_t:'Вечная ликвидность', card2_d:'Вся ликвидность размещена в пуле Meteora DLMM и заблокирована на уровне протокола. Вывод невозможен программно.',
-    card3_t:'Рыночное распределение', card3_d:'Все 1 млрд токенов доступны только через покупку. Ни одного токена не выделено команде, инвесторам или резервам.',
+    card1_t:'Frozen Mint', card1_d:'Право на выпуск новых токенов безвозвратно отозвано. Общее предложение зафиксировано навсегда — 1 000 000 000 AURI.',
+    card2_t:'Вечная ликвидность', card2_d:'Вся ликвидность размещена в пуле Meteora DLMM и заблокирована на уровне протокола. Вывод программно невозможен.',
+    card3_t:'Рыночное распределение', card3_d:'Все 1 млрд токенов доступны только через покупку. Ни одного токена не выделено команде, инвесторам или в резерв.',
     card4_t:'Код — закон', card4_d:'Каждое ограничение проверяемо on-chain прямо сейчас. Никаких доверенных администраторов. Никаких скрытых полномочий.',
     sec_token:'02 · Токеномика', token_title:'Прозрачная структура',
     stat1:'Общая эмиссия (AURI)', stat2:'В пуле ликвидности',
     stat3:'Команде / резервам', stat4:'Стартовая цена',
     dist_label:'Распределение токенов',
-    dist_bar_text:'100% · ПУЛА ЛИКВИДНОСТИ METEORA DLMM',
+    dist_bar_text:'100% · В ПУЛЕ ЛИКВИДНОСТИ METEORA DLMM',
     dist_team:'Команда: 0%', dist_inv:'Инвесторы: 0%',
     dist_res:'Резерв: 0%', dist_air:'Аирдроп: 0%',
     sec_pool:'03 · Пул ликвидности', pool_title:'Meteora DLMM',
-    pool_desc:'Токены размещены в пуле динамической концентрированной ликвидности (DLMM). В отличие от классических AMM, ликвидность сосредоточена в узких ценовых бинах — это снижает проскальзывание и повышает эффективность торгов.',
-    pt1:'Протокол', pt2:'Сеть', pt3:'Шаг бина', pt4:'Стартовый бин',
-    pt5:'Убывание бина', pt6:'Стартовая цена', pt7:'Базовая пара',
+    pool_desc:'Токены размещены в пуле концентрированной ликвидности по модели DLMM. В отличие от классических AMM, ликвидность сосредоточена в узких ценовых диапазонах (бинах) — это снижает проскальзывание и повышает эффективность торгов.',
+    pt1:'Протокол', pt2:'Сеть', pt3:'Шаг бина', pt4:'Стартовый объём бина',
+    pt5:'Убывание объёма', pt6:'Стартовая цена', pt7:'Торговая пара',
     pt8:'Вывод ликвидности', pt8v:'Заблокирован навсегда',
     sec_chart:'04 · График цены', chart_title:'Цена в реальном времени',
-    ps_price:'Цена AURI', ps_change:'Изм. 24ч', ps_liq:'Ликвидность',
-    ps_vol:'Объём 24ч', ps_txns:'Транзакции 24ч',
-    chart_src:'Источник: DEXScreener · данные обновляются в реальном времени',
+    ps_price:'Цена AURI', ps_change:'Изм. за 24 ч', ps_liq:'Ликвидность',
+    ps_vol:'Объём за 24 ч', ps_txns:'Сделок за 24 ч',
+    chart_src:'Источник данных: DEXScreener · обновляется в реальном времени',
     sec_liq:'05 · Ликвидность пула', liq_title:'Распределение по бинам',
-    liq_desc:'Реальное распределение AURI и USDC по ценовым бинам пула Meteora DLMM. Каждый столбец — один ценовой шаг (0.15%). Данные загружаются напрямую из блокчейна.',
+    liq_desc:'Реальное распределение AURI и USDC по ценовым бинам пула Meteora DLMM. Каждый столбец — один ценовой шаг (0,15%). Данные загружаются напрямую из блокчейна.',
     pm_addr:'Адрес пула', pm_bin:'Активный бин', pm_fee:'Комиссия', pm_tvl:'TVL',
-    liq_waiting:'Ожидание данных пула Meteora…',
+    liq_waiting:'Загрузка данных пула Meteora…',
     liq_src:'Источник: Meteora DLMM API · обновляется каждые 60 секунд',
     leg1:'Активный бин', leg2:'AURI в бине', leg3:'USDC в бине',
     sec_contract:'06 · Контракт', con_title:'Mint-адрес токена',
-    con_desc:'Всегда проверяйте адрес контракта перед покупкой. Официальный AURI имеет один адрес.',
+    con_desc:'Перед покупкой всегда проверяйте адрес контракта. У официального токена AURI один-единственный адрес.',
     copy:'Скопировать', copied:'Скопировано ✓',
-    sec_community:'07 · Сообщество', com_title:'Присоединиться',
+    sec_community:'07 · Сообщество', com_title:'Присоединяйтесь',
     com_desc:'Все обновления, обсуждения и новости — в официальном Telegram-канале.',
-    tg_sub:'Официальный канал · новости, обновления',
-    footer_disc:'AURI не является инвестиционным инструментом и не даёт права на долю дохода или управление протоколом. Торговля криптоактивами сопряжена с рисками. Проводите собственный анализ.',
+    tg_sub:'Официальный канал · новости и обновления',
+    footer_disc:'AURI не является инвестиционным инструментом и не даёт прав на доход или участие в управлении протоколом. Торговля криптоактивами сопряжена с рисками. Проводите собственный анализ.',
+    legal_title:'Юридическое уведомление',
+    legal_text:'Настоящий сайт носит исключительно информационный характер и не является офертой, приглашением к оферте, инвестиционной рекомендацией или предложением о покупке, продаже или хранении каких-либо цифровых активов либо ценных бумаг. Токен AURI не является ценной бумагой, инвестиционным продуктом или инструментом привлечения капитала в какой-либо юрисдикции. Ничто на данном сайте не является финансовым, инвестиционным, налоговым или юридическим советом. Цифровые активы — высокорискованный класс инструментов: их стоимость может существенно снизиться вплоть до нуля. Прошлые результаты не гарантируют будущих. Ни одна часть настоящего сайта не создаёт договорных обязательств между создателями токена и какими-либо третьими лицами. Создатели токена AURI не несут ответственности за убытки, прямые или косвенные, возникшие в результате использования информации, размещённой на данном сайте. Перед совершением каких-либо действий с цифровыми активами рекомендуется получить консультацию квалифицированных специалистов в области финансов, права и налогообложения. Использование данного сайта означает согласие с настоящим уведомлением.',
   },
   en: {
+    nav_phil:'Philosophy',
+    sec_phil:'00 · Philosophy',
+    phil_title:'Why even read about tokenomics?',
+    phil_intro:'Because most projects say "we have fair tokenomics" — and lie. We chose a different path: lock the rules into code, make it impossible to break them, and explain everything in plain language.',
+    phil_b1_t:'Emission: fixed forever',
+    phil_b1_p:'A total of 1,000,000,000 AURI have been issued. There will be no more — it is physically impossible. The right to issue new tokens (mint authority) was revoked and destroyed immediately after the initial emission. Anyone can verify this on-chain in 10 seconds.',
+    phil_b1_note:'No inflation. Ever. Not because we promised — but because it is technically impossible.',
+    phil_b2_t:'The team holds no tokens',
+    phil_b2_p:'Literally. All tokens are held in the protocol vault — a smart contract on Solana. The team cannot take AURI from there and sell it directly on the market. The only path for tokens leaving the vault is into the liquidity pool.',
+    phil_b2_note:'This is not a promise. It is an architectural constraint hardcoded into the program.',
+    phil_b3_t:'How the liquidity works',
+    phil_b3_i1:'Price starts at 1 USDC per AURI. Each subsequent price level (bin) is 0.15% higher than the previous one.',
+    phil_b3_i2:'Each bin is filled only with AURI from the vault — strictly according to a formula, with no manual intervention whatsoever.',
+    phil_b3_i3:'USDC paid by traders for AURI stays in the pool permanently — the protocol prohibits any withdrawal. This guarantees constant market depth for all participants.',
+    phil_b3_i4:'Liquidity is replenished automatically: the protocol monitors market depth and refills the pool from the vault as needed.',
+    phil_b4_t:'Fees: where they go',
+    phil_fee1_l:'Fees in USDC', phil_fee1_d:'To the team. This is the only income the team receives from the token.',
+    phil_fee2_l:'Fees in AURI', phil_fee2_d:'Back to the vault. Reinvested in future liquidity replenishment rounds.',
+    phil_b5_t:'What this means for you as a buyer',
+    phil_b5_p1:'When you buy AURI with USDC — that USDC stays in the pool and supports the price. The more purchases, the deeper the liquidity and the more stable the price during sell-offs.',
+    phil_b5_p2:'This is not a promise of price growth. It is a mechanism that works in your favor. You can sell AURI back for USDC through the same pool at any time — liquidity there is guaranteed by the protocol design itself.',
+    phil_b6_t:'Check it yourself',
+    phil_b6_intro:'Everything stated above can be verified on-chain right now. We are not asking you to take our word for it — we invite you to check.',
+    addr_mint:'Token Mint', addr_mint_note:'→ mint authority: null',
+    addr_pool:'Meteora Pool', addr_pool_note:'→ DLMM pool',
+    addr_vault:'Vault', addr_vault_note:'→ owner: program, not wallet',
+    addr_prog:'Program', addr_prog_note:'→ open source',
+    pt_pool:'Pool address', pt_vault:'Vault', pt_prog:'Program',
     nav_about:'About', nav_token:'Tokenomics', nav_pool:'Pool',
     nav_chart:'Chart', nav_contract:'Contract', nav_community:'Community',
     hero_sub:'A fair token on Solana. Rules enforced by code, not promises.',
@@ -831,13 +1169,13 @@ const T = {
     badge3:'Permanent Liquidity', badge4:'100% On-chain',
     sec_about:'01 · About',
     about_title:'A fair token. No exceptions.',
-    about_p1:'AURI was created with one goal: to give holders an asset where no participant — including the creators — has any advantage over the market. The only way to obtain AURI is to buy it on the open market at the current price.',
-    about_p2:'All key restrictions are enforced at the program level on the Solana blockchain. Additional emission is impossible. Pool liquidity is locked without withdrawal rights. No manual levers.',
+    about_p1:'AURI was built with a single purpose: to give holders an asset where no participant — including the creators — holds any privilege over others. The only way to obtain AURI is to buy it on the open market at the current price.',
+    about_p2:'All key restrictions are enforced at the program level on the Solana blockchain. Additional emission is impossible. Pool liquidity is locked with no withdrawal rights. No manual overrides of any kind.',
     card1_t:'Frozen Mint', card1_d:'The right to issue new tokens is permanently revoked. Total supply is fixed forever at 1,000,000,000 AURI.',
     card2_t:'Permanent Liquidity', card2_d:'All liquidity is placed in the Meteora DLMM pool and locked at the protocol level. Withdrawal is programmatically impossible.',
-    card3_t:'Market Distribution', card3_d:'All 1 billion tokens are available only through purchase. Zero tokens allocated to team, investors, or reserves.',
-    card4_t:'Code is Law', card4_d:'Every restriction is verifiable on-chain right now. No trusted administrators. No hidden permissions.',
-    sec_token:'02 · Tokenomics', token_title:'Transparent structure',
+    card3_t:'Market Distribution', card3_d:'All 1 billion tokens are available only through open-market purchase. Zero tokens allocated to the team, investors, or any reserve.',
+    card4_t:'Code is Law', card4_d:'Every restriction is verifiable on-chain right now. No trusted admins. No hidden permissions.',
+    sec_token:'02 · Tokenomics', token_title:'Transparent by design',
     stat1:'Total Supply (AURI)', stat2:'In liquidity pool',
     stat3:'Team / Reserves', stat4:'Starting price',
     dist_label:'Token distribution',
@@ -845,117 +1183,180 @@ const T = {
     dist_team:'Team: 0%', dist_inv:'Investors: 0%',
     dist_res:'Reserve: 0%', dist_air:'Airdrop: 0%',
     sec_pool:'03 · Liquidity Pool', pool_title:'Meteora DLMM',
-    pool_desc:'Tokens are placed in a dynamic concentrated liquidity pool (DLMM). Unlike classic AMMs, liquidity is concentrated in narrow price bins — this reduces slippage and improves trade efficiency.',
-    pt1:'Protocol', pt2:'Network', pt3:'Bin step', pt4:'Starting bin',
-    pt5:'Bin decay', pt6:'Starting price', pt7:'Base pair',
+    pool_desc:'Tokens are deployed in a concentrated liquidity pool using the DLMM model. Unlike classic AMMs, liquidity is concentrated within narrow price ranges (bins) — reducing slippage and improving capital efficiency.',
+    pt1:'Protocol', pt2:'Network', pt3:'Bin step', pt4:'Starting bin size',
+    pt5:'Bin size decay', pt6:'Starting price', pt7:'Trading pair',
     pt8:'Liquidity withdrawal', pt8v:'Locked permanently',
     sec_chart:'04 · Price Chart', chart_title:'Real-time price',
     ps_price:'AURI Price', ps_change:'24h Change', ps_liq:'Liquidity',
-    ps_vol:'24h Volume', ps_txns:'24h Transactions',
-    chart_src:'Source: DEXScreener · data updates in real time',
+    ps_vol:'24h Volume', ps_txns:'24h Trades',
+    chart_src:'Data source: DEXScreener · updates in real time',
     sec_liq:'05 · Pool Liquidity', liq_title:'Bin distribution',
-    liq_desc:'Real distribution of AURI and USDC across price bins in the Meteora DLMM pool. Each bar is one price step (0.15%). Data loaded directly from the blockchain.',
+    liq_desc:'Live distribution of AURI and USDC across price bins in the Meteora DLMM pool. Each bar represents one price step (0.15%). Data is loaded directly from the blockchain.',
     pm_addr:'Pool address', pm_bin:'Active bin', pm_fee:'Fee', pm_tvl:'TVL',
-    liq_waiting:'Waiting for Meteora pool data…',
-    liq_src:'Source: Meteora DLMM API · updates every 60 seconds',
+    liq_waiting:'Loading Meteora pool data…',
+    liq_src:'Source: Meteora DLMM API · refreshes every 60 seconds',
     leg1:'Active bin', leg2:'AURI in bin', leg3:'USDC in bin',
     sec_contract:'06 · Contract', con_title:'Token Mint Address',
-    con_desc:'Always verify the contract address before purchasing. Official AURI has one address.',
+    con_desc:'Always verify the contract address before buying. The official AURI token has exactly one address.',
     copy:'Copy', copied:'Copied ✓',
     sec_community:'07 · Community', com_title:'Join us',
-    com_desc:'All updates, discussions and news are in the official Telegram channel.',
+    com_desc:'All updates, discussions, and news in the official Telegram channel.',
     tg_sub:'Official channel · news and updates',
-    footer_disc:'AURI is not an investment instrument and does not grant rights to income or protocol governance. Trading crypto assets involves risk. Do your own research.',
+    footer_disc:'AURI is not an investment instrument and does not grant any right to income or protocol governance. Trading crypto assets involves risk. Do your own research.',
+    legal_title:'Legal Notice',
+    legal_text:'This website is provided for informational purposes only and does not constitute an offer, solicitation, or recommendation to buy, sell, or hold any digital assets or securities. AURI is not a security, investment product, or fundraising vehicle in any jurisdiction. Nothing on this site constitutes financial, investment, tax, or legal advice. Digital assets are highly volatile and may lose all value. Past performance does not guarantee future results. No part of this website creates any contractual obligation between the token creators and any third party. The creators of AURI accept no liability for any direct or indirect losses arising from the use of information on this site. Before taking any action involving digital assets, consult qualified financial, legal, and tax professionals. By using this website, you acknowledge and accept this notice.',
   },
   zh: {
+    nav_phil:'理念',
+    sec_phil:'00 · 理念',
+    phil_title:'为什么要了解代币经济学？',
+    phil_intro:'因为大多数项目声称「我们的代币经济学是公平的」——然后食言。我们选择了不同的方式：将规则写入代码，从根本上消除违规的可能，并用通俗的语言加以解释。',
+    phil_b1_t:'总发行量：永久固定',
+    phil_b1_p:'AURI的总发行量为1,000,000,000枚，此后绝不增发——技术上已无可能。铸造新代币的权限（mint authority）在首次发行后立即被永久撤销并销毁。任何人都可以在10秒内通过链上数据加以核实。',
+    phil_b1_note:'永无通货膨胀。不是因为我们的承诺，而是因为技术上已无法实现。',
+    phil_b2_t:'团队不持有任何代币',
+    phil_b2_p:'这是字面意思。所有代币均存放在协议金库中——即Solana上的一个智能合约。团队无法从中提取AURI并在市场上直接出售。代币离开金库的唯一途径，就是进入流动性池。',
+    phil_b2_note:'这不是承诺，而是写入程序代码的架构性约束。',
+    phil_b3_t:'流动性机制详解',
+    phil_b3_i1:'起始价格为每枚AURI 1 USDC，此后每个价格层级（区间）比前一个高出0.15%。',
+    phil_b3_i2:'每个区间仅从金库注入AURI——完全按照公式执行，不存在任何人工干预。',
+    phil_b3_i3:'交易者购买AURI所支付的USDC将永久留存于池中——协议从根本上禁止任何形式的提取。这为所有参与者提供了持续稳定的市场深度。',
+    phil_b3_i4:'流动性由协议自动补充：系统持续监控市场深度，并在必要时从金库向池中注入资金。',
+    phil_b4_t:'手续费去向',
+    phil_fee1_l:'USDC手续费', phil_fee1_d:'归团队所有，这是团队从代币中获得的唯一收入来源。',
+    phil_fee2_l:'AURI手续费', phil_fee2_d:'返还至金库，用于后续流动性补充轮次的再投入。',
+    phil_b5_t:'对买家意味着什么',
+    phil_b5_p1:'当您用USDC购入AURI时，这些USDC会留在池中并对价格形成支撑。购买量越大，流动性越深，价格在抛售时也越稳定。',
+    phil_b5_p2:'这并非对价格上涨的承诺，而是一套客观上对持币者有利的运行机制。同时，您随时可以通过同一池将AURI卖回USDC——协议的设计本身保证了流动性的持续存在。',
+    phil_b6_t:'自行核实',
+    phil_b6_intro:'以上所有内容均可在链上实时验证。我们无需您的信任——只需您亲自查证。',
+    addr_mint:'代币Mint地址', addr_mint_note:'→ 铸造权限：null',
+    addr_pool:'Meteora流动性池', addr_pool_note:'→ DLMM池',
+    addr_vault:'协议金库', addr_vault_note:'→ 所有者：程序合约，非个人钱包',
+    addr_prog:'程序合约', addr_prog_note:'→ 开源可验证',
+    pt_pool:'池地址', pt_vault:'金库', pt_prog:'程序',
     nav_about:'关于代币', nav_token:'代币经济学', nav_pool:'流动性池',
     nav_chart:'价格图表', nav_contract:'合约', nav_community:'社区',
-    hero_sub:'Solana上的公平代币。规则由代码执行，而非承诺。',
-    badge1:'铸造已冻结', badge2:'无团队代币',
-    badge3:'永久流动性', badge4:'100% 链上',
+    hero_sub:'Solana上的公平代币——规则由代码执行，而非口头承诺。',
+    badge1:'铸造已冻结', badge2:'团队零持仓',
+    badge3:'永久流动性', badge4:'100%链上透明',
     sec_about:'01 · 关于代币',
-    about_title:'公平代币。没有例外。',
-    about_p1:'AURI的创建只有一个目标：为持有者提供一种没有任何参与者——包括创始人——享有市场特权的资产。获取AURI的唯一方式是在公开市场上以当前价格购买。',
-    about_p2:'所有关键限制在Solana区块链的程序层面强制执行。额外发行不可能实现。流动性池被锁定，无法提取。没有人工干预机制。',
-    card1_t:'铸造冻结', card1_d:'发行新代币的权利已永久撤销。总供应量永久固定在1,000,000,000 AURI。',
-    card2_t:'永久流动性', card2_d:'所有流动性均存放在Meteora DLMM池中，并在协议层面锁定。程序上无法提取。',
-    card3_t:'市场分配', card3_d:'所有10亿代币仅可通过购买获得。团队、投资者或储备金均无代币分配。',
-    card4_t:'代码即法律', card4_d:'每项限制现在都可以在链上验证。没有可信管理员。没有隐藏权限。',
-    sec_token:'02 · 代币经济学', token_title:'透明结构',
-    stat1:'总供应量 (AURI)', stat2:'在流动性池中',
-    stat3:'团队 / 储备', stat4:'起始价格',
-    dist_label:'代币分配',
+    about_title:'公平代币，没有例外。',
+    about_p1:'AURI的创建只有一个目标：为持有者提供一种资产，其中任何参与者——包括创始人——都不对其他市场参与者享有任何特权。获得AURI的唯一方式，是在公开市场上以当前价格购买。',
+    about_p2:'所有关键约束均在Solana区块链的程序层面强制执行。额外增发绝无可能。池中流动性已永久锁定，任何人均无法提取。不存在任何人工操控机制。',
+    card1_t:'铸造权已冻结', card1_d:'发行新代币的权限已被永久撤销，总供应量永久固定在1,000,000,000枚AURI。',
+    card2_t:'永久流动性', card2_d:'所有流动性存入Meteora DLMM池，并在协议层面永久锁定，从程序上无法提取。',
+    card3_t:'市场化分配', card3_d:'全部10亿枚代币仅可通过市场购买获得，团队、投资人及任何储备方均未获得代币分配。',
+    card4_t:'代码即规则', card4_d:'每项约束均可在链上实时验证，无可信管理员，无任何隐藏权限。',
+    sec_token:'02 · 代币经济学', token_title:'透明的结构设计',
+    stat1:'总发行量（AURI）', stat2:'注入流动性池',
+    stat3:'团队/储备', stat4:'起始价格',
+    dist_label:'代币分配方式',
     dist_bar_text:'100% · METEORA DLMM 流动性池',
-    dist_team:'团队: 0%', dist_inv:'投资者: 0%',
-    dist_res:'储备: 0%', dist_air:'空投: 0%',
+    dist_team:'团队：0%', dist_inv:'投资人：0%',
+    dist_res:'储备：0%', dist_air:'空投：0%',
     sec_pool:'03 · 流动性池', pool_title:'Meteora DLMM',
-    pool_desc:'代币存放在动态集中流动性池（DLMM）中。与传统AMM不同，流动性集中在狭窄的价格区间内——这减少了滑点并提高了交易效率。',
-    pt1:'协议', pt2:'网络', pt3:'区间步长', pt4:'起始区间',
-    pt5:'区间衰减', pt6:'起始价格', pt7:'基础交易对',
+    pool_desc:'代币通过DLMM模型部署在集中流动性池中。与传统AMM不同，流动性集中在窄价格区间（bin）内，有效降低了交易滑点，提升了资金使用效率。',
+    pt1:'协议', pt2:'网络', pt3:'区间步长', pt4:'起始区间规模',
+    pt5:'区间规模衰减', pt6:'起始价格', pt7:'交易对',
     pt8:'流动性提取', pt8v:'永久锁定',
     sec_chart:'04 · 价格图表', chart_title:'实时价格',
-    ps_price:'AURI价格', ps_change:'24小时变化', ps_liq:'流动性',
-    ps_vol:'24小时交易量', ps_txns:'24小时交易数',
-    chart_src:'数据来源: DEXScreener · 实时更新',
+    ps_price:'AURI价格', ps_change:'24小时涨跌', ps_liq:'流动性',
+    ps_vol:'24小时交易量', ps_txns:'24小时成交笔数',
+    chart_src:'数据来源：DEXScreener · 实时更新',
     sec_liq:'05 · 池流动性', liq_title:'区间分布',
-    liq_desc:'Meteora DLMM池中AURI和USDC在价格区间的真实分布。每个柱形代表一个价格步长（0.15%）。数据直接从区块链加载。',
-    pm_addr:'池地址', pm_bin:'活跃区间', pm_fee:'手续费', pm_tvl:'TVL',
-    liq_waiting:'等待Meteora池数据…',
-    liq_src:'数据来源: Meteora DLMM API · 每60秒更新',
+    liq_desc:'Meteora DLMM池中各价格区间内AURI与USDC的实时分布情况。每个柱形代表一个价格步长（0.15%），数据直接从区块链加载。',
+    pm_addr:'池地址', pm_bin:'当前活跃区间', pm_fee:'手续费率', pm_tvl:'TVL',
+    liq_waiting:'正在加载Meteora池数据……',
+    liq_src:'数据来源：Meteora DLMM API · 每60秒自动刷新',
     leg1:'活跃区间', leg2:'区间内AURI', leg3:'区间内USDC',
     sec_contract:'06 · 合约', con_title:'代币Mint地址',
-    con_desc:'购买前请务必验证合约地址。官方AURI只有一个地址。',
+    con_desc:'购买前请务必核实合约地址。官方AURI代币只有唯一一个地址。',
     copy:'复制', copied:'已复制 ✓',
     sec_community:'07 · 社区', com_title:'加入我们',
-    com_desc:'所有更新、讨论和新闻都在官方Telegram频道中。',
-    tg_sub:'官方频道 · 新闻和更新',
-    footer_disc:'AURI不是投资工具，不赋予任何收入权或协议治理权。加密资产交易存在风险。请进行自己的研究。',
+    com_desc:'所有更新、讨论与公告均发布于官方Telegram频道。',
+    tg_sub:'官方频道 · 资讯与更新',
+    footer_disc:'AURI不构成任何形式的投资工具，不赋予任何收益权或协议治理权。数字资产交易存在风险，请在行动前进行独立研究。',
+    legal_title:'法律声明',
+    legal_text:'本网站仅供参考，不构成任何形式的要约、邀约，亦不构成购买、出售或持有任何数字资产或证券的建议。AURI在任何司法管辖区均不构成证券、投资产品或融资工具。本网站任何内容均不构成财务、投资、税务或法律建议。数字资产价格高度波动，价值可能大幅下跌乃至归零。历史表现不代表未来结果。本网站任何内容均不在代币创建方与任何第三方之间产生任何合同义务。AURI创建方对任何因使用本网站信息而造成的直接或间接损失不承担任何责任。在涉及数字资产的任何操作前，建议咨询专业财务、法律及税务顾问。使用本网站即表示您已阅读、理解并接受本声明。',
   },
   hi: {
+    nav_phil:'दर्शन',
+    sec_phil:'00 · दर्शन',
+    phil_title:'टोकेनोमिक्स क्यों पढ़ें?',
+    phil_intro:'क्योंकि अधिकांश प्रोजेक्ट कहते हैं "हमारी टोकेनोमिक्स ईमानदार है" — और अपना वादा तोड़ देते हैं। हमने दूसरा रास्ता चुना: नियमों को कोड में लिख दिया, उन्हें तोड़ने की संभावना ही समाप्त कर दी और सब कुछ सरल भाषा में समझाया।',
+    phil_b1_t:'जारी मात्रा: हमेशा के लिए तय',
+    phil_b1_p:'कुल 1,000,000,000 AURI जारी किए गए हैं और आगे और कोई जारी नहीं होंगे — यह तकनीकी रूप से असंभव है। नए टोकन जारी करने का अधिकार (mint authority) प्रारंभिक जारी होने के तुरंत बाद स्थायी रूप से रद्द कर दिया गया। कोई भी इसे 10 सेकंड में ऑन-चेन सत्यापित कर सकता है।',
+    phil_b1_note:'कोई मुद्रास्फीति नहीं — कभी नहीं। इसलिए नहीं कि हमने वादा किया, बल्कि इसलिए कि यह तकनीकी रूप से असंभव है।',
+    phil_b2_t:'टीम के पास कोई टोकन नहीं',
+    phil_b2_p:'शाब्दिक अर्थ में। सभी टोकन प्रोटोकॉल वॉल्ट में हैं — Solana पर एक स्मार्ट कॉन्ट्रैक्ट। टीम वहाँ से AURI नहीं निकाल सकती और सीधे बाज़ार में नहीं बेच सकती। वॉल्ट से टोकन का एकमात्र रास्ता लिक्विडिटी पूल में जाना है।',
+    phil_b2_note:'यह कोई वादा नहीं है। यह एक आर्किटेक्चरल बाधा है जो प्रोग्राम के कोड में लिखी गई है।',
+    phil_b3_t:'लिक्विडिटी कैसे काम करती है',
+    phil_b3_i1:'शुरुआती कीमत 1 USDC प्रति AURI है। प्रत्येक अगला मूल्य स्तर (बिन) पिछले से 0.15% अधिक है।',
+    phil_b3_i2:'प्रत्येक बिन में केवल वॉल्ट से AURI डाला जाता है — पूरी तरह फ़ॉर्मूले के अनुसार, बिना किसी मैन्युअल दखल के।',
+    phil_b3_i3:'ट्रेडर्स द्वारा AURI खरीदने के लिए दिए गए USDC पूल में स्थायी रूप से रहते हैं — प्रोटोकॉल उनकी किसी भी निकासी को रोकता है। यह सभी प्रतिभागियों के लिए निरंतर बाज़ार गहराई सुनिश्चित करता है।',
+    phil_b3_i4:'लिक्विडिटी स्वतः फिर से भरती है: प्रोटोकॉल बाज़ार की गहराई पर नज़र रखता है और ज़रूरत पड़ने पर वॉल्ट से पूल में जोड़ता है।',
+    phil_b4_t:'शुल्क: कहाँ जाते हैं',
+    phil_fee1_l:'USDC में शुल्क', phil_fee1_d:'टीम को। यही टोकन से टीम की एकमात्र आय है।',
+    phil_fee2_l:'AURI में शुल्क', phil_fee2_d:'वापस वॉल्ट में। भविष्य के लिक्विडिटी पुनःपूर्ति राउंड में पुनः निवेश किया जाता है।',
+    phil_b5_t:'खरीदार के रूप में इसका आपके लिए क्या अर्थ है',
+    phil_b5_p1:'जब आप USDC से AURI खरीदते हैं — वह USDC पूल में रहता है और कीमत को सहारा देता है। जितनी अधिक खरीदारी, उतना गहरा बाज़ार और बिकवाली के समय उतनी अधिक स्थिर कीमत।',
+    phil_b5_p2:'यह मूल्य वृद्धि का वादा नहीं है। यह एक ऐसा तंत्र है जो वस्तुतः आपके पक्ष में काम करता है। आप किसी भी समय उसी पूल के माध्यम से AURI को वापस USDC में बेच सकते हैं — प्रोटोकॉल के डिज़ाइन से ही लिक्विडिटी की उपलब्धता सुनिश्चित होती है।',
+    phil_b6_t:'स्वयं जाँचें',
+    phil_b6_intro:'ऊपर कही गई हर बात अभी ऑन-चेन सत्यापित की जा सकती है। हम आपसे हम पर भरोसा करने के लिए नहीं कह रहे — हम आपको खुद जाँचने के लिए आमंत्रित करते हैं।',
+    addr_mint:'टोकन Mint पता', addr_mint_note:'→ mint authority: null',
+    addr_pool:'Meteora पूल', addr_pool_note:'→ DLMM पूल',
+    addr_vault:'वॉल्ट', addr_vault_note:'→ मालिक: प्रोग्राम, न कि वॉलेट',
+    addr_prog:'प्रोग्राम', addr_prog_note:'→ खुला स्रोत कोड',
+    pt_pool:'पूल पता', pt_vault:'वॉल्ट', pt_prog:'प्रोग्राम',
     nav_about:'टोकन के बारे में', nav_token:'टोकेनोमिक्स', nav_pool:'पूल',
     nav_chart:'चार्ट', nav_contract:'अनुबंध', nav_community:'समुदाय',
-    hero_sub:'Solana पर एक ईमानदार टोकन। नियम कोड द्वारा लागू, वादों से नहीं।',
-    badge1:'मिंट फ्रोज़न', badge2:'कोई टीम टोकन नहीं',
-    badge3:'स्थायी तरलता', badge4:'100% ऑन-चेन',
+    hero_sub:'Solana पर एक ईमानदार टोकन — नियम कोड द्वारा लागू होते हैं, वादों से नहीं।',
+    badge1:'मिंट फ्रोज़न', badge2:'टीम के पास शून्य टोकन',
+    badge3:'स्थायी लिक्विडिटी', badge4:'100% ऑन-चेन',
     sec_about:'01 · टोकन के बारे में',
     about_title:'ईमानदार टोकन। कोई अपवाद नहीं।',
-    about_p1:'AURI एक लक्ष्य के साथ बनाया गया है: धारकों को एक ऐसी संपत्ति देना जहां कोई भी भागीदार—संस्थापकों सहित—बाजार पर कोई विशेषाधिकार नहीं रखता। AURI प्राप्त करने का एकमात्र तरीका खुले बाजार में वर्तमान मूल्य पर खरीदना है।',
-    about_p2:'सभी प्रमुख प्रतिबंध Solana ब्लॉकचेन पर प्रोग्राम स्तर पर लागू किए गए हैं। अतिरिक्त उत्सर्जन असंभव है। पूल की तरलता निकासी अधिकार के बिना बंद है। कोई मैन्युअल लीवर नहीं।',
-    card1_t:'फ्रोज़न मिंट', card1_d:'नए टोकन जारी करने का अधिकार स्थायी रूप से रद्द किया गया है। कुल आपूर्ति 1,000,000,000 AURI पर हमेशा के लिए तय है।',
-    card2_t:'स्थायी तरलता', card2_d:'सभी तरलता Meteora DLMM पूल में रखी गई है और प्रोटोकॉल स्तर पर लॉक है। निकासी प्रोग्रामेटिक रूप से असंभव है।',
-    card3_t:'बाजार वितरण', card3_d:'सभी 1 अरब टोकन केवल खरीद के माध्यम से उपलब्ध हैं। टीम, निवेशकों या भंडार को कोई टोकन आवंटित नहीं।',
-    card4_t:'कोड ही कानून है', card4_d:'हर प्रतिबंध अभी ऑन-चेन सत्यापन योग्य है। कोई विश्वसनीय प्रशासक नहीं। कोई छिपी हुई अनुमतियां नहीं।',
+    about_p1:'AURI एक लक्ष्य के साथ बनाया गया है: धारकों को ऐसा एक असेट देना जहाँ कोई भी प्रतिभागी — संस्थापकों सहित — अन्य बाज़ार प्रतिभागियों की तुलना में किसी विशेषाधिकार का आनंद नहीं उठा सके। AURI प्राप्त करने का एकमात्र तरीका: खुले बाज़ार में मौजूदा कीमत पर खरीदना।',
+    about_p2:'सभी प्रमुख प्रतिबंध Solana ब्लॉकचेन पर प्रोग्राम स्तर पर लागू हैं। अतिरिक्त उत्सर्जन असंभव है। पूल की लिक्विडिटी निकासी अधिकार के बिना बंद है। कोई मैन्युअल ओवरराइड नहीं है।',
+    card1_t:'फ्रोज़न मिंट', card1_d:'नए टोकन जारी करने का अधिकार स्थायी रूप से रद्द किया जा चुका है। कुल आपूर्ति हमेशा के लिए 1,000,000,000 AURI पर तय है।',
+    card2_t:'स्थायी लिक्विडिटी', card2_d:'सभी लिक्विडिटी Meteora DLMM पूल में रखी गई है और प्रोटोकॉल स्तर पर लॉक है। निकासी प्रोग्रामेटिक रूप से असंभव है।',
+    card3_t:'बाज़ार-आधारित वितरण', card3_d:'सभी 1 अरब टोकन केवल खुले बाज़ार में खरीद के माध्यम से उपलब्ध हैं। टीम, निवेशकों या किसी रिज़र्व को कोई आवंटन नहीं।',
+    card4_t:'कोड ही कानून है', card4_d:'हर प्रतिबंध अभी ऑन-चेन सत्यापन योग्य है। कोई विश्वसनीय एडमिन नहीं। कोई छिपी अनुमति नहीं।',
     sec_token:'02 · टोकेनोमिक्स', token_title:'पारदर्शी संरचना',
-    stat1:'कुल आपूर्ति (AURI)', stat2:'तरलता पूल में',
-    stat3:'टीम / भंडार', stat4:'प्रारंभिक मूल्य',
+    stat1:'कुल आपूर्ति (AURI)', stat2:'लिक्विडिटी पूल में',
+    stat3:'टीम / रिज़र्व', stat4:'प्रारंभिक मूल्य',
     dist_label:'टोकन वितरण',
-    dist_bar_text:'100% · METEORA DLMM तरलता पूल',
+    dist_bar_text:'100% · METEORA DLMM लिक्विडिटी पूल',
     dist_team:'टीम: 0%', dist_inv:'निवेशक: 0%',
-    dist_res:'भंडार: 0%', dist_air:'एयरड्रॉप: 0%',
-    sec_pool:'03 · तरलता पूल', pool_title:'Meteora DLMM',
-    pool_desc:'टोकन डायनेमिक केंद्रित तरलता पूल (DLMM) में रखे गए हैं। क्लासिक AMM के विपरीत, तरलता संकीर्ण मूल्य बिन में केंद्रित है — यह स्लिपेज को कम करता है और व्यापार दक्षता में सुधार करता है।',
-    pt1:'प्रोटोकॉल', pt2:'नेटवर्क', pt3:'बिन स्टेप', pt4:'स्टार्टिंग बिन',
-    pt5:'बिन डिके', pt6:'प्रारंभिक मूल्य', pt7:'बेस जोड़ी',
-    pt8:'तरलता निकासी', pt8v:'हमेशा के लिए लॉक',
+    dist_res:'रिज़र्व: 0%', dist_air:'एयरड्रॉप: 0%',
+    sec_pool:'03 · लिक्विडिटी पूल', pool_title:'Meteora DLMM',
+    pool_desc:'टोकन DLMM मॉडल का उपयोग करके एक केंद्रित लिक्विडिटी पूल में रखे गए हैं। पारंपरिक AMM के विपरीत, लिक्विडिटी संकीर्ण मूल्य बिन में केंद्रित है — इससे स्लिपेज कम होता है और पूंजी की दक्षता बेहतर होती है।',
+    pt1:'प्रोटोकॉल', pt2:'नेटवर्क', pt3:'बिन स्टेप', pt4:'प्रारंभिक बिन आकार',
+    pt5:'बिन आकार में कमी', pt6:'प्रारंभिक मूल्य', pt7:'ट्रेडिंग जोड़ी',
+    pt8:'लिक्विडिटी निकासी', pt8v:'हमेशा के लिए लॉक',
     sec_chart:'04 · मूल्य चार्ट', chart_title:'रियल-टाइम मूल्य',
-    ps_price:'AURI मूल्य', ps_change:'24 घंटे परिवर्तन', ps_liq:'तरलता',
-    ps_vol:'24 घंटे वॉल्यूम', ps_txns:'24 घंटे लेनदेन',
-    chart_src:'स्रोत: DEXScreener · रियल-टाइम डेटा',
-    sec_liq:'05 · पूल तरलता', liq_title:'बिन वितरण',
-    liq_desc:'Meteora DLMM पूल में मूल्य बिन में AURI और USDC का वास्तविक वितरण। प्रत्येक बार एक मूल्य चरण (0.15%) है। डेटा सीधे ब्लॉकचेन से लोड होता है।',
-    pm_addr:'पूल पता', pm_bin:'सक्रिय बिन', pm_fee:'शुल्क', pm_tvl:'TVL',
-    liq_waiting:'Meteora पूल डेटा की प्रतीक्षा…',
+    ps_price:'AURI मूल्य', ps_change:'24 घंटे बदलाव', ps_liq:'लिक्विडिटी',
+    ps_vol:'24 घंटे वॉल्यूम', ps_txns:'24 घंटे ट्रेड',
+    chart_src:'डेटा स्रोत: DEXScreener · रियल-टाइम अपडेट',
+    sec_liq:'05 · पूल लिक्विडिटी', liq_title:'बिन वितरण',
+    liq_desc:'Meteora DLMM पूल में मूल्य बिन में AURI और USDC का वास्तविक वितरण। प्रत्येक बार एक मूल्य चरण (0.15%) को दर्शाता है। डेटा सीधे ब्लॉकचेन से लोड होता है।',
+    pm_addr:'पूल पता', pm_bin:'सक्रिय बिन', pm_fee:'शुल्क दर', pm_tvl:'TVL',
+    liq_waiting:'Meteora पूल डेटा लोड हो रहा है…',
     liq_src:'स्रोत: Meteora DLMM API · हर 60 सेकंड में अपडेट',
     leg1:'सक्रिय बिन', leg2:'बिन में AURI', leg3:'बिन में USDC',
     sec_contract:'06 · अनुबंध', con_title:'टोकन Mint पता',
-    con_desc:'खरीदने से पहले हमेशा अनुबंध पता सत्यापित करें। आधिकारिक AURI का एक ही पता है।',
-    copy:'कॉपी करें', copied:'कॉपी किया ✓',
+    con_desc:'खरीदने से पहले हमेशा अनुबंध पता सत्यापित करें। आधिकारिक AURI का केवल एक ही पता है।',
+    copy:'कॉपी करें', copied:'कॉपी हो गया ✓',
     sec_community:'07 · समुदाय', com_title:'हमसे जुड़ें',
-    com_desc:'सभी अपडेट, चर्चाएं और समाचार आधिकारिक Telegram चैनल में हैं।',
+    com_desc:'सभी अपडेट, चर्चाएँ और घोषणाएँ आधिकारिक Telegram चैनल पर हैं।',
     tg_sub:'आधिकारिक चैनल · समाचार और अपडेट',
-    footer_disc:'AURI एक निवेश साधन नहीं है और आय या प्रोटोकॉल गवर्नेंस का अधिकार नहीं देता। क्रिप्टो एसेट ट्रेडिंग में जोखिम है। अपना खुद का विश्लेषण करें।',
+    footer_disc:'AURI एक निवेश साधन नहीं है और किसी भी प्रकार की आय या प्रोटोकॉल गवर्नेंस का अधिकार नहीं देता। डिजिटल असेट ट्रेडिंग में जोखिम है। कृपया स्वयं शोध करें।',
+    legal_title:'कानूनी सूचना',
+    legal_text:'यह वेबसाइट केवल सूचनात्मक उद्देश्यों के लिए है और किसी भी डिजिटल असेट या प्रतिभूति को खरीदने, बेचने या रखने की पेशकश, निमंत्रण या सिफारिश नहीं करती। AURI किसी भी न्यायक्षेत्र में प्रतिभूति, निवेश उत्पाद या पूंजी जुटाने का साधन नहीं है। इस साइट की कोई भी सामग्री वित्तीय, निवेश, कर या कानूनी सलाह नहीं है। डिजिटल असेट अत्यधिक अस्थिर हैं और शून्य तक गिर सकते हैं। पिछला प्रदर्शन भविष्य के परिणामों की गारंटी नहीं है। इस वेबसाइट का कोई भी भाग टोकन निर्माताओं और किसी तीसरे पक्ष के बीच कोई संविदात्मक दायित्व नहीं बनाता। AURI के निर्माता इस साइट की जानकारी के उपयोग से होने वाले किसी भी प्रत्यक्ष या अप्रत्यक्ष नुकसान के लिए उत्तरदायी नहीं हैं। किसी भी डिजिटल असेट से जुड़ी कार्रवाई करने से पहले योग्य वित्तीय, कानूनी और कर सलाहकारों से परामर्श करें। इस वेबसाइट का उपयोग करके आप इस सूचना को स्वीकार करते हैं।',
   },
 };
+
 
 // ═══════════════════════════════════════════════════════════════
 // i18n
@@ -1166,8 +1567,8 @@ async function loadMeteora() {
   showLiqEmpty(T[currentLang].liq_waiting);
 
   try {
-    // Step 1: find pool
-    let poolAddr = null;
+    // Step 1: use known pool address, fallback to search
+    let poolAddr = (typeof POOL_ADDR !== 'undefined') ? POOL_ADDR : null;
     let pairMeta = null;
 
     const endpoints = [
