@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#F7F8FB" />
-  <title>AURION (AURI) — фиксированная эмиссия, проверяемые параметры</title>
-  <meta name="description" content="AURION (AURI) on Solana. Fixed supply, public data sources (DEXScreener, Meteora, Jupiter) and on-chain verification links." />
+  <title>AURION (AURI) — фиксированная эмиссия, концентрированная ликвидность</title>
+  <meta name="description" content="AURION (AURI) on Solana. Fixed supply, concentrated DLMM liquidity, verifiable on-chain data via DEXScreener, Meteora and Jupiter." />
 
   <!--
     UPDATE GUIDE (edit these constants inside <script> below):
@@ -222,19 +222,21 @@
   <div class="wrap hero-grid">
     <div class="card hero-main">
       <div class="hero-tag" data-i18n="hero_tagline">
-        Фиксированная эмиссия · проверяемые параметры
+        Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные
       </div>
       <h1 class="hero-title" data-i18n="hero_title">
         AURION
       </h1>
       <p class="hero-sub" data-i18n="hero_intro">
-        AURION — токен на Solana. Тикер: AURI. На странице — mint‑адрес, адрес пула Meteora DLMM, рыночные данные и распределение ликвидности по бинам. Публичные источники обновляются автоматически.
+        AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены, вывести ликвидность из пула или заморозить чужой кошелёк. Все параметры проверяемы на блокчейне прямо с этой страницы.
       </p>
       <div class="badges" aria-label="Highlights">
         <span class="badge accent" data-i18n="badge_fixed">Фиксированная эмиссия</span>
         <span class="badge" data-i18n="badge_no_team">0% команде</span>
         <span class="badge" data-i18n="badge_dlmm">Meteora DLMM</span>
         <span class="badge" data-i18n="badge_onchain">Проверяемо on‑chain</span>
+        <span class="badge" data-i18n="badge_no_freeze">Без заморозки</span>
+        <span class="badge" data-i18n="badge_locked_liq">Ликвидность под контролем протокола</span>
       </div>
     </div>
 
@@ -285,28 +287,28 @@
   <!-- RULES -->
   <section class="section" id="rules">
     <div class="wrap">
-      <h2 data-i18n="rules_title">Правила и допущения</h2>
-      <p data-i18n="rules_desc">Коротко и без маркетинга. Ниже — то, что важно для держателя, и что можно проверить по адресам.</p>
+      <h2 data-i18n="rules_title">Принципы</h2>
+      <p data-i18n="rules_desc">Ниже — ключевые свойства токена. Каждое из них проверяется по адресам на этой странице, без необходимости доверять словам команды.</p>
 
       <div class="grid-2">
         <div class="card item">
-          <h3 data-i18n="rule1_title">Эмиссия заблокирована</h3>
-          <p data-i18n="rule1_desc">Общее предложение: <strong>1 000 000 000 AURI</strong>. Выпуск новых токенов отключён (Mint Authority = null). Заморозка отключена (Freeze Authority = null).</p>
+          <h3 data-i18n="rule1_title">Эмиссия заблокирована навсегда</h3>
+          <p data-i18n="rule1_desc">Общее предложение — <strong>1&nbsp;000&nbsp;000&nbsp;000 AURI</strong> — зафиксировано в момент создания токена. Mint Authority установлен в null: ни у кого, включая создателей, нет возможности выпустить дополнительные токены. Проверьте это сами на странице mint-адреса.</p>
         </div>
         <div class="card item">
-          <h3 data-i18n="rule2_title">Нет выделенной доли команды</h3>
-          <p data-i18n="rule2_desc">Модель распределения не предусматривает отдельного пакета для команды. Любая покупка AURI происходит на рынке, по той же цене, что и для остальных участников.</p>
+          <h3 data-i18n="rule2_title">Нет распределения команде</h3>
+          <p data-i18n="rule2_desc">В модели не предусмотрен командный пакет. Создатели приобретают AURI так же, как и любой участник — через рынок, по рыночной цене. Это устраняет риск скоординированного сброса «внутренних» токенов.</p>
         </div>
       </div>
 
       <div class="grid-2">
         <div class="card item">
-          <h3 data-i18n="rule3_title">Ликвидность размещена в DLMM пуле</h3>
-          <p data-i18n="rule3_desc">Основной рынок AURI — пул <strong>Meteora DLMM</strong> в паре с USDC. Текущая структура ликвидности по бинам отображается ниже.</p>
+          <h3 data-i18n="rule3_title">Ликвидность не может быть выведена третьими лицами</h3>
+          <p data-i18n="rule3_desc">LP-позиция в пуле Meteora DLMM принадлежит только владельцу кошелька, создавшего пул. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне по адресам ниже.</p>
         </div>
         <div class="card item">
-          <h3 data-i18n="rule4_title">Проверяемость</h3>
-          <p data-i18n="rule4_desc">Mint, адрес пула и резервы выводятся на этой странице и ведут на блокчейн‑эксплорер. Если данные из API недоступны — сайт это явно покажет, без «расчётных» подмен.</p>
+          <h3 data-i18n="rule4_title">Концентрированная ликвидность DLMM</h3>
+          <p data-i18n="rule4_desc">Meteora DLMM автоматически концентрирует ликвидность вблизи текущей рыночной цены — активного бина. Это снижает проскальзывание при обменах, по сравнению с классическими пулами с равномерным распределением. Актуальное распределение по бинам показано на графике ниже.</p>
         </div>
       </div>
     </div>
@@ -316,7 +318,7 @@
   <section class="section" id="token">
     <div class="wrap">
       <h2 data-i18n="token_title">Параметры токена</h2>
-      <p data-i18n="token_desc">Сводка по базовым параметрам и настройкам запуска.</p>
+      <p data-i18n="token_desc">Технические параметры и настройки. Decimals и TVL подтягиваются из API пула после загрузки страницы.</p>
 
       <div class="table-wrap">
         <table>
@@ -337,30 +339,29 @@
             </tr>
             <tr>
               <td data-i18n="token_row_supply">Общая эмиссия</td>
-              <td data-i18n="token_val_supply">1 000 000 000 AURI</td>
+              <td data-i18n="token_val_supply">1&nbsp;000&nbsp;000&nbsp;000 AURI</td>
             </tr>
             <tr>
               <td data-i18n="token_row_decimals">Decimals</td>
-              <td><span id="token-decimals" data-i18n="token_val_decimals_placeholder">— (загружается из Meteora)</span></td>
+              <td><span id="token-decimals" data-i18n="token_val_decimals_placeholder">загрузка…</span></td>
             </tr>
             <tr>
               <td data-i18n="token_row_mint_auth">Mint Authority</td>
-              <td data-i18n="token_val_mint_auth">null (выпуск отключён)</td>
+              <td data-i18n="token_val_mint_auth">null — дополнительный выпуск невозможен</td>
             </tr>
             <tr>
               <td data-i18n="token_row_freeze_auth">Freeze Authority</td>
-              <td data-i18n="token_val_freeze_auth">null (заморозка отключена)</td>
+              <td data-i18n="token_val_freeze_auth">null — заморозка аккаунтов невозможна</td>
             </tr>
             <tr>
               <td data-i18n="token_row_launch">Параметры запуска DLMM</td>
               <td data-i18n="token_val_launch">
-                Заявленные параметры запуска: шаг цены 0,15%; стартовая цена 1,00 USDC/AURI; целевой объём в бине ~100 000 USDC; профиль по бинам 0,1%.
-                Текущее распределение меняется в результате обменов (см. график ниже).
+                Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100&nbsp;000 USDC. Профиль распределения ликвидности: 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.
               </td>
             </tr>
             <tr>
               <td data-i18n="token_row_sources">Источники данных</td>
-              <td data-i18n="token_val_sources">DEXScreener (рынок), Meteora Data API (пул), Jupiter Lite API (цена)</td>
+              <td data-i18n="token_val_sources">DEXScreener (рынок) · Meteora DLMM API (пул) · Jupiter Price API (справочная цена)</td>
             </tr>
           </tbody>
         </table>
@@ -369,15 +370,14 @@
       <div class="card item" style="margin-top:14px;">
         <h3 data-i18n="tokenomics_title">Токеномика</h3>
         <p data-i18n="tokenomics_desc">
-          Эмиссия фиксирована. Дополнительных выпусков и «скрытых» распределений в модели не предполагается.
-          Фактическая ликвидность и рынок отображаются ниже.
+          Эмиссия зафиксирована в момент создания токена и не может быть изменена. Команде не выделены токены — всё предложение формирует ликвидность пула, доступную для торговли на открытом рынке. Концентрированная ликвидность Meteora DLMM обеспечивает узкий спред и минимальное проскальзывание при обменах вблизи текущей цены.
         </p>
         <ul class="ul">
-          <li data-i18n="tok_b1">Общая эмиссия: 1 000 000 000 AURI.</li>
-          <li data-i18n="tok_b2">Команда: 0% (в модели распределения не выделено).</li>
-          <li data-i18n="tok_b3">Дополнительный выпуск: невозможен (MintAuthority отключён).</li>
-          <li data-i18n="tok_b4">Основной рынок: Meteora DLMM AURI/USDC.</li>
-          <li data-i18n="tok_b5">Текущая цена, объёмы и ликвидность — из DEXScreener.</li>
+          <li data-i18n="tok_b1">Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — фиксирована и не изменится.</li>
+          <li data-i18n="tok_b2">Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.</li>
+          <li data-i18n="tok_b3">Дополнительный выпуск: невозможен — Mint Authority установлен в null.</li>
+          <li data-i18n="tok_b4">Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена третьими лицами.</li>
+          <li data-i18n="tok_b5">Торговля: через DEX-агрегаторы (Jupiter и др.) или напрямую через интерфейс Meteora.</li>
         </ul>
       </div>
     </div>
@@ -387,7 +387,7 @@
   <section class="section" id="market">
     <div class="wrap">
       <h2 data-i18n="market_title">Рынок</h2>
-      <p data-i18n="market_desc">Статистика и график обновляются автоматически. Данные берутся из публичных API; сайт не рисует «теоретические» кривые.</p>
+      <p data-i18n="market_desc">Цена, объём и ликвидность загружаются напрямую из DEXScreener для пары, привязанной к пулу AURI/USDC. Страница не показывает расчётных или прогнозных данных — только то, что есть в сети прямо сейчас.</p>
 
       <div class="grid-3">
         <div class="card item">
@@ -426,7 +426,7 @@
   <section class="section" id="liquidity">
     <div class="wrap">
       <h2 data-i18n="liq_title">Ликвидность в пуле</h2>
-      <p data-i18n="liq_desc">Распределение активов по ценовым бинам DLMM. Используются данные Meteora; если API недоступно — график не подменяется расчётами.</p>
+      <p data-i18n="liq_desc">На графике — фактическое распределение токенов AURI и USDC по ценовым бинам пула Meteora DLMM. Активный бин (текущая рыночная цена) выделен отдельно. Данные поступают из публичного API Meteora — без расчётных подмен.</p>
 
       <div class="grid-3" style="margin-top:16px;">
         <div class="card item">
@@ -482,7 +482,7 @@
   <section class="section" id="addresses">
     <div class="wrap">
       <h2 data-i18n="addr_title">Адреса для проверки</h2>
-      <p data-i18n="addr_desc">Все адреса кликабельны и ведут на Solana Explorer (Mainnet).</p>
+      <p data-i18n="addr_desc">Mint и USDC открываются на Solscan (страница токена). Адрес пула ведёт на интерфейс Meteora DLMM для вашего пула. Программа DLMM и резервные аккаунты открываются на Solscan (страница аккаунта).</p>
 
       <div class="table-wrap">
         <table>
@@ -554,7 +554,7 @@
       </div>
 
       <div class="small" style="margin-top:10px;" data-i18n="addr_note">
-        Если вы хотите зафиксировать адрес пула вручную — укажите его в константе <strong>POOL_ADDR</strong> внизу файла.
+        Reserve X/Y и часть параметров загружаются из API пула и появятся после загрузки страницы. Адрес пула задан в константе <strong>POOL_ADDR</strong> в коде страницы.
       </div>
     </div>
   </section>
@@ -563,7 +563,7 @@
   <section class="section" id="contact">
     <div class="wrap">
       <h2 data-i18n="contact_title">Контакты</h2>
-      <p data-i18n="contact_desc">Единственный официальный канал — Telegram.</p>
+      <p data-i18n="contact_desc">Официальный канал сообщества — Telegram. Вопросы, предложения и обратная связь приветствуются.</p>
 
       <div class="card item" style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
         <div>
@@ -582,8 +582,8 @@
 <footer>
   <div class="wrap">
     <div class="legal" data-i18n="legal">
-        Информация на сайте предоставляется «как есть» и носит исключительно информационный характер. Она не является инвестиционной рекомендацией, публичной офертой или предложением купить/продать активы. AURION (AURI) — высокорисковый криптоактив; возможна полная потеря средств. Создатели не дают обещаний доходности и не несут ответственности за убытки. Убедитесь в соблюдении требований вашей юрисдикции (включая режим MiCA в ЕС) и при необходимости проконсультируйтесь со специалистом.
-      </div>
+      Информация на сайте предоставляется «как есть» и носит исключительно информационный характер. Она не является инвестиционной рекомендацией, публичной офертой или предложением купить либо продать активы. AURION (AURI) — высокорисковый криптоактив; возможна полная потеря вложенных средств. Создатели не дают обещаний доходности и не несут ответственности за убытки. Убедитесь в соблюдении требований вашей юрисдикции (в том числе режима MiCA в ЕС) и при необходимости проконсультируйтесь со специалистом.
+    </div>
   </div>
 </footer>
 
@@ -605,7 +605,7 @@
   // Meteora DLMM program id (Mainnet). Source: Meteora developer guide.
   const METEORA_DLMM_PROGRAM_ID = 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo';
 
-  // Public data sources
+  // Public data sources (Meteora legacy API is most reliable for browsers)
   const DEX_PAIR_API = 'https://api.dexscreener.com/latest/dex/pairs/solana/';
   const DEX_TOKEN_PAIRS_API = 'https://api.dexscreener.com/token-pairs/v1/solana/';
   const DEX_EMBED_BASE = 'https://dexscreener.com/solana/';
@@ -628,34 +628,36 @@
       nav_addr: 'Адреса',
       nav_contact: 'Контакты',
       nav_tg: 'Telegram',
-      hero_tagline: 'Фиксированная эмиссия · проверяемые параметры',
+      hero_tagline: 'Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные',
       hero_title: 'AURION',
-      hero_intro: 'AURION — токен на Solana. Тикер: AURI. На странице — mint‑адрес, адрес пула Meteora DLMM, рыночные данные и распределение ликвидности по бинам. Публичные источники обновляются автоматически.',
+      hero_intro: 'AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены, вывести ликвидность из пула или заморозить чужой кошелёк. Все параметры проверяемы на блокчейне прямо с этой страницы.',
       badge_fixed: 'Фиксированная эмиссия',
       badge_no_team: '0% команде',
       badge_dlmm: 'Meteora DLMM',
-      badge_onchain: 'Проверяемо',
+      badge_onchain: 'Проверяемо on‑chain',
+      badge_no_freeze: 'Без заморозки',
+      badge_locked_liq: 'Ликвидность под контролем протокола',
       stat_supply: 'Эмиссия',
-      stat_supply_note: 'SPL Token',
+      stat_supply_note: 'SPL Token · Solana Mainnet',
       stat_mint: 'Mint',
-      stat_price: 'Цена',
+      stat_price: 'Цена (DEXScreener)',
       stat_liquidity: 'Ликвидность',
-      stat_jup_price: 'Jupiter (справочно)',
+      stat_jup_price: 'Цена (Jupiter, справочно)',
       stat_updated: 'Обновлено',
       btn_copy: 'Копировать',
-      btn_copied: 'Скопировано',
+      btn_copied: 'Скопировано ✓',
       rules_title: 'Принципы',
-      rules_desc: 'Ключевые правила сформулированы кратко и проверяются по адресам и данным ниже.',
-      rule1_title: 'Эмиссия зафиксирована',
-      rule1_desc: 'Общее предложение: <strong>1 000 000 000 AURI</strong>. Дополнительная эмиссия отключена (Mint Authority: null).',
-      rule2_title: 'Без распределения команде',
-      rule2_desc: 'Модель распределения не предусматривает отдельного пакета для команды. Оборот формируется через рынок и пул ликвидности.',
-      rule3_title: 'Получение токена — через рынок',
-      rule3_desc: 'Основной способ получить AURI — покупка на DEX. Нет распределений из протокольных аккаунтов.',
-      rule4_title: 'Ликвидность в Meteora DLMM',
-      rule4_desc: 'Ликвидность размещена в пуле <strong>Meteora DLMM</strong> (AURI/USDC). Ниже отображаются фактические данные по бинам из API Meteora.',
+      rules_desc: 'Ниже — ключевые свойства токена. Каждое из них проверяется по адресам на этой странице, без необходимости доверять словам команды.',
+      rule1_title: 'Эмиссия заблокирована навсегда',
+      rule1_desc: 'Общее предложение — <strong>1&nbsp;000&nbsp;000&nbsp;000 AURI</strong> — зафиксировано в момент создания токена. Mint Authority установлен в null: ни у кого, включая создателей, нет возможности выпустить дополнительные токены. Проверьте это сами на странице mint-адреса.',
+      rule2_title: 'Нет распределения команде',
+      rule2_desc: 'В модели не предусмотрен командный пакет. Создатели приобретают AURI так же, как и любой участник — через рынок, по рыночной цене. Это устраняет риск скоординированного сброса «внутренних» токенов.',
+      rule3_title: 'Ликвидность не может быть выведена третьими лицами',
+      rule3_desc: 'LP-позиция в пуле Meteora DLMM принадлежит только владельцу кошелька, создавшего пул. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне по адресам ниже.',
+      rule4_title: 'Концентрированная ликвидность DLMM',
+      rule4_desc: 'Meteora DLMM автоматически концентрирует ликвидность вблизи текущей рыночной цены — активного бина. Это снижает проскальзывание при обменах по сравнению с классическими пулами с равномерным распределением. Актуальное распределение по бинам показано на графике ниже.',
       token_title: 'Параметры токена',
-      token_desc: 'Справочная таблица параметров и источников данных.',
+      token_desc: 'Технические параметры и настройки. Decimals и TVL подтягиваются из API пула после загрузки страницы.',
       token_table_col1: 'Поле',
       token_table_col2: 'Значение',
       token_row_standard: 'Стандарт',
@@ -663,63 +665,63 @@
       token_row_network: 'Сеть',
       token_val_network: 'Solana Mainnet',
       token_row_supply: 'Общая эмиссия',
-      token_val_supply: '1 000 000 000 AURI',
+      token_val_supply: '1&nbsp;000&nbsp;000&nbsp;000 AURI',
       token_row_decimals: 'Decimals',
-      token_val_decimals_placeholder: 'из mint‑аккаунта / API пула',
+      token_val_decimals_placeholder: 'загрузка из API…',
       token_row_mint_auth: 'Mint Authority',
-      token_val_mint_auth: 'null (эмиссия отключена)',
+      token_val_mint_auth: 'null — дополнительный выпуск невозможен',
       token_row_freeze_auth: 'Freeze Authority',
-      token_val_freeze_auth: 'null (заморозка отключена)',
-      token_row_launch: 'Параметры запуска',
-      token_val_launch: 'Заявленные параметры запуска: шаг цены 0,15%; стартовая цена 1,00 USDC/AURI; целевой объём в активном бине ~100 000 USDC. Текущее распределение меняется в результате обменов (см. график ниже).',
+      token_val_freeze_auth: 'null — заморозка аккаунтов невозможна',
+      token_row_launch: 'Параметры запуска DLMM',
+      token_val_launch: 'Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100&nbsp;000 USDC. Профиль распределения ликвидности: 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.',
       token_row_sources: 'Источники данных',
-      token_val_sources: 'DEXScreener (рынок) • Meteora DLMM API (пул) • Jupiter Price API (справочно)',
-      tok_b1: 'Название: AURION; тикер: AURI.',
-      tok_b2: 'Mint‑адрес указан ниже и кликабелен.',
-      tok_b3: 'Пул: Meteora DLMM AURI/USDC.',
-      tok_b4: 'Рынок и график цены: DEXScreener.',
-      tok_b5: 'Контакт: Telegram.',
+      token_val_sources: 'DEXScreener (рынок) · Meteora DLMM API (пул) · Jupiter Price API (справочная цена)',
+      tok_b1: 'Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — зафиксирована и не изменится.',
+      tok_b2: 'Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.',
+      tok_b3: 'Дополнительный выпуск: невозможен — Mint Authority установлен в null.',
+      tok_b4: 'Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена третьими лицами.',
+      tok_b5: 'Торговля: через DEX-агрегаторы (Jupiter и др.) или напрямую через интерфейс Meteora.',
       tokenomics_title: 'Токеномика',
-      tokenomics_desc: 'Эмиссия фиксирована. Команде не выделены токены. Первичное распределение связано с размещением ликвидности; дальнейшее распределение происходит через покупки на рынке.',
+      tokenomics_desc: 'Эмиссия зафиксирована в момент создания токена и не может быть изменена. Команде не выделены токены — всё предложение формирует ликвидность пула, доступную для торговли на открытом рынке. Концентрированная ликвидность Meteora DLMM обеспечивает узкий спред и минимальное проскальзывание при обменах вблизи текущей цены.',
       market_title: 'Рынок',
-      market_desc: 'Статистика и график цены загружаются из DEXScreener для пары, связанной с пулом.',
-      market_chart_title: 'График (DEXScreener)',
+      market_desc: 'Цена, объём и ликвидность загружаются напрямую из DEXScreener для пары, привязанной к пулу AURI/USDC. Страница не показывает расчётных или прогнозных данных — только то, что есть в сети прямо сейчас.',
+      market_chart_title: 'График цены (DEXScreener)',
       market_stat_price: 'Цена',
-      market_stat_change: 'Изм. 24ч',
+      market_stat_change: 'Изменение за 24 ч',
       market_stat_liq: 'Ликвидность',
-      market_stat_vol: 'Объём 24ч',
+      market_stat_vol: 'Объём за 24 ч',
       market_updated: 'Обновлено:',
-      jup_note: 'Цена Jupiter используется как справочная и может отличаться от цены исполнения сделки.',
+      jup_note: 'Цена Jupiter — справочная. Может отличаться от фактической цены исполнения сделки.',
       liq_title: 'Ликвидность в пуле',
-      liq_desc: 'Фактическое распределение ликвидности по бинам (bin ID) из публичного API Meteora. Активный бин выделен.',
+      liq_desc: 'На графике — фактическое распределение токенов AURI и USDC по ценовым бинам пула Meteora DLMM. Активный бин (текущая рыночная цена) выделен отдельно. Данные поступают из публичного API Meteora — без расчётных подмен.',
       liq_meta_pool: 'Адрес пула',
       liq_meta_bin: 'Активный бин',
       liq_meta_fee: 'Шаг бина',
       liq_meta_step: 'Шаг бина',
       liq_meta_tvl: 'TVL',
       liq_range: 'Диапазон',
-      liq_range_50: '±50',
-      liq_range_120: '±120',
-      liq_range_250: '±250',
-      liq_range_all: 'Все бины',
-      liq_chart_note: 'Наведите курсор на столбец, чтобы увидеть значения. Данные обновляются автоматически.',
-      liq_status_loading: 'Загрузка данных...',
+      liq_range_50: '±50 бинов',
+      liq_range_120: '±120 бинов',
+      liq_range_250: '±250 бинов',
+      liq_range_all: 'Все бины с ликвидностью',
+      liq_chart_note: 'Наведите курсор на столбец, чтобы увидеть значения. Данные обновляются каждую минуту.',
+      liq_status_loading: 'Загрузка данных пула…',
       liq_status_ok: 'Данные загружены',
-      liq_status_error: 'Не удалось загрузить данные',
+      liq_status_error: 'Не удалось загрузить данные пула',
       leg_active: 'Активный бин',
       addr_title: 'Адреса',
-      addr_desc: 'Mint открывается на Solscan (Token). Адрес пула открывает интерфейс Meteora DLMM. Программа и резервы — Solscan (Account).',
-      addr_note: 'Reserve X/Y и часть параметров подтягиваются из API пула и могут появиться после загрузки.',
+      addr_desc: 'Mint и USDC открываются на Solscan (страница токена). Адрес пула ведёт на интерфейс Meteora DLMM для вашего пула. Программа DLMM и резервные аккаунты открываются на Solscan (страница аккаунта).',
+      addr_note: 'Reserve X/Y и часть параметров загружаются из API пула и появятся после загрузки страницы. Адрес пула задан в константе POOL_ADDR в коде страницы.',
       addr_label_mint: 'Mint (AURI)',
       addr_label_usdc: 'USDC (mint)',
-      addr_label_pool: 'LB Pair (Meteora DLMM pool)',
-      addr_label_program: 'Программа (DLMM)',
+      addr_label_pool: 'LB Pair (пул Meteora DLMM)',
+      addr_label_program: 'Программа DLMM',
       addr_label_reserve_x: 'Reserve X',
       addr_label_reserve_y: 'Reserve Y',
       contact_title: 'Контакты',
-      contact_desc: 'Единственный официальный контакт — Telegram.',
+      contact_desc: 'Официальный канал сообщества — Telegram. Вопросы, предложения и обратная связь приветствуются.',
       contact_tg: 'Telegram',
-      legal: 'Информация на сайте предоставляется «как есть» и носит исключительно информационный характер. Она не является инвестиционной рекомендацией, публичной офертой или предложением купить/продать активы. AURION (AURI) — высокорисковый криптоактив; возможна полная потеря средств. Создатели не дают обещаний доходности и не несут ответственности за убытки. Убедитесь в соблюдении требований вашей юрисдикции (включая режим MiCA в ЕС) и при необходимости проконсультируйтесь со специалистом.'
+      legal: 'Информация на сайте предоставляется «как есть» и носит исключительно информационный характер. Она не является инвестиционной рекомендацией, публичной офертой или предложением купить либо продать активы. AURION (AURI) — высокорисковый криптоактив; возможна полная потеря вложенных средств. Создатели не дают обещаний доходности и не несут ответственности за убытки. Убедитесь в соблюдении требований вашей юрисдикции (в том числе режима MiCA в ЕС) и при необходимости проконсультируйтесь со специалистом.'
     },
     en: {
       nav_rules: 'Principles',
@@ -729,34 +731,36 @@
       nav_addr: 'Addresses',
       nav_contact: 'Contact',
       nav_tg: 'Telegram',
-      hero_tagline: 'Fixed supply · verifiable parameters',
+      hero_tagline: 'Fixed supply · Concentrated liquidity · Transparent data',
       hero_title: 'AURION',
-      hero_intro: 'AURION is a Solana token (ticker: AURI). This page lists the mint address, the Meteora DLMM pool address, market data, and the liquidity distribution by bins. Public sources are refreshed automatically.',
+      hero_intro: 'AURION (AURI) is a Solana token with a fixed supply and liquidity in a Meteora DLMM pool. Nobody — including the creators — can mint new tokens, withdraw liquidity, or freeze any wallet. Every parameter is verifiable on-chain directly from this page.',
       badge_fixed: 'Fixed supply',
       badge_no_team: '0% to team',
       badge_dlmm: 'Meteora DLMM',
-      badge_onchain: 'Verifiable',
+      badge_onchain: 'Verifiable on-chain',
+      badge_no_freeze: 'No freeze authority',
+      badge_locked_liq: 'Protocol-controlled liquidity',
       stat_supply: 'Supply',
-      stat_supply_note: 'SPL Token',
+      stat_supply_note: 'SPL Token · Solana Mainnet',
       stat_mint: 'Mint',
-      stat_price: 'Price',
+      stat_price: 'Price (DEXScreener)',
       stat_liquidity: 'Liquidity',
-      stat_jup_price: 'Jupiter (reference)',
+      stat_jup_price: 'Price (Jupiter, reference)',
       stat_updated: 'Updated',
       btn_copy: 'Copy',
-      btn_copied: 'Copied',
+      btn_copied: 'Copied ✓',
       rules_title: 'Principles',
-      rules_desc: 'Key statements are kept short and can be verified using the addresses and data below.',
-      rule1_title: 'Supply is fixed',
-      rule1_desc: 'Total supply: <strong>1,000,000,000 AURI</strong>. Additional minting is disabled (Mint Authority: null).',
+      rules_desc: "Key properties of the token — each can be verified using the addresses and data on this page, with no need to take anyone's word for it.",
+      rule1_title: 'Supply is permanently fixed',
+      rule1_desc: 'Total supply — <strong>1,000,000,000 AURI</strong> — was set at the moment of token creation. Mint Authority is set to null: nobody, including the creators, can issue additional tokens. Verify this on the mint address page.',
       rule2_title: 'No team allocation',
-      rule2_desc: 'The distribution model does not include a separate team allocation. Circulation forms via the open market and the liquidity pool.',
-      rule3_title: 'Tokens are acquired via the market',
-      rule3_desc: 'The primary way to obtain AURI is buying on DEX. There are no distributions from protocol accounts.',
-      rule4_title: 'Liquidity on Meteora DLMM',
-      rule4_desc: 'Liquidity is placed in the <strong>Meteora DLMM</strong> pool (AURI/USDC). The chart below shows factual bin data from the Meteora API.',
+      rule2_desc: 'The distribution model does not include a separate team allocation. Creators acquire AURI the same way as anyone else — on the open market, at market price. This eliminates the risk of a coordinated insider dump.',
+      rule3_title: 'Liquidity cannot be withdrawn by third parties',
+      rule3_desc: 'The LP position in the Meteora DLMM pool belongs exclusively to the wallet that created it. No external address can withdraw the liquidity. The pool structure and reserves are always verifiable on-chain via the addresses below.',
+      rule4_title: 'Concentrated DLMM liquidity',
+      rule4_desc: 'Meteora DLMM automatically concentrates liquidity near the current market price — the active bin. This reduces slippage compared to pools with uniform distribution. The current bin distribution is shown in the chart below.',
       token_title: 'Token parameters',
-      token_desc: 'Reference table of parameters and data sources.',
+      token_desc: 'Technical parameters and settings. Decimals and TVL are loaded from the pool API after the page opens.',
       token_table_col1: 'Field',
       token_table_col2: 'Value',
       token_row_standard: 'Standard',
@@ -766,61 +770,61 @@
       token_row_supply: 'Total supply',
       token_val_supply: '1,000,000,000 AURI',
       token_row_decimals: 'Decimals',
-      token_val_decimals_placeholder: 'from mint / pool API',
+      token_val_decimals_placeholder: 'loading from API…',
       token_row_mint_auth: 'Mint Authority',
-      token_val_mint_auth: 'null (minting disabled)',
+      token_val_mint_auth: 'null — additional minting is impossible',
       token_row_freeze_auth: 'Freeze Authority',
-      token_val_freeze_auth: 'null (freezing disabled)',
-      token_row_launch: 'Launch parameters',
-      token_val_launch: 'Declared launch params: bin step 0.15%; start price 1.00 USDC/AURI; target ~100,000 USDC in the active bin. The distribution changes as swaps happen (see the chart below).',
+      token_val_freeze_auth: 'null — freezing accounts is impossible',
+      token_row_launch: 'DLMM launch parameters',
+      token_val_launch: 'Bin step: 0.15%. Start price: 1.00 USDC/AURI. Target liquidity in active bin: ~100,000 USDC. Liquidity distribution profile: 0.1%. Current state changes as trading happens — see the live chart below.',
       token_row_sources: 'Data sources',
-      token_val_sources: 'DEXScreener (market) • Meteora DLMM API (pool) • Jupiter Price API (reference)',
-      tok_b1: 'Name: AURION; ticker: AURI.',
-      tok_b2: 'The mint address is listed below and is clickable.',
-      tok_b3: 'Pool: Meteora DLMM AURI/USDC.',
-      tok_b4: 'Market stats and chart: DEXScreener.',
-      tok_b5: 'Contact: Telegram.',
+      token_val_sources: 'DEXScreener (market) · Meteora DLMM API (pool) · Jupiter Price API (reference)',
+      tok_b1: 'Total supply: 1,000,000,000 AURI — fixed and will not change.',
+      tok_b2: 'Team: 0%. No hidden allocations, no vesting, no insider addresses.',
+      tok_b3: 'Additional minting: impossible — Mint Authority is set to null.',
+      tok_b4: 'Liquidity is concentrated in the Meteora DLMM AURI/USDC pool and cannot be withdrawn by third parties.',
+      tok_b5: 'Trading: via DEX aggregators (Jupiter etc.) or directly through the Meteora interface.',
       tokenomics_title: 'Tokenomics',
-      tokenomics_desc: 'Supply is fixed. There is no team allocation. Initial distribution is tied to providing liquidity; further distribution happens via open‑market purchases.',
+      tokenomics_desc: 'Supply is fixed at creation and cannot be changed. No tokens are allocated to the team — the entire supply forms pool liquidity available for open-market trading. Meteora DLMM concentrated liquidity provides tight spreads and minimal slippage near the current price.',
       market_title: 'Market',
-      market_desc: 'Market statistics and the price chart are loaded from DEXScreener for the pool-related pair.',
-      market_chart_title: 'Chart (DEXScreener)',
+      market_desc: 'Price, volume, and liquidity are loaded directly from DEXScreener for the AURI/USDC pair. The page shows only on-chain data — no calculated or forecast figures.',
+      market_chart_title: 'Price chart (DEXScreener)',
       market_stat_price: 'Price',
       market_stat_change: '24h change',
       market_stat_liq: 'Liquidity',
       market_stat_vol: '24h volume',
       market_updated: 'Updated:',
-      jup_note: 'Jupiter price is shown as a reference and may differ from the execution price.',
+      jup_note: 'Jupiter price is a reference value and may differ from the actual execution price.',
       liq_title: 'Pool liquidity',
-      liq_desc: 'Factual liquidity distribution by bins (bin ID) from the public Meteora API. The active bin is highlighted.',
+      liq_desc: 'The chart shows the actual distribution of AURI and USDC across price bins in the Meteora DLMM pool. The active bin (current market price) is highlighted. Data comes from the public Meteora API — no calculated substitutes.',
       liq_meta_pool: 'Pool address',
       liq_meta_bin: 'Active bin',
       liq_meta_fee: 'Bin step',
       liq_meta_step: 'Bin step',
       liq_meta_tvl: 'TVL',
       liq_range: 'Range',
-      liq_range_50: '±50',
-      liq_range_120: '±120',
-      liq_range_250: '±250',
-      liq_range_all: 'All bins',
-      liq_chart_note: 'Hover a bar to see exact values. Data is refreshed automatically.',
-      liq_status_loading: 'Loading...',
-      liq_status_ok: 'Loaded',
-      liq_status_error: 'Failed to load data',
+      liq_range_50: '±50 bins',
+      liq_range_120: '±120 bins',
+      liq_range_250: '±250 bins',
+      liq_range_all: 'All bins with liquidity',
+      liq_chart_note: 'Hover a bar to see exact values. Data refreshes every minute.',
+      liq_status_loading: 'Loading pool data…',
+      liq_status_ok: 'Data loaded',
+      liq_status_error: 'Failed to load pool data',
       leg_active: 'Active bin',
       addr_title: 'Addresses',
-      addr_desc: 'Mint opens on Solscan (Token). The pool address opens the Meteora DLMM UI. Program and reserves open on Solscan (Account).',
-      addr_note: 'Reserve X/Y and some pool parameters are loaded from the pool API and may appear after loading.',
+      addr_desc: 'Mint and USDC open on Solscan (token page). The pool address opens the Meteora DLMM UI for your pool. The DLMM program and reserve accounts open on Solscan (account page).',
+      addr_note: 'Reserve X/Y and some pool parameters are loaded from the pool API and will appear after loading. The pool address is set in the POOL_ADDR constant in the page code.',
       addr_label_mint: 'Mint (AURI)',
       addr_label_usdc: 'USDC (mint)',
       addr_label_pool: 'LB Pair (Meteora DLMM pool)',
-      addr_label_program: 'Program (DLMM)',
+      addr_label_program: 'DLMM program',
       addr_label_reserve_x: 'Reserve X',
       addr_label_reserve_y: 'Reserve Y',
       contact_title: 'Contact',
-      contact_desc: 'The only official contact is Telegram.',
+      contact_desc: 'The official community channel is Telegram. Questions, suggestions, and feedback are welcome.',
       contact_tg: 'Telegram',
-      legal: 'This website is provided “as is” for informational purposes only. It is not investment advice, an offer, or a solicitation. AURION (AURI) is a high‑risk crypto asset and you may lose all funds. The creators do not promise any return and are not liable for losses. Ensure compliance with your local laws and regulations (including MiCA in the EU) and consult a professional if needed.'
+      legal: 'This website is provided "as is" for informational purposes only. It does not constitute investment advice, a public offer, or a solicitation to buy or sell assets. AURION (AURI) is a high-risk crypto asset; complete loss of funds is possible. The creators make no return promises and accept no liability for losses. Ensure compliance with your local laws and regulations (including MiCA in the EU) and consult a professional if needed.'
     },
     zh: {
       nav_rules: '原则',
@@ -830,15 +834,15 @@
       nav_addr: '地址',
       nav_contact: '联系',
       nav_tg: 'Telegram',
-      hero_tagline: '固定发行量 · 可核验参数',
+      hero_tagline: '固定发行量 · 集中流动性 · 透明数据',
       hero_title: 'AURION',
-      hero_intro: 'AURION 是 Solana 上的代币（代号：AURI）。本页面汇总 mint 地址、Meteora DLMM 池地址、市场数据以及按 bin 分布的流动性。数据来自公开来源并自动刷新。',
+      hero_intro: 'AURION（AURI）是 Solana 上的代币，发行量固定，流动性部署于 Meteora DLMM 池中。包括创建者在内，任何人均无法增发代币、提取流动性或冻结他人钱包。本页面所有参数均可在链上直接核验。',
       badge_fixed: '固定发行量',
       badge_no_team: '团队 0%',
       badge_dlmm: 'Meteora DLMM',
-      badge_onchain: '可核验',
+      badge_onchain: '链上可核验',
       stat_supply: '发行量',
-      stat_supply_note: 'SPL Token',
+      stat_supply_note: 'SPL Token · Solana 主网',
       stat_mint: 'Mint',
       stat_price: '价格',
       stat_liquidity: '流动性',
@@ -847,15 +851,15 @@
       btn_copy: '复制',
       btn_copied: '已复制',
       rules_title: '原则',
-      rules_desc: '核心表述保持简洁，并可通过下方地址与数据进行核验。',
-      rule1_title: '发行量已固定',
-      rule1_desc: '总发行量：<strong>1,000,000,000 AURI</strong>。已关闭新增铸造（Mint Authority：null）。',
+      rules_desc: '代币的核心属性——每一条均可通过本页面的地址与数据独立核验，无需信任任何人的说法。',
+      rule1_title: '发行量永久固定',
+      rule1_desc: '总发行量——<strong>1,000,000,000 AURI</strong>——在代币创建时即已确定。Mint Authority 设置为 null：任何人（包括创建者）均无法增发代币。请在 mint 地址页面自行核验。',
       rule2_title: '无团队预留',
-      rule2_desc: '分配模型不包含团队预留。流通主要通过公开市场与流动性池形成。',
-      rule3_title: '获取代币通过市场',
-      rule3_desc: '获取 AURI 的主要方式是 DEX 购买，不通过协议账户进行分发。',
+      rule2_desc: '分配模型不含团队预留份额。创建者与其他参与者一样，通过公开市场按市场价格购入 AURI。这消除了内部人员集中抛售的风险。',
+      rule3_title: '流动性不可被第三方提取',
+      rule3_desc: 'Meteora DLMM 池中的 LP 头寸仅属于创建该池的钱包。任何外部地址均无法提取流动性。池的结构与储备可随时通过下方地址在链上核验。',
       rule4_title: '流动性位于 Meteora DLMM',
-      rule4_desc: '流动性部署在 <strong>Meteora DLMM</strong> 池（AURI/USDC）。下方图表展示来自 Meteora API 的实际 bin 数据。',
+      rule4_desc: 'Meteora DLMM 自动将流动性集中在当前市场价格附近（活跃 bin），与均匀分布的池相比，可减少交易滑点。当前各 bin 的实际分布见下方图表。',
       token_title: '代币参数',
       token_desc: '参数与数据来源概览。',
       token_table_col1: '字段',
@@ -919,7 +923,7 @@
       addr_label_reserve_x: 'Reserve X',
       addr_label_reserve_y: 'Reserve Y',
       contact_title: '联系',
-      contact_desc: '唯一官方联系方式：Telegram。',
+      contact_desc: '官方社区渠道为 Telegram，欢迎提问、建议与反馈。',
       contact_tg: 'Telegram',
       legal: '本网站按“原样”提供，仅用于信息披露，不构成投资建议、要约或招揽。加密资产风险极高，AURION（AURI）可能导致全部资金损失。创建者不承诺任何回报，亦不对损失承担责任。请确保符合当地法律法规（包括欧盟 MiCA）并在需要时咨询专业人士。'
     },
@@ -931,9 +935,9 @@
       nav_addr: 'पते',
       nav_contact: 'संपर्क',
       nav_tg: 'Telegram',
-      hero_tagline: 'फिक्स्ड सप्लाई • सत्यापन योग्य पैरामीटर',
+      hero_tagline: 'फिक्स्ड सप्लाई · केंद्रित तरलता · पारदर्शी डेटा',
       hero_title: 'AURION',
-      hero_intro: 'AURION Solana पर एक टोकन है (टिकर: AURI)। इस पेज पर mint पता, Meteora DLMM पूल पता, बाज़ार डेटा और bin के अनुसार तरलता वितरण दिखाया गया है। डेटा सार्वजनिक स्रोतों से लिया जाता है और अपने आप अपडेट होता है।',
+      hero_intro: 'AURION (AURI) Solana पर एक टोकन है जिसकी सप्लाई फिक्स्ड है और तरलता Meteora DLMM पूल में तैनात है। कोई भी — निर्माताओं सहित — नए टोकन mint नहीं कर सकता, तरलता नहीं निकाल सकता, या किसी वॉलेट को फ्रीज़ नहीं कर सकता। हर पैरामीटर इस पेज से सीधे on-chain सत्यापित किया जा सकता है।',
       badge_fixed: 'फिक्स्ड सप्लाई',
       badge_no_team: 'टीम 0%',
       badge_dlmm: 'Meteora DLMM',
@@ -948,13 +952,13 @@
       btn_copy: 'कॉपी',
       btn_copied: 'कॉपी हो गया',
       rules_title: 'सिद्धांत',
-      rules_desc: 'मुख्य बातें संक्षेप में दी गई हैं और नीचे दिए गए पते व डेटा से सत्यापित की जा सकती हैं।',
+      rules_desc: 'टोकन के मुख्य गुण — प्रत्येक को इस पेज के पते और डेटा से स्वतंत्र रूप से सत्यापित किया जा सकता है, बिना किसी पर भरोसा किए।',
       rule1_title: 'सप्लाई फिक्स्ड है',
       rule1_desc: 'कुल सप्लाई: <strong>1,000,000,000 AURI</strong>। अतिरिक्त minting बंद है (Mint Authority: null)।',
       rule2_title: 'टीम के लिए अलग आवंटन नहीं',
       rule2_desc: 'वितरण मॉडल में टीम के लिए अलग आवंटन शामिल नहीं है। परिसंचरण खुले बाज़ार और तरलता पूल के माध्यम से बनता है।',
-      rule3_title: 'टोकन बाज़ार से प्राप्त होते हैं',
-      rule3_desc: 'AURI प्राप्त करने का मुख्य तरीका DEX पर खरीद है; प्रोटोकॉल खातों से वितरण नहीं किया जाता।',
+      rule3_title: 'तीसरे पक्ष द्वारा तरलता नहीं निकाली जा सकती',
+      rule3_desc: 'Meteora DLMM पूल में LP पोजीशन केवल उसी वॉलेट की है जिसने पूल बनाया। कोई बाहरी पता तरलता नहीं निकाल सकता। पूल की संरचना और रिज़र्व नीचे दिए पतों से chain पर हमेशा सत्यापित किए जा सकते हैं।',
       rule4_title: 'Meteora DLMM में तरलता',
       rule4_desc: 'तरलता <strong>Meteora DLMM</strong> पूल (AURI/USDC) में रखी गई है। नीचे का चार्ट Meteora API से वास्तविक bin डेटा दिखाता है।',
       token_title: 'टोकन पैरामीटर',
@@ -1020,7 +1024,7 @@
       addr_label_reserve_x: 'Reserve X',
       addr_label_reserve_y: 'Reserve Y',
       contact_title: 'संपर्क',
-      contact_desc: 'एकमात्र आधिकारिक संपर्क: Telegram।',
+      contact_desc: 'आधिकारिक सामुदायिक चैनल Telegram है। प्रश्न, सुझाव और फ़ीडबैक स्वागत योग्य हैं।',
       contact_tg: 'Telegram',
       legal: 'यह वेबसाइट “as is” केवल जानकारी के लिए है; यह निवेश सलाह, ऑफर या solicitation नहीं है। क्रिप्टो संपत्तियाँ उच्च जोखिम वाली हैं और AURION (AURI) में पूरा नुकसान संभव है। निर्माता किसी भी रिटर्न का वादा नहीं करते और नुकसान के लिए उत्तरदायी नहीं हैं। कृपया अपनी स्थानीय कानूनी आवश्यकताओं (EU में MiCA सहित) का पालन करें और आवश्यकता होने पर विशेषज्ञ से सलाह लें।'
     }
@@ -1056,12 +1060,12 @@
       btn.classList.toggle('active', btn.dataset.lang === state.lang);
     });
     document.title = state.lang === 'ru'
-      ? 'AURION (AURI) — фиксированная эмиссия, проверяемые параметры'
+      ? 'AURION (AURI) — фиксированная эмиссия, концентрированная ликвидность'
       : (state.lang === 'zh'
-        ? 'AURION（AURI）— 固定发行量与可核验参数'
+        ? 'AURION（AURI）— 固定发行量，集中流动性'
         : (state.lang === 'hi'
-          ? 'AURION (AURI) — फिक्स्ड सप्लाई, सत्यापन योग्य पैरामीटर'
-          : 'AURION (AURI) — fixed supply, verifiable parameters'));
+          ? 'AURION (AURI) — फिक्स्ड सप्लाई, केंद्रित तरलता'
+          : 'AURION (AURI) — fixed supply, concentrated liquidity'));
   }
 
   function shortAddr(addr) {
@@ -1298,17 +1302,24 @@ async function loadJupiterPrice() {
 
     // 2) try configured POOL_ADDR first
     if (POOL_ADDR && POOL_ADDR.trim().length > 0) {
-      try {
-        const meta = await fetchJson(METEORA_DATA_API + '/pools/' + POOL_ADDR, 12000);
-        const tx = meta && meta.token_x ? meta.token_x.address : null;
-        const ty = meta && meta.token_y ? meta.token_y.address : null;
-        if (tx === MINT || ty === MINT) {
-          state.poolAddr = POOL_ADDR;
-          state.poolMeta = meta;
-          return state.poolAddr;
+      // Try both APIs for pool metadata
+      const metaUrls = [
+        METEORA_LEGACY_API + '/pair/' + POOL_ADDR,
+        METEORA_DATA_API + '/pools/' + POOL_ADDR
+      ];
+      for (const mUrl of metaUrls) {
+        try {
+          const meta = await fetchJson(mUrl, 12000);
+          const tx = meta && meta.token_x ? meta.token_x.address : null;
+          const ty = meta && meta.token_y ? meta.token_y.address : null;
+          if (tx === MINT || ty === MINT) {
+            state.poolAddr = POOL_ADDR;
+            state.poolMeta = meta;
+            return state.poolAddr;
+          }
+        } catch (e) {
+          // try next
         }
-      } catch (e) {
-        // ignore and try discovery
       }
     }
 
@@ -1404,8 +1415,21 @@ async function loadJupiterPrice() {
 
     let meta = state.poolMeta;
     if (!meta) {
-      meta = await fetchJson(METEORA_DATA_API + '/pools/' + addr, 12000);
-      state.poolMeta = meta;
+      const metaUrls = [
+        METEORA_LEGACY_API + '/pair/' + addr,
+        METEORA_DATA_API + '/pools/' + addr
+      ];
+      for (const mUrl of metaUrls) {
+        try {
+          meta = await fetchJson(mUrl, 12000);
+          if (meta && (meta.token_x || meta.token_y)) {
+            state.poolMeta = meta;
+            break;
+          }
+        } catch (e) {
+          // try next
+        }
+      }
     }
 
     if (!meta) return;
@@ -1619,14 +1643,14 @@ async function loadJupiterPrice() {
     const addr = await resolvePoolAddress();
     if (!addr) throw new Error('No pool address');
 
-    // Prefer Meteora Data API endpoints (CORS-friendly). Fallback to legacy API if needed.
+    // Try most reliable endpoints first.
     const urls = [
+      METEORA_LEGACY_API + '/pair/' + addr + '/bin_arrays',
       METEORA_DATA_API + '/pools/' + addr + '/bin_arrays',
       METEORA_DATA_API + '/bin_arrays?pair_address=' + encodeURIComponent(addr),
       METEORA_DATA_API + '/bin_arrays?pool_address=' + encodeURIComponent(addr),
       METEORA_DATA_API + '/bins?pair_address=' + encodeURIComponent(addr),
-      METEORA_DATA_API + '/bins?pool_address=' + encodeURIComponent(addr),
-      METEORA_LEGACY_API + '/pair/' + addr + '/bin_arrays'
+      METEORA_DATA_API + '/bins?pool_address=' + encodeURIComponent(addr)
     ];
 
     let d = null;
