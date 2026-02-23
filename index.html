@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#F7F8FB" />
   <title>AURION (AURI) — фиксированная эмиссия, концентрированная ликвидность</title>
-  <meta name="description" content="AURION (AURI) on Solana. Fixed supply, concentrated DLMM liquidity, verifiable on-chain data via DEXScreener, Meteora and Jupiter." />
+  <meta name="description" content="AURION (AURI) on Solana. Fixed supply, concentrated DLMM liquidity, verifiable on-chain data via DEXScreener, Meteora." />
 
   <!--
     UPDATE GUIDE (edit these constants inside <script> below):
@@ -226,7 +226,7 @@
   <div class="wrap hero-grid">
     <div class="card hero-main">
         <div id="hero-logo-slot" class="hero-logo-slot" aria-hidden="true"></div>
-       data-i18n="hero_tagline">
+      <div class="hero-tag" data-i18n="hero_tagline">
         Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные
       </div>
       <h1 class="hero-title" data-i18n="hero_title">
@@ -259,30 +259,6 @@
           <button class="copy" id="copy-mint" data-i18n="btn_copy">Копировать</button>
         </div>
         <div class="small" id="mint-full" style="word-break:break-all;"></div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-k" data-i18n="stat_price">Цена (DEXScreener)</div>
-        <div class="stat-v" id="ds-price">—</div>
-        <div class="small" id="ds-pair">—</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-k" data-i18n="stat_liquidity">Ликвидность</div>
-        <div class="stat-v" id="ds-liq">—</div>
-        <div class="small" id="ds-vol">—</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-k" data-i18n="stat_jup_price">Цена (Jupiter)</div>
-        <div class="stat-v" id="jup-price">—</div>
-        <div class="small" data-i18n="jup_note">агрегированная</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-k" data-i18n="stat_updated">Обновлено</div>
-        <div class="stat-v small" id="last-updated">—</div>
-        <div class="small" id="data-status">—</div>
       </div>
     </div>
   </div>
@@ -395,32 +371,12 @@
       <h2 data-i18n="market_title">Рынок</h2>
       <p data-i18n="market_desc">Цена, объём и ликвидность загружаются напрямую из DEXScreener для пары, привязанной к пулу AURI/USDC. Страница не показывает расчётных или прогнозных данных — только то, что есть в сети прямо сейчас.</p>
 
-      <div class="grid-3">
-        <div class="card item">
-          <div class="stat-k" data-i18n="market_stat_price">Цена</div>
-          <div class="stat-v" id="m-price">—</div>
-          <div class="small" id="m-pair">—</div>
-        </div>
-        <div class="card item">
-          <div class="stat-k" data-i18n="market_stat_change">Изм. 24ч</div>
-          <div class="stat-v" id="m-change">—</div>
-          <div class="small" id="m-tx">—</div>
-        </div>
-        <div class="card item">
-          <div class="stat-k" data-i18n="market_stat_vol">Объём 24ч</div>
-          <div class="stat-v" id="m-vol">—</div>
-          <div class="small" id="m-liq">—</div>
-        </div>
-      </div>
-
       <div class="card chart-card" style="margin-top:14px;">
         <div class="chart-head">
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <span class="pill accent" data-i18n="market_chart_title">График (DEXScreener)</span>
             <a class="pill" id="dex-link" href="#" target="_blank" rel="noopener">DEXScreener</a>
-          </div>
-          <div class="status"><span data-i18n="market_updated">Последнее обновление:</span> <span id="market-updated">—</span></div>
-        </div>
+          </div>        </div>
         <div class="iframe-wrap">
           <iframe id="dex-iframe" title="DEXScreener" loading="lazy"></iframe>
         </div>
@@ -677,7 +633,7 @@
       token_row_launch: 'Параметры запуска DLMM',
       token_val_launch: 'Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100 000 USDC; с каждым следующим бином он уменьшается на 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.',
       token_row_sources: 'Источники данных',
-      token_val_sources: 'DEXScreener (рынок) · Meteora DLMM (данные пула on-chain) · Jupiter Price API (справочная цена)',
+      token_val_sources: 'DEXScreener (рынок) · Meteora DLMM (данные пула в блокчейне)',
       tok_b1: 'Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — зафиксирована и не изменится.',
       tok_b2: 'Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.',
       tok_b3: 'Дополнительный выпуск: невозможен — Mint Authority установлен в null.',
@@ -780,7 +736,7 @@
       token_row_launch: 'DLMM launch parameters',
       token_val_launch: 'Bin step: 0.15%. Start price: 1.00 USDC/AURI. Target size in the active bin: ~100,000 USDC; it decreases by 0.1% with each next bin. The current state changes as trading occurs — live data is shown on the chart below.',
       token_row_sources: 'Data sources',
-      token_val_sources: 'DEXScreener (market) · Meteora DLMM (on-chain pool data) · Jupiter Price API (reference)',
+      token_val_sources: 'DEXScreener (market) · Meteora DLMM (on-chain pool data)',
       tok_b1: 'Total supply: 1,000,000,000 AURI — fixed and will not change.',
       tok_b2: 'Team: 0%. No hidden allocations, no vesting, no insider addresses.',
       tok_b3: 'Additional minting: impossible — Mint Authority is set to null.',
@@ -881,7 +837,7 @@
       token_row_launch: '启动参数',
       token_val_launch: 'bin 价格步长：0.15%。启动价格：1.00 USDC/AURI。活跃 bin 的目标规模约为 100,000 USDC；每向外一个 bin 递减 0.1%。实际状态会随着交易变化，最新数据见下方图表。',
       token_row_sources: '数据来源',
-      token_val_sources: 'DEXScreener（市场） • Meteora DLMM（链上池数据） • Jupiter Price API（参考）',
+      token_val_sources: 'DEXScreener（市场） • Meteora DLMM（链上池数据）',
       tok_b1: '发行量：1,000,000,000 AURI。不会增发。',
       tok_b2: '团队持有：0 AURI。所有代币都在 DLMM 池中。',
       tok_b3: '启动价：1.00 USDC/AURI。bin 步长：0.15%。',
@@ -982,7 +938,7 @@
       token_row_launch: 'लॉन्च पैरामीटर',
       token_val_launch: 'bin के बीच कीमत का कदम: 0.15%। शुरुआती कीमत: 1.00 USDC/AURI। सक्रिय bin में लक्ष्य आकार: ~100,000 USDC; हर अगले bin के साथ यह 0.1% घटता है। वर्तमान स्थिति ट्रेडिंग के साथ बदलती है — ताज़ा डेटा नीचे के चार्ट में दिखता है।',
       token_row_sources: 'डेटा स्रोत',
-      token_val_sources: 'DEXScreener (बाज़ार) • Meteora DLMM (ऑन‑चेन पूल डेटा) • Jupiter Price API (संदर्भ)',
+      token_val_sources: 'DEXScreener (बाज़ार) • Meteora DLMM (ऑन‑चेन पूल डेटा)',
       tok_b1: 'कुल सप्लाई: 1,000,000,000 AURI। अतिरिक्त मिंटिंग नहीं होगी।',
       tok_b2: 'टीम होल्डिंग: 0 AURI। सभी टोकन DLMM पूल में हैं।',
       tok_b3: 'शुरुआती कीमत: 1.00 USDC/AURI। bin‑step: 0.15%।',
@@ -1143,15 +1099,19 @@
   }
 
   function setLastUpdated(label) {
-    const el1 = document.getElementById('last-updated');
-    const el2 = document.getElementById('market-updated');
-    const ts = new Date();
-    const str = ts.toLocaleString();
-    el1.textContent = str;
-    el2.textContent = str;
-    const st = document.getElementById('data-status');
-    st.textContent = label || '—';
-  }
+  const ts = new Date();
+  const str = ts.toLocaleString();
+
+  const el1 = document.getElementById('last-updated');
+  if (el1) el1.textContent = str;
+
+  const el2 = document.getElementById('market-updated');
+  if (el2) el2.textContent = str;
+
+  const st = document.getElementById('data-status');
+  if (st) st.textContent = label || '—';
+}
+
 
   function bindCopyButton(btn, valueGetter) {
     btn.addEventListener('click', async () => {
@@ -1269,81 +1229,88 @@
   }
 
 
-async function loadJupiterPrice() {
-    const url = JUP_PRICE_V2 + '?ids=' + encodeURIComponent(MINT) + '&vsToken=' + encodeURIComponent(USDC_MINT);
-    const d = await fetchJson(url, 12000);
-    const data = d && d.data ? d.data : null;
-
-    let p = null;
-    if (data && data[MINT] && data[MINT].price !== undefined) p = Number(data[MINT].price);
-    else {
-      // fallback if response shape differs
-      const anyKey = data ? Object.keys(data)[0] : null;
-      if (anyKey && data[anyKey] && data[anyKey].price !== undefined) p = Number(data[anyKey].price);
-    }
-
-    document.getElementById('jup-price').textContent = p !== null ? fmtUsd(p, 8) : '—';
-  }
-
   async function resolvePoolAddress() {
-    // 1) if already resolved
-    if (state.poolAddr) return state.poolAddr;
+  if (state.poolAddr) return state.poolAddr;
 
-    // 2) try configured POOL_ADDR first
-    if (POOL_ADDR && POOL_ADDR.trim().length > 0) {
-      // Try both APIs for pool metadata
-      const metaUrls = [
-        METEORA_LEGACY_API + '/pair/' + POOL_ADDR,
-        METEORA_DATA_API + '/pools/' + POOL_ADDR
-      ];
-      for (const mUrl of metaUrls) {
-        try {
-          const meta = await fetchJson(mUrl, 12000);
-          const tx = meta && meta.token_x ? meta.token_x.address : null;
-          const ty = meta && meta.token_y ? meta.token_y.address : null;
-          if (tx === MINT || ty === MINT) {
-            state.poolAddr = POOL_ADDR;
-            state.poolMeta = meta;
-            return state.poolAddr;
-          }
-        } catch (e) {
-          // try next
-        }
+  const mintOf = (tok) => {
+    if (!tok) return null;
+    return tok.address || tok.mint || tok.mint_address || tok.mintAddress || tok.token_mint || tok.tokenMint || null;
+  };
+
+  // 1) Prefer the configured pool address if it resolves via the legacy DLMM API.
+  if (POOL_ADDR && POOL_ADDR.trim()) {
+    try {
+      const meta = await fetchJson(`${METEORA_LEGACY_API}/pair/${POOL_ADDR}`, 12000);
+      const tx = meta.token_x || meta.tokenX || null;
+      const ty = meta.token_y || meta.tokenY || null;
+      const xMint = mintOf(tx) || meta.token_x_mint || meta.mint_x || meta.mintX || null;
+      const yMint = mintOf(ty) || meta.token_y_mint || meta.mint_y || meta.mintY || null;
+      // Only accept if the pool действительно содержит наш mint.
+      if (xMint === MINT || yMint === MINT) {
+        state.poolAddr = POOL_ADDR;
+        state.poolMeta = meta;
+        return state.poolAddr;
       }
+    } catch (e) {
+      // ignore — try discovery below
     }
-
-    // 3) discover by mint search (Meteora Data API)
-    const searchUrl = METEORA_DATA_API + '/pools?query=' + encodeURIComponent(MINT) + '&page=1&limit=50';
-    const res = await fetchJson(searchUrl, 12000);
-    const pools = res && res.data ? res.data : [];
-    const withMint = pools.filter(p => {
-      const ax = p.token_x && p.token_x.address;
-      const ay = p.token_y && p.token_y.address;
-      return ax === MINT || ay === MINT;
-    });
-
-    const withUsdc = withMint.filter(p => {
-      const ax = p.token_x && p.token_x.address;
-      const ay = p.token_y && p.token_y.address;
-      return ax === USDC_MINT || ay === USDC_MINT;
-    });
-
-    const candidates = withUsdc.length ? withUsdc : withMint;
-    candidates.sort((a, b) => (Number(b.tvl) || 0) - (Number(a.tvl) || 0));
-    const best = candidates[0];
-
-    if (best && best.address) {
-      state.poolAddr = best.address;
-      try {
-        state.poolMeta = await fetchJson(METEORA_DATA_API + '/pools/' + state.poolAddr, 12000);
-      } catch (e) {
-        state.poolMeta = null;
-      }
-      return state.poolAddr;
-    }
-
-    return null;
   }
+
+  // 2) Discover the pool by the mint pair (AURI + USDC) using the group endpoint.
+  try {
+    const pairMints = [MINT, USDC_MINT].slice().sort();
+    const lexical = `${pairMints[0]}-${pairMints[1]}`;
+    const res = await fetchJson(`${METEORA_LEGACY_API}/pair/group_pair/${lexical}`, 15000);
+    const arr = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
+    if (arr && arr.length) {
+      let best = arr.find((p) => (p.address || p.pair_address) === POOL_ADDR) || null;
+      if (!best) {
+        best = arr.slice().sort((a, b) => {
+          const av = Number(a.reserve_usd || a.tvl || 0);
+          const bv = Number(b.reserve_usd || b.tvl || 0);
+          return bv - av;
+        })[0];
+      }
+      const addr = best && (best.address || best.pair_address);
+      if (addr) {
+        state.poolAddr = addr;
+        state.poolMeta = best;
+        return state.poolAddr;
+      }
+    }
+  } catch (e) {
+    // ignore — try pagination below
+  }
+
+  // 3) Fallback: paginated endpoint with allowlist of token mints.
+  try {
+    const qs = [
+      'page=0',
+      'limit=50',
+      'include_unknown=true',
+      `include_token_mints=${encodeURIComponent(MINT)}`,
+      `include_token_mints=${encodeURIComponent(USDC_MINT)}`
+    ].join('&');
+
+    const res = await fetchJson(`${METEORA_LEGACY_API}/pair/all_with_pagination?${qs}`, 15000);
+    const arr = (res && (res.data || res.pairs)) || [];
+    if (Array.isArray(arr) && arr.length) {
+      const best = arr.find((p) => (p.address || p.pair_address) === POOL_ADDR) || arr[0];
+      const addr = best && (best.address || best.pair_address);
+      if (addr) {
+        state.poolAddr = addr;
+        state.poolMeta = best;
+        return state.poolAddr;
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  throw new Error('Pool not found in Meteora API');
+}
+
+
 
   function injectHeroLogo(){
     const slot = document.getElementById('hero-logo-slot');
@@ -1436,78 +1403,113 @@ async function loadJupiterPrice() {
   }
 
   async function loadPoolMeta() {
-    const addr = await resolvePoolAddress();
-    setPoolUI(addr);
+  const addr = await resolvePoolAddress().catch(() => null);
+  if (!addr) return;
 
-    if (!addr) return;
+  setPoolUI(addr);
 
-    let meta = state.poolMeta;
-    if (!meta) {
-      const metaUrls = [
-        METEORA_LEGACY_API + '/pair/' + addr,
-        METEORA_DATA_API + '/pools/' + addr
-      ];
-      for (const mUrl of metaUrls) {
-        try {
-          meta = await fetchJson(mUrl, 12000);
-          if (meta && (meta.token_x || meta.token_y)) {
-            state.poolMeta = meta;
-            break;
-          }
-        } catch (e) {
-          // try next
-        }
-      }
+  const mintOf = (tok) => {
+    if (!tok) return null;
+    return tok.address || tok.mint || tok.mint_address || tok.mintAddress || tok.token_mint || tok.tokenMint || null;
+  };
+  const decimalsOf = (tok) => (tok && typeof tok.decimals === 'number') ? tok.decimals : null;
+
+  let meta = state.poolMeta;
+  // If we only have a partial object (e.g., from a list endpoint), refetch the full pair info.
+  const needsFull =
+    !meta ||
+    ((!meta.token_x && !meta.tokenX) || (!meta.token_y && !meta.tokenY)) ||
+    (meta.pool_config == null && meta.bin_step == null && meta.binStep == null);
+
+  if (needsFull) {
+    try {
+      meta = await fetchJson(`${METEORA_LEGACY_API}/pair/${addr}`, 12000);
+      state.poolMeta = meta;
+    } catch (e) {
+      // If the full fetch fails, keep whatever we have.
     }
-
-    if (!meta) return;
-
-    // Determine token orientation
-    const tx = meta.token_x;
-    const ty = meta.token_y;
-    const xIsAuri = tx && tx.address === MINT;
-    state.auriIsX = !!xIsAuri;
-
-    state.decX = tx && tx.decimals !== undefined ? Number(tx.decimals) : null;
-    state.decY = ty && ty.decimals !== undefined ? Number(ty.decimals) : null;
-
-    // update token decimals
-    const decText = (xIsAuri ? state.decX : state.decY);
-    document.getElementById('token-decimals').textContent = (decText !== null && !Number.isNaN(decText)) ? String(decText) : t('token_val_decimals_placeholder');
-
-    // pool config
-    const binStep = meta.pool_config ? meta.pool_config.bin_step : null;
-    const baseFee = meta.pool_config ? meta.pool_config.base_fee_percentage : null;
-    const tvl = meta.tvl !== undefined ? Number(meta.tvl) : null;
-
-    const binStepBps = num(binStep);
-    const baseFeeBps = num(baseFee);
-
-    const stepStr = binStepBps !== null ? (binStepBps + ' bps (' + bpsToPct(binStepBps).toFixed(2) + '%)') : '—';
-    const feeStr = baseFeeBps !== null ? (baseFeeBps + ' bps (' + bpsToPct(baseFeeBps).toFixed(2) + '%)') : '—';
-
-    document.getElementById('bin-step').textContent = t('liq_meta_step') + ': ' + stepStr;
-    document.getElementById('base-fee').textContent = feeStr;
-    document.getElementById('pool-tvl').textContent = tvl !== null ? (t('liq_meta_tvl') + ': ' + fmtUsd(tvl, 2)) : '—';
-
-    // reserves
-    const rx = meta.reserve_x || null;
-    const ry = meta.reserve_y || null;
-
-    document.getElementById('addr-rx').textContent = rx || '—';
-    document.getElementById('addr-rx-link').href = rx ? solscanAccountLink(rx) : '#';
-    document.getElementById('addr-ry').textContent = ry || '—';
-    document.getElementById('addr-ry-link').href = ry ? solscanAccountLink(ry) : '#';
-
-    const xSym = tx && tx.symbol ? tx.symbol : 'Token X';
-    const ySym = ty && ty.symbol ? ty.symbol : 'Token Y';
-    document.getElementById('rx-note').textContent = rx ? (xSym + ' reserve') : '—';
-    document.getElementById('ry-note').textContent = ry ? (ySym + ' reserve') : '—';
-
-    // legends
-    document.getElementById('leg-auri').textContent = TOKEN_SYMBOL;
-    document.getElementById('leg-usdc').textContent = 'USDC';
   }
+
+  if (!meta) return;
+
+  const tx = meta.token_x || meta.tokenX || {};
+  const ty = meta.token_y || meta.tokenY || {};
+  const xMint = mintOf(tx) || meta.token_x_mint || meta.mint_x || meta.mintX || null;
+  const yMint = mintOf(ty) || meta.token_y_mint || meta.mint_y || meta.mintY || null;
+
+  // Determine which side is AURI to avoid swapped series/labels.
+  if (xMint === MINT) state.auriIsX = true;
+  else if (yMint === MINT) state.auriIsX = false;
+  else if (xMint === USDC_MINT) state.auriIsX = false;
+  else if (yMint === USDC_MINT) state.auriIsX = true;
+
+  const decX = decimalsOf(tx) ?? (xMint === USDC_MINT ? 6 : (xMint === MINT ? 9 : 9));
+  const decY = decimalsOf(ty) ?? (yMint === USDC_MINT ? 6 : (yMint === MINT ? 9 : 6));
+  state.decX = decX;
+  state.decY = decY;
+
+  const tokenDecimalsEl = document.getElementById('token-decimals');
+  if (tokenDecimalsEl) tokenDecimalsEl.textContent = String(state.auriIsX ? decX : decY);
+
+  // Pool meta line (step / active bin). Use multiple field names for compatibility.
+  const rawStep =
+    (meta.pool_config && meta.pool_config.bin_step != null) ? meta.pool_config.bin_step :
+    (meta.bin_step != null) ? meta.bin_step :
+    (meta.binStep != null) ? meta.binStep :
+    null;
+
+  const stepStr = (rawStep == null) ? '—' : String(rawStep).replace('.', ',') + '%';
+  const binStepEl = document.getElementById('bin-step');
+  if (binStepEl) binStepEl.textContent = t('liq_meta_step') + ': ' + stepStr;
+
+  const activeBin =
+    (meta.active_bin_id != null) ? meta.active_bin_id :
+    (meta.activeBinId != null) ? meta.activeBinId :
+    (meta.active_bin != null) ? meta.active_bin :
+    null;
+
+  const activeBinEl = document.getElementById('active-bin');
+  if (activeBinEl) activeBinEl.textContent = (activeBin == null) ? '—' : String(activeBin);
+
+  // Reserve/program addresses (static links).
+  const reserveX = meta.reserve_x || meta.reserveX || null;
+  const reserveY = meta.reserve_y || meta.reserveY || null;
+  const prog = meta.program_id || meta.programId || PROG_ID;
+
+    const rxVal = document.getElementById('addr-rx');
+  const ryVal = document.getElementById('addr-ry');
+  const progVal = document.getElementById('addr-prog');
+  if (rxVal && reserveX) rxVal.textContent = reserveX;
+  if (ryVal && reserveY) ryVal.textContent = reserveY;
+  if (progVal && prog) progVal.textContent = prog;
+
+const rxLink = document.getElementById('addr-rx-link');
+  const ryLink = document.getElementById('addr-ry-link');
+  const progLink = document.getElementById('addr-prog-link');
+
+  if (rxLink && reserveX) rxLink.href = solscanAccount(reserveX);
+  if (ryLink && reserveY) ryLink.href = solscanAccount(reserveY);
+  if (progLink && prog) progLink.href = solscanAccount(prog);
+
+  // Notes near reserve addresses — show which token it corresponds to.
+  const symX = tx.symbol || (xMint === USDC_MINT ? 'USDC' : (xMint === MINT ? TOKEN_SYMBOL : 'X'));
+  const symY = ty.symbol || (yMint === USDC_MINT ? 'USDC' : (yMint === MINT ? TOKEN_SYMBOL : 'Y'));
+
+  const rxNote = document.getElementById('rx-note');
+  const ryNote = document.getElementById('ry-note');
+  if (rxNote) rxNote.textContent = symX;
+  if (ryNote) ryNote.textContent = symY;
+
+  // Chart legend labels (always показываем наш тикер + USDC).
+  const legA = document.getElementById('leg-auri');
+  const legU = document.getElementById('leg-usdc');
+  if (legA) legA.textContent = TOKEN_SYMBOL;
+  if (legU) legU.textContent = 'USDC';
+}
+
+
+
+
 
   function chooseAmountInterpretation(bins, meta) {
     // Try to detect if amounts are raw base units or UI amounts using pool totals.
@@ -1871,14 +1873,7 @@ async function loadJupiterPrice() {
     } catch (e) {
       // ignore
     }
-
-    try {
-      await loadJupiterPrice();
-    } catch (e) {
-      // ignore
-    }
-
-    try {
+try {
       await loadPoolMeta();
       await loadMeteoraBins();
     } catch (e) {
@@ -1923,8 +1918,7 @@ async function loadJupiterPrice() {
     // Fast updates (price / market)
     setInterval(() => {
       loadDexScreener().catch(() => { });
-      loadJupiterPrice().catch(() => { });
-    }, 30000);
+}, 30000);
 
     // Slow updates (pool / bins)
     setInterval(() => {
