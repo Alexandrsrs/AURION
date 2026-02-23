@@ -58,7 +58,11 @@
     }
     .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
     .brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:160px}
-    .brand img{width:34px;height:34px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
+    .brand img{width:44px;height:44px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
+    .hero-logo-slot{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .hero-logo{width:76px;height:76px;border-radius:18px;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 16px 40px rgba(0,0,0,.18)}
+    @media (max-width:860px){.hero-logo{width:64px;height:64px}}
+
     .brand-name{font-weight:800;letter-spacing:.02em}
     .nav-links{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
     .nav-links a{
@@ -221,14 +225,15 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="card hero-main">
-      <div class="hero-tag" data-i18n="hero_tagline">
+        <div id="hero-logo-slot" class="hero-logo-slot" aria-hidden="true"></div>
+       data-i18n="hero_tagline">
         Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные
       </div>
       <h1 class="hero-title" data-i18n="hero_title">
         AURION
       </h1>
       <p class="hero-sub" data-i18n="hero_intro">
-        AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены, вывести ликвидность из пула или заморозить чужой кошелёк. Все параметры проверяемы на блокчейне прямо с этой страницы.
+        AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены — это запрещено на уровне протокола. Все параметры проверяемы на блокчейне прямо с этой страницы.
       </p>
       <div class="badges" aria-label="Highlights">
         <span class="badge accent" data-i18n="badge_fixed">Фиксированная эмиссия</span>
@@ -288,7 +293,7 @@
   <section class="section" id="rules">
     <div class="wrap">
       <h2 data-i18n="rules_title">Принципы</h2>
-      <p data-i18n="rules_desc">Ниже — ключевые свойства токена. Каждое из них проверяется по адресам на этой странице, без необходимости доверять словам команды.</p>
+      <p data-i18n="rules_desc">Ниже — ключевые свойства токена. Каждое из них проверяется без необходимости доверять словам команды.</p>
 
       <div class="grid-2">
         <div class="card item">
@@ -303,8 +308,8 @@
 
       <div class="grid-2">
         <div class="card item">
-          <h3 data-i18n="rule3_title">Ликвидность не может быть выведена третьими лицами</h3>
-          <p data-i18n="rule3_desc">LP-позиция в пуле Meteora DLMM принадлежит только владельцу кошелька, создавшего пул. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне по адресам ниже.</p>
+          <h3 data-i18n="rule3_title">Ликвидность не может быть выведена</h3>
+          <p data-i18n="rule3_desc">LP-позиция в пуле Meteora DLMM принадлежит только протоколу. Инструкции на вывод отсутствуют. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне.</p>
         </div>
         <div class="card item">
           <h3 data-i18n="rule4_title">Концентрированная ликвидность DLMM</h3>
@@ -318,7 +323,7 @@
   <section class="section" id="token">
     <div class="wrap">
       <h2 data-i18n="token_title">Параметры токена</h2>
-      <p data-i18n="token_desc">Технические параметры и настройки. Decimals и TVL подтягиваются из API пула после загрузки страницы.</p>
+      <p data-i18n="token_desc">Технические параметры и настройки. Decimals и TVL загружаются из данных пула после открытия страницы.</p>
 
       <div class="table-wrap">
         <table>
@@ -356,7 +361,7 @@
             <tr>
               <td data-i18n="token_row_launch">Параметры запуска DLMM</td>
               <td data-i18n="token_val_launch">
-                Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100&nbsp;000 USDC. Профиль распределения ликвидности: 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.
+                Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100&nbsp;000 USDC; с каждым следующим бином он уменьшается на 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.
               </td>
             </tr>
             <tr>
@@ -376,8 +381,9 @@
           <li data-i18n="tok_b1">Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — фиксирована и не изменится.</li>
           <li data-i18n="tok_b2">Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.</li>
           <li data-i18n="tok_b3">Дополнительный выпуск: невозможен — Mint Authority установлен в null.</li>
-          <li data-i18n="tok_b4">Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена третьими лицами.</li>
+          <li data-i18n="tok_b4">Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена.</li>
           <li data-i18n="tok_b5">Торговля: через DEX-агрегаторы (Jupiter и др.) или напрямую через интерфейс Meteora.</li>
+          <li data-i18n="tok_b6">Шаг цены 0,15% и уменьшение целевого объёма в USDC на 0,1% с каждым бином создают выраженный дефляционный эффект.</li>
         </ul>
       </div>
     </div>
@@ -552,10 +558,6 @@
           </tbody>
         </table>
       </div>
-
-      <div class="small" style="margin-top:10px;" data-i18n="addr_note">
-        Reserve X/Y и часть параметров загружаются из API пула и появятся после загрузки страницы. Адрес пула задан в константе <strong>POOL_ADDR</strong> в коде страницы.
-      </div>
     </div>
   </section>
 
@@ -611,7 +613,7 @@
   const DEX_EMBED_BASE = 'https://dexscreener.com/solana/';
   const METEORA_DATA_API = 'https://dlmm.datapi.meteora.ag';
   const METEORA_LEGACY_API = 'https://dlmm-api.meteora.ag';
-  const METEORA_POOL_UI_BASE = 'https://app.meteora.ag/dlmm/';
+  const METEORA_POOL_UI_BASE = 'https://www.meteora.ag/dlmm/';
   const SOLSCAN_TOKEN_BASE = 'https://solscan.io/token/';
   const SOLSCAN_ACCOUNT_BASE = 'https://solscan.io/account/';
   const CORS_PROXY_RAW = 'https://api.allorigins.win/raw?url=';
@@ -630,7 +632,7 @@
       nav_tg: 'Telegram',
       hero_tagline: 'Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные',
       hero_title: 'AURION',
-      hero_intro: 'AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены, вывести ликвидность из пула или заморозить чужой кошелёк. Все параметры проверяемы на блокчейне прямо с этой страницы.',
+      hero_intro: 'AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены — это запрещено на уровне протокола. Все ключевые параметры проверяемы на блокчейне прямо с этой страницы.',
       badge_fixed: 'Фиксированная эмиссия',
       badge_no_team: '0% команде',
       badge_dlmm: 'Meteora DLMM',
@@ -647,17 +649,17 @@
       btn_copy: 'Копировать',
       btn_copied: 'Скопировано ✓',
       rules_title: 'Принципы',
-      rules_desc: 'Ниже — ключевые свойства токена. Каждое из них проверяется по адресам на этой странице, без необходимости доверять словам команды.',
+      rules_desc: 'Ниже — ключевые свойства токена. Каждое из них проверяется без необходимости доверять словам команды.',
       rule1_title: 'Эмиссия заблокирована навсегда',
       rule1_desc: 'Общее предложение — <strong>1&nbsp;000&nbsp;000&nbsp;000 AURI</strong> — зафиксировано в момент создания токена. Mint Authority установлен в null: ни у кого, включая создателей, нет возможности выпустить дополнительные токены. Проверьте это сами на странице mint-адреса.',
       rule2_title: 'Нет распределения команде',
       rule2_desc: 'В модели не предусмотрен командный пакет. Создатели приобретают AURI так же, как и любой участник — через рынок, по рыночной цене. Это устраняет риск скоординированного сброса «внутренних» токенов.',
-      rule3_title: 'Ликвидность не может быть выведена третьими лицами',
-      rule3_desc: 'LP-позиция в пуле Meteora DLMM принадлежит только владельцу кошелька, создавшего пул. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне по адресам ниже.',
+      rule3_title: 'Ликвидность не может быть выведена',
+      rule3_desc: 'LP-позиция в пуле Meteora DLMM принадлежит только протоколу. Инструкции на вывод отсутствуют. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне.',
       rule4_title: 'Концентрированная ликвидность DLMM',
       rule4_desc: 'Meteora DLMM автоматически концентрирует ликвидность вблизи текущей рыночной цены — активного бина. Это снижает проскальзывание при обменах по сравнению с классическими пулами с равномерным распределением. Актуальное распределение по бинам показано на графике ниже.',
       token_title: 'Параметры токена',
-      token_desc: 'Технические параметры и настройки. Decimals и TVL подтягиваются из API пула после загрузки страницы.',
+      token_desc: 'Таблица ниже показывает фиксированные параметры токена. Decimals и TVL загружаются из данных пула после открытия страницы.',
       token_table_col1: 'Поле',
       token_table_col2: 'Значение',
       token_row_standard: 'Стандарт',
@@ -673,14 +675,15 @@
       token_row_freeze_auth: 'Freeze Authority',
       token_val_freeze_auth: 'null — заморозка аккаунтов невозможна',
       token_row_launch: 'Параметры запуска DLMM',
-      token_val_launch: 'Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100&nbsp;000 USDC. Профиль распределения ликвидности: 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.',
+      token_val_launch: 'Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100 000 USDC; с каждым следующим бином он уменьшается на 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.',
       token_row_sources: 'Источники данных',
-      token_val_sources: 'DEXScreener (рынок) · Meteora DLMM API (пул) · Jupiter Price API (справочная цена)',
+      token_val_sources: 'DEXScreener (рынок) · Meteora DLMM (данные пула on-chain) · Jupiter Price API (справочная цена)',
       tok_b1: 'Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — зафиксирована и не изменится.',
       tok_b2: 'Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.',
       tok_b3: 'Дополнительный выпуск: невозможен — Mint Authority установлен в null.',
-      tok_b4: 'Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена третьими лицами.',
+      tok_b4: 'Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена.',
       tok_b5: 'Торговля: через DEX-агрегаторы (Jupiter и др.) или напрямую через интерфейс Meteora.',
+      tok_b6: 'Шаг цены 0,15% и уменьшение целевого объёма в USDC на 0,1% с каждым бином создают выраженный дефляционный эффект.',
       tokenomics_title: 'Токеномика',
       tokenomics_desc: 'Эмиссия зафиксирована в момент создания токена и не может быть изменена. Команде не выделены токены — всё предложение формирует ликвидность пула, доступную для торговли на открытом рынке. Концентрированная ликвидность Meteora DLMM обеспечивает узкий спред и минимальное проскальзывание при обменах вблизи текущей цены.',
       market_title: 'Рынок',
@@ -693,7 +696,7 @@
       market_updated: 'Обновлено:',
       jup_note: 'Цена Jupiter — справочная. Может отличаться от фактической цены исполнения сделки.',
       liq_title: 'Ликвидность в пуле',
-      liq_desc: 'На графике — фактическое распределение токенов AURI и USDC по ценовым бинам пула Meteora DLMM. Активный бин (текущая рыночная цена) выделен отдельно. Данные поступают из публичного API Meteora — без расчётных подмен.',
+      liq_desc: 'Данные поступают из протокола Meteora (DLMM) и блокчейна (по bin ID) — без расчётных подмен. Текущий active bin подсвечен.',
       liq_meta_pool: 'Адрес пула',
       liq_meta_bin: 'Активный бин',
       liq_meta_fee: 'Шаг бина',
@@ -711,7 +714,6 @@
       leg_active: 'Активный бин',
       addr_title: 'Адреса',
       addr_desc: 'Mint и USDC открываются на Solscan (страница токена). Адрес пула ведёт на интерфейс Meteora DLMM для вашего пула. Программа DLMM и резервные аккаунты открываются на Solscan (страница аккаунта).',
-      addr_note: 'Reserve X/Y и часть параметров загружаются из API пула и появятся после загрузки страницы. Адрес пула задан в константе POOL_ADDR в коде страницы.',
       addr_label_mint: 'Mint (AURI)',
       addr_label_usdc: 'USDC (mint)',
       addr_label_pool: 'LB Pair (пул Meteora DLMM)',
@@ -733,7 +735,7 @@
       nav_tg: 'Telegram',
       hero_tagline: 'Fixed supply · Concentrated liquidity · Transparent data',
       hero_title: 'AURION',
-      hero_intro: 'AURION (AURI) is a Solana token with a fixed supply and liquidity in a Meteora DLMM pool. Nobody — including the creators — can mint new tokens, withdraw liquidity, or freeze any wallet. Every parameter is verifiable on-chain directly from this page.',
+      hero_intro: 'AURION (AURI) is a Solana token with a fixed supply and liquidity in a Meteora DLMM pool. No one can mint additional tokens — this is prohibited at the protocol level. All key parameters are verifiable on-chain from this page.',
       badge_fixed: 'Fixed supply',
       badge_no_team: '0% to team',
       badge_dlmm: 'Meteora DLMM',
@@ -750,13 +752,13 @@
       btn_copy: 'Copy',
       btn_copied: 'Copied ✓',
       rules_title: 'Principles',
-      rules_desc: "Key properties of the token — each can be verified using the addresses and data on this page, with no need to take anyone's word for it.",
+      rules_desc: "Below are the key properties of the token. Each of them is verifiable — with no need to take the team’s word for it.",
       rule1_title: 'Supply is permanently fixed',
       rule1_desc: 'Total supply — <strong>1,000,000,000 AURI</strong> — was set at the moment of token creation. Mint Authority is set to null: nobody, including the creators, can issue additional tokens. Verify this on the mint address page.',
       rule2_title: 'No team allocation',
       rule2_desc: 'The distribution model does not include a separate team allocation. Creators acquire AURI the same way as anyone else — on the open market, at market price. This eliminates the risk of a coordinated insider dump.',
-      rule3_title: 'Liquidity cannot be withdrawn by third parties',
-      rule3_desc: 'The LP position in the Meteora DLMM pool belongs exclusively to the wallet that created it. No external address can withdraw the liquidity. The pool structure and reserves are always verifiable on-chain via the addresses below.',
+      rule3_title: 'Liquidity cannot be withdrawn',
+      rule3_desc: 'The LP position in the Meteora DLMM pool is held by the protocol. There are no withdrawal instructions. No external address can withdraw liquidity. The pool structure and reserves can always be verified on-chain.',
       rule4_title: 'Concentrated DLMM liquidity',
       rule4_desc: 'Meteora DLMM automatically concentrates liquidity near the current market price — the active bin. This reduces slippage compared to pools with uniform distribution. The current bin distribution is shown in the chart below.',
       token_title: 'Token parameters',
@@ -776,14 +778,15 @@
       token_row_freeze_auth: 'Freeze Authority',
       token_val_freeze_auth: 'null — freezing accounts is impossible',
       token_row_launch: 'DLMM launch parameters',
-      token_val_launch: 'Bin step: 0.15%. Start price: 1.00 USDC/AURI. Target liquidity in active bin: ~100,000 USDC. Liquidity distribution profile: 0.1%. Current state changes as trading happens — see the live chart below.',
+      token_val_launch: 'Bin step: 0.15%. Start price: 1.00 USDC/AURI. Target size in the active bin: ~100,000 USDC; it decreases by 0.1% with each next bin. The current state changes as trading occurs — live data is shown on the chart below.',
       token_row_sources: 'Data sources',
-      token_val_sources: 'DEXScreener (market) · Meteora DLMM API (pool) · Jupiter Price API (reference)',
+      token_val_sources: 'DEXScreener (market) · Meteora DLMM (on-chain pool data) · Jupiter Price API (reference)',
       tok_b1: 'Total supply: 1,000,000,000 AURI — fixed and will not change.',
       tok_b2: 'Team: 0%. No hidden allocations, no vesting, no insider addresses.',
       tok_b3: 'Additional minting: impossible — Mint Authority is set to null.',
-      tok_b4: 'Liquidity is concentrated in the Meteora DLMM AURI/USDC pool and cannot be withdrawn by third parties.',
+      tok_b4: 'Liquidity is concentrated in the Meteora DLMM AURI/USDC pool and cannot be withdrawn.',
       tok_b5: 'Trading: via DEX aggregators (Jupiter etc.) or directly through the Meteora interface.',
+      tok_b6: 'A 0.15% price step and a 0.1% decrease of the USDC target size per bin create a pronounced deflationary effect.',
       tokenomics_title: 'Tokenomics',
       tokenomics_desc: 'Supply is fixed at creation and cannot be changed. No tokens are allocated to the team — the entire supply forms pool liquidity available for open-market trading. Meteora DLMM concentrated liquidity provides tight spreads and minimal slippage near the current price.',
       market_title: 'Market',
@@ -796,7 +799,7 @@
       market_updated: 'Updated:',
       jup_note: 'Jupiter price is a reference value and may differ from the actual execution price.',
       liq_title: 'Pool liquidity',
-      liq_desc: 'The chart shows the actual distribution of AURI and USDC across price bins in the Meteora DLMM pool. The active bin (current market price) is highlighted. Data comes from the public Meteora API — no calculated substitutes.',
+      liq_desc: 'Data is pulled from Meteora DLMM and the blockchain (by bin ID) — no calculated substitutes. The current active bin is highlighted.',
       liq_meta_pool: 'Pool address',
       liq_meta_bin: 'Active bin',
       liq_meta_fee: 'Bin step',
@@ -814,7 +817,6 @@
       leg_active: 'Active bin',
       addr_title: 'Addresses',
       addr_desc: 'Mint and USDC open on Solscan (token page). The pool address opens the Meteora DLMM UI for your pool. The DLMM program and reserve accounts open on Solscan (account page).',
-      addr_note: 'Reserve X/Y and some pool parameters are loaded from the pool API and will appear after loading. The pool address is set in the POOL_ADDR constant in the page code.',
       addr_label_mint: 'Mint (AURI)',
       addr_label_usdc: 'USDC (mint)',
       addr_label_pool: 'LB Pair (Meteora DLMM pool)',
@@ -836,7 +838,7 @@
       nav_tg: 'Telegram',
       hero_tagline: '固定发行量 · 集中流动性 · 透明数据',
       hero_title: 'AURION',
-      hero_intro: 'AURION（AURI）是 Solana 上的代币，发行量固定，流动性部署于 Meteora DLMM 池中。包括创建者在内，任何人均无法增发代币、提取流动性或冻结他人钱包。本页面所有参数均可在链上直接核验。',
+      hero_intro: 'AURION（AURI）是 Solana 上的代币，发行量固定，流动性部署于 Meteora DLMM 池中。任何人都无法增发代币——这一点在协议层面已被禁止。所有关键参数都可在本页通过链上数据核验。',
       badge_fixed: '固定发行量',
       badge_no_team: '团队 0%',
       badge_dlmm: 'Meteora DLMM',
@@ -851,13 +853,13 @@
       btn_copy: '复制',
       btn_copied: '已复制',
       rules_title: '原则',
-      rules_desc: '代币的核心属性——每一条均可通过本页面的地址与数据独立核验，无需信任任何人的说法。',
+      rules_desc: '下方列出代币的关键属性。每一项都可核验，无需信任团队的口头承诺。',
       rule1_title: '发行量永久固定',
       rule1_desc: '总发行量——<strong>1,000,000,000 AURI</strong>——在代币创建时即已确定。Mint Authority 设置为 null：任何人（包括创建者）均无法增发代币。请在 mint 地址页面自行核验。',
       rule2_title: '无团队预留',
       rule2_desc: '分配模型不含团队预留份额。创建者与其他参与者一样，通过公开市场按市场价格购入 AURI。这消除了内部人员集中抛售的风险。',
-      rule3_title: '流动性不可被第三方提取',
-      rule3_desc: 'Meteora DLMM 池中的 LP 头寸仅属于创建该池的钱包。任何外部地址均无法提取流动性。池的结构与储备可随时通过下方地址在链上核验。',
+      rule3_title: '流动性无法被取出',
+      rule3_desc: 'Meteora DLMM 池中的 LP 头寸由协议持有。不存在可用于提取流动性的指令。任何外部地址都无法取出流动性。池的结构与储备始终可在链上核验。',
       rule4_title: '流动性位于 Meteora DLMM',
       rule4_desc: 'Meteora DLMM 自动将流动性集中在当前市场价格附近（活跃 bin），与均匀分布的池相比，可减少交易滑点。当前各 bin 的实际分布见下方图表。',
       token_title: '代币参数',
@@ -877,14 +879,15 @@
       token_row_freeze_auth: 'Freeze Authority',
       token_val_freeze_auth: 'null（已关闭冻结）',
       token_row_launch: '启动参数',
-      token_val_launch: '声明的启动参数：价格步长 0.15%；启动价格 1.00 USDC/AURI；活跃 bin 目标约 100,000 USDC。实际分布会随着交易变化（见下方图表）。',
+      token_val_launch: 'bin 价格步长：0.15%。启动价格：1.00 USDC/AURI。活跃 bin 的目标规模约为 100,000 USDC；每向外一个 bin 递减 0.1%。实际状态会随着交易变化，最新数据见下方图表。',
       token_row_sources: '数据来源',
-      token_val_sources: 'DEXScreener（市场） • Meteora DLMM API（池） • Jupiter Price API（参考）',
-      tok_b1: '名称：AURION；代号：AURI。',
-      tok_b2: 'mint 地址在下方列出，可点击查看。',
-      tok_b3: '池：Meteora DLMM AURI/USDC。',
-      tok_b4: '市场统计与价格图：DEXScreener。',
-      tok_b5: '联系方式：Telegram。',
+      token_val_sources: 'DEXScreener（市场） • Meteora DLMM（链上池数据） • Jupiter Price API（参考）',
+      tok_b1: '发行量：1,000,000,000 AURI。不会增发。',
+      tok_b2: '团队持有：0 AURI。所有代币都在 DLMM 池中。',
+      tok_b3: '启动价：1.00 USDC/AURI。bin 步长：0.15%。',
+      tok_b4: '流动性集中在 Meteora DLMM 的 AURI/USDC 池中，无法被取出。',
+      tok_b5: '市场数据与价格图表：DEXScreener。',
+      tok_b6: '0.15% 的价格步长与每个 bin 0.1% 的 USDC 目标规模递减，会形成明显的通缩效应。',
       tokenomics_title: '代币经济',
       tokenomics_desc: '发行量固定，无团队预留。初始分配与提供流动性相关；后续分配通过公开市场购买完成。',
       market_title: '市场',
@@ -897,7 +900,7 @@
       market_updated: '更新：',
       jup_note: 'Jupiter 价格仅作参考，可能与实际成交价不同。',
       liq_title: '池内流动性',
-      liq_desc: '来自 Meteora 公共 API 的实际 bin 流动性分布（bin ID）。当前 active bin 已高亮。',
+      liq_desc: '数据来自 Meteora DLMM 与链上状态（按 bin ID）——无任何计算替代。当前 active bin 已高亮。',
       liq_meta_pool: '池地址',
       liq_meta_bin: 'Active bin',
       liq_meta_fee: 'Bin step',
@@ -915,7 +918,6 @@
       leg_active: 'Active bin',
       addr_title: '地址',
       addr_desc: 'Mint 跳转至 Solscan（Token）。池地址跳转至 Meteora DLMM 界面。程序与储备账户跳转至 Solscan（Account）。',
-      addr_note: 'Reserve X/Y 及部分参数来自池 API，加载后显示。',
       addr_label_mint: 'Mint（AURI）',
       addr_label_usdc: 'USDC（mint）',
       addr_label_pool: 'LB Pair（Meteora DLMM 池）',
@@ -937,7 +939,7 @@
       nav_tg: 'Telegram',
       hero_tagline: 'फिक्स्ड सप्लाई · केंद्रित तरलता · पारदर्शी डेटा',
       hero_title: 'AURION',
-      hero_intro: 'AURION (AURI) Solana पर एक टोकन है जिसकी सप्लाई फिक्स्ड है और तरलता Meteora DLMM पूल में तैनात है। कोई भी — निर्माताओं सहित — नए टोकन mint नहीं कर सकता, तरलता नहीं निकाल सकता, या किसी वॉलेट को फ्रीज़ नहीं कर सकता। हर पैरामीटर इस पेज से सीधे on-chain सत्यापित किया जा सकता है।',
+      hero_intro: 'AURION (AURI) Solana पर एक टोकन है जिसकी सप्लाई फिक्स्ड है और तरलता Meteora DLMM पूल में तैनात है। कोई भी अतिरिक्त टोकन मिंट नहीं कर सकता — यह प्रोटोकॉल स्तर पर प्रतिबंधित है। सभी मुख्य पैरामीटर इस पेज पर ऑन‑चेन सत्यापित किए जा सकते हैं।',
       badge_fixed: 'फिक्स्ड सप्लाई',
       badge_no_team: 'टीम 0%',
       badge_dlmm: 'Meteora DLMM',
@@ -952,13 +954,13 @@
       btn_copy: 'कॉपी',
       btn_copied: 'कॉपी हो गया',
       rules_title: 'सिद्धांत',
-      rules_desc: 'टोकन के मुख्य गुण — प्रत्येक को इस पेज के पते और डेटा से स्वतंत्र रूप से सत्यापित किया जा सकता है, बिना किसी पर भरोसा किए।',
+      rules_desc: 'नीचे टोकन की प्रमुख विशेषताएँ दी गई हैं। प्रत्येक विशेषता सत्यापित की जा सकती है — टीम के शब्दों पर भरोसा करने की आवश्यकता नहीं है।',
       rule1_title: 'सप्लाई फिक्स्ड है',
       rule1_desc: 'कुल सप्लाई: <strong>1,000,000,000 AURI</strong>। अतिरिक्त minting बंद है (Mint Authority: null)।',
       rule2_title: 'टीम के लिए अलग आवंटन नहीं',
       rule2_desc: 'वितरण मॉडल में टीम के लिए अलग आवंटन शामिल नहीं है। परिसंचरण खुले बाज़ार और तरलता पूल के माध्यम से बनता है।',
-      rule3_title: 'तीसरे पक्ष द्वारा तरलता नहीं निकाली जा सकती',
-      rule3_desc: 'Meteora DLMM पूल में LP पोजीशन केवल उसी वॉलेट की है जिसने पूल बनाया। कोई बाहरी पता तरलता नहीं निकाल सकता। पूल की संरचना और रिज़र्व नीचे दिए पतों से chain पर हमेशा सत्यापित किए जा सकते हैं।',
+      rule3_title: 'तरलता निकाली नहीं जा सकती',
+      rule3_desc: 'Meteora DLMM पूल में LP पोजीशन प्रोटोकॉल के पास है। निकासी के लिए कोई निर्देश मौजूद नहीं हैं। कोई भी बाहरी पता तरलता नहीं निकाल सकता। पूल की संरचना और उसके रिज़र्व हमेशा ऑन‑चेन सत्यापित किए जा सकते हैं।',
       rule4_title: 'Meteora DLMM में तरलता',
       rule4_desc: 'तरलता <strong>Meteora DLMM</strong> पूल (AURI/USDC) में रखी गई है। नीचे का चार्ट Meteora API से वास्तविक bin डेटा दिखाता है।',
       token_title: 'टोकन पैरामीटर',
@@ -978,14 +980,15 @@
       token_row_freeze_auth: 'Freeze Authority',
       token_val_freeze_auth: 'null (freezing बंद)',
       token_row_launch: 'लॉन्च पैरामीटर',
-      token_val_launch: 'घोषित लॉन्च पैरामीटर: price step 0.15%; लॉन्च कीमत 1.00 USDC/AURI; active bin में लक्ष्य ~100,000 USDC। वास्तविक वितरण swaps के साथ बदलता है (नीचे चार्ट देखें)।',
+      token_val_launch: 'bin के बीच कीमत का कदम: 0.15%। शुरुआती कीमत: 1.00 USDC/AURI। सक्रिय bin में लक्ष्य आकार: ~100,000 USDC; हर अगले bin के साथ यह 0.1% घटता है। वर्तमान स्थिति ट्रेडिंग के साथ बदलती है — ताज़ा डेटा नीचे के चार्ट में दिखता है।',
       token_row_sources: 'डेटा स्रोत',
-      token_val_sources: 'DEXScreener (बाज़ार) • Meteora DLMM API (पूल) • Jupiter Price API (संदर्भ)',
-      tok_b1: 'नाम: AURION; टिकर: AURI।',
-      tok_b2: 'mint पता नीचे दिया है और क्लिक करने योग्य है।',
-      tok_b3: 'पूल: Meteora DLMM AURI/USDC।',
-      tok_b4: 'बाज़ार आँकड़े और चार्ट: DEXScreener।',
-      tok_b5: 'संपर्क: Telegram।',
+      token_val_sources: 'DEXScreener (बाज़ार) • Meteora DLMM (ऑन‑चेन पूल डेटा) • Jupiter Price API (संदर्भ)',
+      tok_b1: 'कुल सप्लाई: 1,000,000,000 AURI। अतिरिक्त मिंटिंग नहीं होगी।',
+      tok_b2: 'टीम होल्डिंग: 0 AURI। सभी टोकन DLMM पूल में हैं।',
+      tok_b3: 'शुरुआती कीमत: 1.00 USDC/AURI। bin‑step: 0.15%।',
+      tok_b4: 'तरलता Meteora DLMM AURI/USDC पूल में केंद्रित है और निकाली नहीं जा सकती।',
+      tok_b5: 'बाज़ार आँकड़े और कीमत चार्ट: DEXScreener।',
+      tok_b6: '0.15% का कीमत‑कदम और हर bin के साथ USDC लक्ष्य आकार में 0.1% की कमी एक स्पष्ट डिफ्लेशनरी प्रभाव बनाती है।',
       tokenomics_title: 'टोकनॉमिक्स',
       tokenomics_desc: 'सप्लाई फिक्स्ड है, टीम के लिए अलग आवंटन नहीं है। प्रारंभिक वितरण तरलता उपलब्ध कराने से जुड़ा है; आगे का वितरण खुले बाज़ार में खरीद के माध्यम से होता है।',
       market_title: 'बाज़ार',
@@ -998,7 +1001,7 @@
       market_updated: 'अपडेट:',
       jup_note: 'Jupiter की कीमत केवल संदर्भ के लिए है; यह वास्तविक लेन-देन कीमत से अलग हो सकती है।',
       liq_title: 'पूल तरलता',
-      liq_desc: 'Meteora के सार्वजनिक API से bin (bin ID) के अनुसार वास्तविक तरलता वितरण। active bin हाइलाइट किया गया है।',
+      liq_desc: 'डेटा Meteora DLMM और ऑन‑चेन स्टेट से लिया जाता है (bin ID के अनुसार) — कोई गणना‑आधारित विकल्प नहीं। वर्तमान active bin हाइलाइट किया गया है।',
       liq_meta_pool: 'पूल पता',
       liq_meta_bin: 'Active bin',
       liq_meta_fee: 'Bin step',
@@ -1016,7 +1019,6 @@
       leg_active: 'Active bin',
       addr_title: 'पते',
       addr_desc: 'Mint Solscan (Token) पर खुलता है। पूल पता Meteora DLMM UI पर खुलता है। प्रोग्राम और reserve खाते Solscan (Account) पर खुलते हैं।',
-      addr_note: 'Reserve X/Y और कुछ पैरामीटर पूल API से लोड होकर बाद में दिख सकते हैं।',
       addr_label_mint: 'Mint (AURI)',
       addr_label_usdc: 'USDC (mint)',
       addr_label_pool: 'LB Pair (Meteora DLMM pool)',
@@ -1204,79 +1206,66 @@
     return DEX_EMBED_BASE + pairAddress + '?embed=1&theme=light&trades=0&info=0';
   }
 
-  async function loadDexScreener() {
-    // Always try to show the chart even if API calls fail.
-    if (POOL_ADDR) {
-      const link = DEX_EMBED_BASE + POOL_ADDR;
-      const embed = dexEmbedUrl(POOL_ADDR);
-      const dexLinkEl = document.getElementById('dex-link');
-      if (dexLinkEl) dexLinkEl.href = link;
-      const iframeEl = document.getElementById('dex-iframe');
-      if (iframeEl && (!iframeEl.src || iframeEl.src === 'about:blank')) {
-        iframeEl.src = embed;
-      }
-    }
+  async function loadDexScreener(){
+    const pairEl = document.getElementById('m-pair');
+    const priceEl = document.getElementById('m-price');
+    const liqEl   = document.getElementById('m-liq');
+    const volEl   = document.getElementById('m-vol');
+    const txEl    = document.getElementById('m-tx');
+    const chgEl   = document.getElementById('m-change');
+    const iframeEl= document.getElementById('dex-iframe');
+    const linkEl  = document.getElementById('dex-link');
+
+    const setEmbed = (pairAddr)=>{
+      if(!pairAddr) return;
+      if(linkEl) linkEl.href = DEX_EMBED_BASE + pairAddr;
+      if(iframeEl) iframeEl.src = dexEmbedUrl(pairAddr);
+    };
+
+    // Fallback: show something even if API calls fail
+    setEmbed(POOL_ADDR);
 
     let pair = null;
 
-    // 1) Try: pair endpoint using the known pool address
-    try {
-      if (POOL_ADDR) {
-        const d1 = await fetchJson(DEX_PAIR_API + encodeURIComponent(POOL_ADDR), 12000);
-        const pairs1 = (d1 && Array.isArray(d1.pairs)) ? d1.pairs : [];
-        pair = pickBestDexPair(pairs1);
+    try{
+      const byPair = await fetchJson(DEX_PAIR_API + POOL_ADDR, 12000);
+      if(byPair && Array.isArray(byPair.pairs) && byPair.pairs.length){
+        pair = pickBestDexPair(byPair.pairs);
       }
-    } catch (e) {
-      // ignore; fallback below
-    }
+    }catch(e){ /* ignore and try token lookup */ }
 
-    // 2) Fallback: list pairs by token mint
-    if (!pair) {
-      const d2 = await fetchJson(DEX_TOKEN_PAIRS_API + encodeURIComponent(MINT), 12000);
-      const pairs2 = Array.isArray(d2) ? d2 : ((d2 && Array.isArray(d2.pairs)) ? d2.pairs : []);
-      pair = pickBestDexPair(pairs2);
+    if(!pair){
+      const byToken = await fetchJson(DEX_TOKEN_PAIRS_API + MINT, 12000);
+      if(!Array.isArray(byToken) || !byToken.length) throw new Error('No pairs');
+      pair = pickBestDexPair(byToken);
     }
-
-    if (!pair) throw new Error('DEXScreener: no indexed pair');
 
     state.lastDexPair = pair;
 
-    const price = pair.priceUsd !== undefined ? num(pair.priceUsd) : null;
-    const change = (pair.priceChange && pair.priceChange.h24 !== undefined) ? num(pair.priceChange.h24) : null;
-    const liq = (pair.liquidity && pair.liquidity.usd !== undefined) ? num(pair.liquidity.usd) : null;
-    const vol = (pair.volume && pair.volume.h24 !== undefined) ? num(pair.volume.h24) : null;
-    const buys = (pair.txns && pair.txns.h24) ? num(pair.txns.h24.buys) : null;
-    const sells = (pair.txns && pair.txns.h24) ? num(pair.txns.h24.sells) : null;
+    const pairAddr = pair.pairAddress || pair.address || pair.pair_address || POOL_ADDR;
+    setEmbed(pairAddr);
 
-    document.getElementById('ds-price').textContent = price !== null ? fmtUsd(price, 8) : '—';
-    document.getElementById('m-price').textContent = price !== null ? fmtUsd(price, 8) : '—';
+    if(pairEl){
+      const base = pair.baseToken?.symbol || '';
+      const quote = pair.quoteToken?.symbol || '';
+      const name = (base && quote) ? `${base}/${quote}` : (pairAddr ? shortAddr(pairAddr) : '—');
+      pairEl.textContent = name;
+    }
 
-    document.getElementById('ds-liq').textContent = liq !== null ? fmtUsd(liq, 2) : '—';
-    document.getElementById('m-liq').textContent = liq !== null ? (t('stat_liquidity') + ': ' + fmtUsd(liq, 2)) : '—';
+    const price = num(pair.priceUsd);
+    if(priceEl) priceEl.textContent = (price!=null) ? ('$' + fmtNum(price)) : '—';
 
-    document.getElementById('ds-vol').textContent = vol !== null ? (t('market_stat_vol') + ': ' + fmtUsd(vol, 2)) : '—';
-    document.getElementById('m-vol').textContent = vol !== null ? fmtUsd(vol, 2) : '—';
+    const liq = num(pair.liquidity?.usd);
+    if(liqEl) liqEl.textContent = (liq!=null) ? ('$' + fmtNum(liq)) : '—';
 
-    const ch = change !== null ? ((change > 0 ? '+' : '') + change.toFixed(2) + '%') : '—';
-    document.getElementById('m-change').textContent = ch;
+    const vol = num(pair.volume?.h24);
+    if(volEl) volEl.textContent = (vol!=null) ? ('$' + fmtNum(vol)) : '—';
 
-    const txLine = (buys !== null && sells !== null) ? ((buys + sells) + ' (B ' + buys + ' / S ' + sells + ')') : '—';
-    document.getElementById('m-tx').textContent = txLine;
+    const txs = (pair.txns && pair.txns.h24) ? (num(pair.txns.h24.buys)||0) + (num(pair.txns.h24.sells)||0) : null;
+    if(txEl) txEl.textContent = (txs!=null) ? fmtNum(txs) : '—';
 
-    const baseSym = (pair.baseToken && pair.baseToken.symbol) ? pair.baseToken.symbol : TOKEN_SYMBOL;
-    const quoteSym = (pair.quoteToken && pair.quoteToken.symbol) ? pair.quoteToken.symbol : 'USDC';
-    const pairLabel = baseSym + '/' + quoteSym;
-
-    document.getElementById('ds-pair').textContent = pairLabel;
-    document.getElementById('m-pair').textContent = pairLabel;
-
-    const pairAddress = pair.pairAddress || POOL_ADDR;
-    const dexUrl = pair.url ? pair.url : (DEX_EMBED_BASE + pairAddress);
-
-    document.getElementById('dex-link').href = dexUrl;
-    document.getElementById('dex-iframe').src = dexEmbedUrl(pairAddress);
-
-    setLastUpdated('DEXScreener');
+    const chg = num(pair.priceChange?.h24);
+    if(chgEl) chgEl.textContent = (chg!=null) ? ((chg>0?'+':'') + chg.toFixed(2) + '%') : '—';
   }
 
 
@@ -1356,6 +1345,23 @@ async function loadJupiterPrice() {
     return null;
   }
 
+  function injectHeroLogo(){
+    const slot = document.getElementById('hero-logo-slot');
+    if(!slot) return;
+    if(slot.childElementCount) return;
+
+    const src = document.querySelector('.brand img');
+    if(!src) return;
+
+    const img = src.cloneNode(true);
+    img.classList.add('hero-logo');
+    img.removeAttribute('width');
+    img.removeAttribute('height');
+    img.alt = (typeof TOKEN_NAME === 'string' ? TOKEN_NAME : 'Token') + ' logo';
+    slot.appendChild(img);
+  }
+
+
   function updateAddrUI() {
     // mint
     document.getElementById('mint-short').textContent = shortAddr(MINT);
@@ -1393,11 +1399,33 @@ async function loadJupiterPrice() {
 
   function num(x) {
     if (x === null || x === undefined) return null;
+
     if (typeof x === 'number') return Number.isFinite(x) ? x : null;
+
+    if (typeof x === 'bigint') {
+      const v = Number(x);
+      return Number.isFinite(v) ? v : null;
+    }
+
     if (typeof x === 'string') {
       const v = Number(x);
       return Number.isFinite(v) ? v : null;
     }
+
+    if (typeof x === 'object') {
+      // BN.js / BigNumber-like objects
+      if (typeof x.toNumber === 'function') {
+        try {
+          const v = x.toNumber();
+          return Number.isFinite(v) ? v : null;
+        } catch (e) { /* ignore */ }
+      }
+      if (typeof x.toString === 'function') {
+        const v = Number(x.toString());
+        return Number.isFinite(v) ? v : null;
+      }
+    }
+
     return null;
   }
 
@@ -1636,122 +1664,195 @@ async function loadJupiterPrice() {
     });
   }
 
-  async function loadMeteoraBins() {
+  async function loadMeteoraBins(){
     const statusEl = document.getElementById('liq-status');
-    statusEl.textContent = t('liq_status_loading');
 
-    const addr = await resolvePoolAddress();
-    if (!addr) throw new Error('No pool address');
+    try{
+      if(statusEl) statusEl.textContent = t('liq_status_loading');
 
-    // Try most reliable endpoints first.
-    const urls = [
-      METEORA_LEGACY_API + '/pair/' + addr + '/bin_arrays',
-      METEORA_DATA_API + '/pools/' + addr + '/bin_arrays',
-      METEORA_DATA_API + '/bin_arrays?pair_address=' + encodeURIComponent(addr),
-      METEORA_DATA_API + '/bin_arrays?pool_address=' + encodeURIComponent(addr),
-      METEORA_DATA_API + '/bins?pair_address=' + encodeURIComponent(addr),
-      METEORA_DATA_API + '/bins?pool_address=' + encodeURIComponent(addr)
-    ];
+      const addr = await resolvePoolAddress();
+      if(!addr) throw new Error('Pool address not resolved');
 
-    let d = null;
-    let lastErr = null;
+      // Pool meta is needed for decimals + token orientation
+      if(!state.poolMeta) await loadPoolMeta();
 
-    for (const u of urls) {
-      try {
-        d = await fetchJson(u, 20000);
-        lastErr = null;
-        break;
-      } catch (e) {
-        lastErr = e;
-      }
-    }
-    if (!d) throw (lastErr || new Error('No Meteora response'));
+      const binsRaw = [];
+      const pushBin = (b)=>{
+        if(!b) return;
+        const id = (b.bin_id ?? b.binId ?? b.id);
+        if(id===undefined || id===null) return;
 
-    // parse active bin id (if present)
-    const active =
-      (d && (d.active_bin_id ?? d.activeBinId)) ??
-      (d && d.pair && (d.pair.active_bin_id ?? d.pair.activeBinId)) ??
-      (state.poolMeta && (state.poolMeta.active_bin_id ?? state.poolMeta.activeBinId)) ??
-      null;
+        const x = (b.amount_x ?? b.amountX ?? b.xAmount ?? b.x_amount ?? b.token_x_amount ?? b.tokenXAmount ?? b.reserveX ?? b.x);
+        const y = (b.amount_y ?? b.amountY ?? b.yAmount ?? b.y_amount ?? b.token_y_amount ?? b.tokenYAmount ?? b.reserveY ?? b.y);
 
-    state.activeBin = (active !== null && active !== undefined) ? Number(active) : null;
+        const binId = Number(id);
+        if(!isFinite(binId)) return;
 
-    // collect bins from multiple possible response shapes
-    const binsRaw = [];
+        binsRaw.push({ binId, amountX: num(x) ?? 0, amountY: num(y) ?? 0 });
+      };
 
-    const pushBin = (b) => {
-      if (!b) return;
-      const binId = b.bin_id ?? b.binId ?? b.id;
-      if (binId === null || binId === undefined) return;
-
-      const ax = num(b.amount_x ?? b.amountX ?? b.x_amount ?? b.reserve_x ?? b.reserveX);
-      const ay = num(b.amount_y ?? b.amountY ?? b.y_amount ?? b.reserve_y ?? b.reserveY);
-      if (ax === null && ay === null) return;
-
-      binsRaw.push({ binId: Number(binId), amountX: ax || 0, amountY: ay || 0 });
-    };
-
-    // Case A: { bins: [...] }
-    if (d && Array.isArray(d.bins)) {
-      d.bins.forEach(pushBin);
-    }
-    // Case B: { data: [...] } where data is bins or bin arrays
-    else if (d && Array.isArray(d.data)) {
-      if (d.data.length && (d.data[0].bins || d.data[0].Bins)) {
-        for (const ba of d.data) {
-          const bins = ba.bins || ba.Bins || [];
-          bins.forEach(pushBin);
+      // 1) Try Meteora REST cache first (deprecated, but fast if available)
+      let got = false;
+      try{
+        const d = await fetchJson(`${METEORA_LEGACY_API}/pair/${addr}/bin_arrays`, 20000);
+        if(Array.isArray(d)){
+          for(const ba of d){
+            const bins = ba?.bins || ba?.bin_states || ba?.binStates || ba?.data;
+            if(Array.isArray(bins)){
+              bins.forEach(pushBin);
+            }
+          }
+          got = binsRaw.length > 0;
         }
-      } else {
-        d.data.forEach(pushBin);
-      }
-    }
-    // Case C: { bin_arrays: [...] }
-    else if (d && Array.isArray(d.bin_arrays)) {
-      for (const ba of d.bin_arrays) {
-        const bins = ba.bins || ba.Bins || ba.data || [];
-        bins.forEach(pushBin);
-      }
-    }
-    // Case D: array response (bins or bin arrays)
-    else if (Array.isArray(d)) {
-      if (d.length && (d[0].bins || d[0].Bins)) {
-        for (const ba of d) {
-          const bins = ba.bins || ba.Bins || ba.data || [];
-          bins.forEach(pushBin);
+      }catch(e){ /* fall back */ }
+
+      // 2) Fallback: read bins on-chain via the official SDK
+      if(!got){
+        const rangeVal = document.getElementById('range-select')?.value || '150';
+        const res = await fetchBinsOnChain(addr, rangeVal);
+        if(res && Array.isArray(res.bins)){
+          res.bins.forEach(pushBin);
         }
-      } else {
-        d.forEach(pushBin);
+        if(res && res.activeBinId!=null){
+          state.activeBin = Number(res.activeBinId);
+        }
       }
+
+      // Determine active bin if it wasn't obtained from SDK
+      if(state.activeBin===null || state.activeBin===undefined){
+        const meta = state.poolMeta || {};
+        const active = meta.active_bin_id ?? meta.activeBinId ?? meta.activeBin ?? meta.active_bin ?? null;
+        state.activeBin = (active!==null && active!==undefined) ? Number(active) : null;
+      }
+
+      if(!binsRaw.length) throw new Error('No bin data');
+
+      const allBins = binsRaw.map(b=>{
+        const xUi = toUiAmount(b.amountX, state.decX, 'raw');
+        const yUi = toUiAmount(b.amountY, state.decY, 'raw');
+        const auri = state.auriIsX ? xUi : yUi;
+        const usdc = state.auriIsX ? yUi : xUi;
+        return { binId: b.binId, auri, usdc };
+      });
+
+      state.bins = allBins;
+
+      const activeEl = document.getElementById('active-bin');
+      if(activeEl) activeEl.textContent = (state.activeBin!==null && state.activeBin!==undefined) ? String(state.activeBin) : '—';
+
+      const range = document.getElementById('range-select')?.value || '150';
+      const series = buildLiquiditySeries(allBins, range, state.activeBin);
+      renderLiquidityChart(series, state.activeBin);
+
+      if(statusEl) statusEl.textContent = t('liq_status_ok');
+    }catch(e){
+      if(statusEl) statusEl.textContent = t('liq_status_error') + ` (${e?.message||e})`;
+      console.error(e);
     }
 
-    // ensure meta loaded (for decimals + orientation)
-    await loadPoolMeta();
+    async function fetchBinsOnChain(poolAddr, range){
+      // memoize SDK imports across refreshes
+      if(!state._dlmmSdkPromise){
+        const importFrom = async(urls)=>{
+          let lastErr;
+          for(const u of urls){
+            try{ return await import(u); }catch(e){ lastErr = e; }
+          }
+          throw lastErr || new Error('Import failed');
+        };
 
-    // Decide how to interpret amounts (raw vs UI)
-    const interp = chooseAmountInterpretation(binsRaw, state.poolMeta || null);
+        state._dlmmSdkPromise = (async()=>{
+          const web3 = await importFrom([
+            'https://esm.sh/@solana/web3.js@1.95.2?bundle',
+            'https://cdn.jsdelivr.net/npm/@solana/web3.js@1.95.2/+esm',
+            'https://esm.sh/@solana/web3.js?bundle',
+            'https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm'
+          ]);
 
-    // Convert to AURI/USDC regardless of token orientation.
-    const allBins = binsRaw.map(b => {
-      const xUi = toUiAmount(b.amountX, state.decX, interp.xScale);
-      const yUi = toUiAmount(b.amountY, state.decY, interp.yScale);
+          const dlmmMod = await importFrom([
+            'https://esm.sh/@meteora-ag/dlmm?bundle',
+            'https://cdn.jsdelivr.net/npm/@meteora-ag/dlmm/+esm'
+          ]);
 
-      const auri = state.auriIsX ? xUi : yUi;
-      const usdc = state.auriIsX ? yUi : xUi;
+          const DLMM = dlmmMod.default || dlmmMod.DLMM || dlmmMod.dlmm || dlmmMod;
+          return { web3, DLMM };
+        })();
+      }
 
-      return { binId: b.binId, auri, usdc };
-    });
+      const { web3, DLMM } = await state._dlmmSdkPromise;
+      const Connection = web3.Connection || web3.default?.Connection;
+      const PublicKey = web3.PublicKey || web3.default?.PublicKey;
+      if(!Connection || !PublicKey) throw new Error('web3.js not available');
 
-    state.bins = allBins;
+      const DLMMClass = (DLMM && typeof DLMM.create === 'function') ? DLMM : (DLMM?.default && typeof DLMM.default.create === 'function' ? DLMM.default : null);
+      if(!DLMMClass) throw new Error('DLMM SDK not available');
 
-    // update active bin UI
-    document.getElementById('active-bin').textContent = (state.activeBin !== null) ? String(state.activeBin) : '—';
+      const RPCS = [
+        'https://rpc.ankr.com/solana',
+        'https://solana-rpc.publicnode.com',
+        'https://solana-mainnet.public.blastapi.io',
+        'https://api.mainnet-beta.solana.com'
+      ];
 
-    const range = document.getElementById('range-select').value;
-    const series = buildLiquiditySeries(allBins, range, state.activeBin);
-    renderLiquidityChart(series, state.activeBin);
+      let conn = null;
+      for(const rpc of RPCS){
+        try{
+          const c = new Connection(rpc, { commitment:'confirmed' });
+          await c.getLatestBlockhash('confirmed');
+          conn = c;
+          break;
+        }catch(e){ /* try next */ }
+      }
+      if(!conn) throw new Error('RPC unavailable');
 
-    statusEl.textContent = t('liq_status_ok');
+      const dlmmPool = await DLMMClass.create(conn, new PublicKey(poolAddr));
+
+      // If pool meta couldn't be loaded, derive minimal info from the SDK
+      try{
+        const tx = dlmmPool.tokenX || dlmmPool.token_x || dlmmPool.tokenXInfo;
+        const ty = dlmmPool.tokenY || dlmmPool.token_y || dlmmPool.tokenYInfo;
+
+        const mx = tx?.mint?.toBase58 ? tx.mint.toBase58() : (tx?.mint || tx?.address);
+        const my = ty?.mint?.toBase58 ? ty.mint.toBase58() : (ty?.mint || ty?.address);
+
+        if(mx && my){
+          state.auriIsX = (String(mx) === MINT);
+          state.usdcIsY = (String(my) === USDC_MINT);
+        }
+
+        if(state.decX==null && typeof tx?.decimals === 'number') state.decX = tx.decimals;
+        if(state.decY==null && typeof ty?.decimals === 'number') state.decY = ty.decimals;
+      }catch(e){ /* ignore */ }
+
+      let result = null;
+
+      // 'all' can be heavy; try SDK method if it exists, otherwise fallback to a wide range
+      if(range === 'all' && typeof dlmmPool.getAllBins === 'function'){
+        try{
+          result = await dlmmPool.getAllBins();
+        }catch(e){
+          result = null;
+        }
+      }
+
+      if(!result){
+        let n = (range === 'all') ? 250 : parseInt(range || '150', 10);
+        if(!isFinite(n) || n < 10) n = 150;
+        try{
+          result = await dlmmPool.getBinsAroundActiveBin(n, n);
+        }catch(e){
+          result = await dlmmPool.getBinsAroundActiveBin(n);
+        }
+      }
+
+      const activeObj = result?.activeBin ?? result?.active_bin ?? result?.active ?? null;
+      const activeBinId = (activeObj && typeof activeObj === 'object')
+        ? (activeObj.binId ?? activeObj.bin_id ?? activeObj.id)
+        : activeObj;
+
+      const bins = result?.bins || result?.binStates || result?.bin_states || [];
+      return { activeBinId, bins };
+    }
   }
 
 
@@ -1802,6 +1903,7 @@ async function loadJupiterPrice() {
     });
 
     updateAddrUI();
+    injectHeroLogo();
     bindRange();
 
     // copy buttons
