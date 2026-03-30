@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURION — DLMM Liquidity Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:          #07070d;
+  --surface:     #0d0d18;
+  --surface2:    #111122;
+  --border:      #1b1b2e;
+  --border2:     #252540;
+  --gold:        #c8a227;
+  --gold-lt:     #e2bc50;
+  --gold-faint:  rgba(200,162,39,0.10);
+  --blue:        #4d7ec4;
+  --blue-faint:  rgba(77,126,196,0.10);
+  --green:       #38b07a;
+  --green-faint: rgba(56,176,122,0.10);
+  --red:         #c94f4f;
+  --red-faint:   rgba(201,79,79,0.09);
+  --text:        #dddcda;
+  --muted:       #8a8a9a;
+  --dim:         #3a3a52;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --serif: 'DM Serif Display', serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{
+  background:var(--bg);
+  background-image:radial-gradient(ellipse 90% 35% at 50% -5%, rgba(200,162,39,.05) 0%, transparent 65%);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  padding:36px 24px 80px;
+}
+.wrap{max-width:1080px;margin:0 auto}
+
+/* ── HEADER ── */
+.hdr{
+  display:flex;align-items:flex-end;gap:14px;
+  margin-bottom:44px;padding-bottom:22px;
+  border-bottom:1px solid var(--border);
+}
+.hdr-logo{
+  font-family:var(--serif);font-size:1.75rem;
+  color:var(--gold);letter-spacing:.05em;line-height:1;
+}
+.hdr-badge{
+  font-family:var(--mono);font-size:.58rem;color:var(--muted);
+  letter-spacing:.18em;text-transform:uppercase;
+  padding:3px 9px;border:1px solid var(--border2);margin-bottom:2px;
+}
+.hdr-meta{
+  margin-left:auto;font-family:var(--mono);font-size:.6rem;
+  color:var(--dim);letter-spacing:.07em;text-align:right;line-height:1.8;
+}
+
+/* ── INPUTS ── */
+.inputs{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:10px;margin-bottom:24px;align-items:end;
+}
+.ig{display:flex;flex-direction:column;gap:6px}
+.ig-lbl{
+  font-family:var(--mono);font-size:.57rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.14em;
+}
+.ig-sub{font-family:var(--mono);font-size:.52rem;color:var(--dim);margin-top:2px}
+input[type=number]{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-family:var(--mono);font-size:1.05rem;
+  padding:11px 14px;outline:none;width:100%;
+  transition:border-color .15s;
+  -moz-appearance:textfield;appearance:textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=number]:focus{border-color:var(--gold)}
+.btn{
+  background:var(--gold);color:#07070d;border:none;
+  font-family:var(--mono);font-size:.68rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:12px 22px;cursor:pointer;
+  transition:background .15s,transform .1s;white-space:nowrap;
+}
+.btn:hover{background:var(--gold-lt)}
+.btn:active{transform:scale(.98)}
+
+/* ── ERROR ── */
+.err{
+  display:none;background:var(--red-faint);border:1px solid var(--red);
+  color:var(--red);font-family:var(--mono);font-size:.68rem;
+  padding:10px 14px;margin-bottom:18px;
+}
+
+/* ── RESULTS ── */
+.results{display:none}
+.results.show{display:block}
+
+/* ── CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  padding:18px 15px;position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+}
+.card.e::after{background:var(--blue)}
+.card.t::after{background:var(--gold)}
+.card.a::after{background:var(--green)}
+.card.n::after{background:var(--dim)}
+
+.card-hd{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.card.e .dot{background:var(--blue)}
+.card.t .dot{background:var(--gold)}
+.card.a .dot{background:var(--green)}
+.card.n .dot{background:var(--dim)}
+.ctit{font-family:var(--mono);font-size:.57rem;text-transform:uppercase;letter-spacing:.14em}
+.card.e .ctit{color:var(--blue)}
+.card.t .ctit{color:var(--gold)}
+.card.a .ctit{color:var(--green)}
+.card.n .ctit{color:var(--muted)}
+
+.s{margin-bottom:9px}
+.s:last-child{margin-bottom:0}
+.sl{font-family:var(--mono);font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.sv{font-family:var(--mono);font-size:.87rem;color:var(--text)}
+.sv.lg{font-size:1.02rem;font-weight:500}
+.sv.gold{color:var(--gold)}
+.sv.green{color:var(--green)}
+.sv.red{color:var(--red)}
+.sv.muted{color:var(--muted)}
+.hr{height:1px;background:var(--border);margin:10px 0}
+
+/* ── CHART SECTION ── */
+.chart-box{
+  background:var(--surface);border:1px solid var(--border);
+  padding:22px 22px 16px;margin-bottom:10px;
+}
+.chart-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.chart-tit{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.legend{display:flex;gap:20px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.57rem;color:var(--muted)}
+.ld{width:18px;height:0;border-top:2px dashed}
+.lbox{width:14px;height:10px;border:1px solid}
+
+/* ── DISCLAIMER ── */
+.disc{
+  border:1px solid var(--border);border-left:2px solid var(--dim);
+  padding:14px 18px;font-family:var(--mono);font-size:.59rem;
+  color:var(--muted);line-height:1.85;letter-spacing:.03em;
+}
+.disc b{color:var(--dim)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:820px){
+  .inputs{grid-template-columns:1fr 1fr}
+  .cards{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .inputs{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr}
+  .legend{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="hdr-logo">AURION</div>
+    <div class="hdr-badge">DLMM Calculator</div>
+    <div class="hdr-meta">
+      Meteora DLMM · Solana Mainnet<br>
+      wall₀ = 1 000 USDC · factor = 1.003 · bin_step = 0.15%
+    </div>
+  </div>
+
+  <div class="inputs">
+    <div class="ig">
+      <div class="ig-lbl">Investment</div>
+      <input type="number" id="i-usdc" value="20000" min="1" placeholder="20000">
+      <div class="ig-sub">USDC</div>
+    </div>
+    <div class="ig">
+      <div class="ig-lbl">Entry Price</div>
+      <input type="number" id="i-entry" value="1.00" step="0.01" min="1" placeholder="1.00">
+      <div class="ig-sub">USDC / AURI · min 1.00</div>
+    </div>
+    <div class="ig">
+      <div class="ig-lbl">Target Exit Price</div>
+      <input type="number" id="i-exit" value="2.12" step="0.01" min="1.01" placeholder="2.12">
+      <div class="ig-sub">USDC / AURI · max ~1 515</div>
+    </div>
+    <button class="btn" onclick="run()">Calculate</button>
+  </div>
+
+  <div class="err" id="err"></div>
+
+  <div class="results" id="results">
+
+    <div class="cards">
+
+      <!-- ENTRY -->
+      <div class="card e">
+        <div class="card-hd"><div class="dot"></div><div class="ctit">Entry</div></div>
+        <div class="s"><div class="sl">Bin number</div><div class="sv" id="o-eb">—</div></div>
+        <div class="s"><div class="sl">Price at bin</div><div class="sv" id="o-ep">—</div></div>
+        <div class="s"><div class="sl">AURI per bin</div><div class="sv" id="o-ea">—</div></div>
+        <div class="s"><div class="sl">USDC wall (this bin)</div><div class="sv" id="o-ew">—</div></div>
+        <div class="hr"></div>
+        <div class="s"><div class="sl">AURI acquired</div><div class="sv lg gold" id="o-at">—</div></div>
+        <div class="s"><div class="sl">Avg. buy price</div><div class="sv" id="o-abp">—</div></div>
+      </div>
+
+      <!-- TARGET EXIT -->
+      <div class="card t">
+        <div class="card-hd"><div class="dot"></div><div class="ctit">Target Exit</div></div>
+        <div class="s"><div class="sl">Bin number</div><div class="sv" id="o-xb">—</div></div>
+        <div class="s"><div class="sl">Price at bin</div><div class="sv" id="o-xp">—</div></div>
+        <div class="s"><div class="sl">AURI per bin</div><div class="sv" id="o-xa">—</div></div>
+        <div class="s"><div class="sl">USDC wall (this bin)</div><div class="sv" id="o-xw">—</div></div>
+        <div class="hr"></div>
+        <div class="s"><div class="sl">Cumul. market volume to reach</div><div class="sv" id="o-xc">—</div></div>
+        <div class="s"><div class="sl">Naive proceeds (no sell impact)</div><div class="sv lg gold" id="o-naive">—</div></div>
+      </div>
+
+      <!-- AFTER SELLING -->
+      <div class="card a">
+        <div class="card-hd"><div class="dot"></div><div class="ctit">After Selling</div></div>
+        <div class="s"><div class="sl">Post-sell bin</div><div class="sv" id="o-psb">—</div></div>
+        <div class="s"><div class="sl">Post-sell price</div><div class="sv" id="o-psp">—</div></div>
+        <div class="s"><div class="sl">Sell impact (bins)</div><div class="sv" id="o-sib">—</div></div>
+        <div class="s"><div class="sl">Sell impact (%)</div><div class="sv" id="o-sip">—</div></div>
+        <div class="hr"></div>
+        <div class="s"><div class="sl">Actual sell proceeds</div><div class="sv lg green" id="o-actual">—</div></div>
+        <div class="s"><div class="sl">Sell slippage vs naive</div><div class="sv muted" id="o-slip">—</div></div>
+      </div>
+
+      <!-- NET RESULT -->
+      <div class="card n">
+        <div class="card-hd"><div class="dot"></div><div class="ctit">Net Result</div></div>
+        <div class="s"><div class="sl">Invested</div><div class="sv" id="o-inv">—</div></div>
+        <div class="s"><div class="sl">Received (actual)</div><div class="sv" id="o-rcv">—</div></div>
+        <div class="hr"></div>
+        <div class="s"><div class="sl">P&L</div><div class="sv lg" id="o-pnl">—</div></div>
+        <div class="s"><div class="sl">ROI</div><div class="sv lg" id="o-roi">—</div></div>
+        <div class="hr"></div>
+        <div class="s"><div class="sl">Return multiplier</div><div class="sv" id="o-mult">—</div></div>
+        <div class="s"><div class="sl">Sell impact loss (USDC)</div><div class="sv muted" id="o-loss">—</div></div>
+      </div>
+
+    </div><!-- /cards -->
+
+    <!-- CHART -->
+    <div class="chart-box">
+      <div class="chart-top">
+        <div class="chart-tit">Price Curve · Bin → USDC/AURI (log scale)</div>
+        <div class="legend">
+          <div class="li"><div class="ld" style="border-color:#4d7ec4"></div>Entry</div>
+          <div class="li"><div class="ld" style="border-color:#c8a227"></div>Target exit</div>
+          <div class="li"><div class="ld" style="border-color:#38b07a"></div>Post-sell price</div>
+          <div class="li">
+            <div class="lbox" style="background:rgba(201,79,79,.13);border-color:rgba(201,79,79,.35)"></div>
+            Sell impact zone
+          </div>
+        </div>
+      </div>
+      <canvas id="chart" height="290"></canvas>
+    </div>
+
+    <div class="disc">
+      <b>⬡</b>&nbsp;Данный калькулятор отображает теоретическую модель, заложенную в математическую архитектуру пула Meteora DLMM. Расчёты основаны на детерминированных параметрах протокола: wall₀ = 1 000 USDC, factor = 1.003, bin_step = 0.15%. Покупка моделируется как последовательный выкуп бинов снизу вверх; продажа — как обратное прохождение бинов сверху вниз, при котором цена опускается на величину sell impact. Реальный результат зависит от рыночной активности, состояния пула в момент исполнения ордера и действий других участников. <b>Не является инвестиционной рекомендацией.</b>
+      &nbsp;/&nbsp;
+      This calculator reflects the theoretical mathematical model embedded in the Meteora DLMM pool architecture. Calculations use deterministic protocol parameters: wall₀ = 1,000 USDC, factor = 1.003, bin_step = 0.15%. Buying is modelled as sequential upward bin traversal; selling as downward traversal, where each consumed bin lowers the price — this is the sell impact. Actual results depend on market conditions at execution time. <b>Not investment advice.</b>
+    </div>
+
+  </div><!-- /results -->
+
+</div><!-- /wrap -->
+
+<script>
+/* ── Pool constants ── */
+const BS      = 1.0015;           // price step per bin
+const W0      = 1000;             // USDC wall at bin 0
+const F       = 1.003;            // factor (wall growth per bin)
+const EFF     = F / BS;           // AURI per bin growth ≈ 1.001498
+const MAX_BIN = 4885;
+
+const price  = b => Math.pow(BS, b);
+const wall   = b => W0 * Math.pow(F,   b);
+const tokens = b => W0 * Math.pow(EFF, b);
+const priceToBin = p => Math.max(0, Math.floor(Math.log(Math.max(p, 1.0001)) / Math.log(BS)));
+
+/* Cumulative USDC to fill bins 0…b (geometric series) */
+const cumUsdc = b => W0 * (Math.pow(F, b + 1) - 1) / (F - 1);
+
+/* ── Buy: spend `usdc` starting at bin b0, going up ── */
+function doBuy(usdc, b0) {
+  let rem = usdc, auri = 0, b = b0;
+  while (rem > 1e-4 && b <= MAX_BIN) {
+    const w = wall(b), t = tokens(b);
+    if (rem >= w) { auri += t; rem -= w; b++; }
+    else          { auri += (rem / w) * t; rem = 0; }
+  }
+  return { auri, topBin: b - 1 };
+}
+
+/* ── Sell: sell `auri` starting at bin b0, going down ── */
+function doSell(auri, b0) {
+  let rem = auri, usdc = 0, b = b0;
+  while (rem > 1e-4 && b >= 0) {
+    const t = tokens(b), w = wall(b);
+    if (rem >= t) { usdc += w; rem -= t; b--; }
+    else          { usdc += (rem / t) * w; rem = 0; }
+  }
+  return { usdc, finalBin: Math.max(0, b) };
+}
+
+/* ── Formatters ── */
+const fU  = (n, dp=2) => n.toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp}) + ' USDC';
+const fA  = (n)       => n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' AURI';
+const fP  = (n)       => n.toFixed(4) + ' USDC/AURI';
+const fPct = (n,sign=true) => (sign&&n>0?'+':'')+n.toFixed(2)+'%';
+const fX  = (n)       => n.toFixed(3) + 'x';
+
+function setEl(id, txt, cls) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  if (cls !== undefined) el.className = 'sv lg ' + cls;
+}
+
+function showErr(msg) {
+  const el = document.getElementById('err');
+  el.textContent = msg; el.style.display = 'block';
+}
+function clearErr() { document.getElementById('err').style.display = 'none'; }
+
+let chartInst = null;
+
+/* ── Main calculation ── */
+function run() {
+  clearErr();
+  const usdc = parseFloat(document.getElementById('i-usdc').value);
+  const ep   = parseFloat(document.getElementById('i-entry').value);
+  const xp   = parseFloat(document.getElementById('i-exit').value);
+
+  if (!usdc || usdc <= 0)      return showErr('Investment must be a positive number.');
+  if (!ep || ep < 1.0)         return showErr('Entry price must be ≥ 1.00 USDC (pool price floor).');
+  if (!xp || xp <= ep)         return showErr('Exit price must be greater than entry price.');
+  if (xp > 1515)               return showErr('Exit price exceeds pool terminal price (~1,515 USDC).');
+
+  const eb = priceToBin(ep);
+  const xb = priceToBin(xp);
+
+  if (xb <= eb) return showErr('Entry and exit prices resolve to the same bin. Choose a larger price difference.');
+
+  const buy       = doBuy(usdc, eb);
+  const sell      = doSell(buy.auri, xb);
+  const naiveUsdc = buy.auri * price(xb);
+
+  const pnl      = sell.usdc - usdc;
+  const roi      = (pnl / usdc) * 100;
+  const mult     = sell.usdc / usdc;
+  const slip     = ((sell.usdc - naiveUsdc) / naiveUsdc) * 100;
+  const impBins  = xb - sell.finalBin;
+  const impPct   = ((price(xb) - price(sell.finalBin)) / price(xb)) * 100;
+  const impLoss  = sell.usdc - naiveUsdc; // negative
+
+  /* Fill cards */
+  setEl('o-eb',  eb.toLocaleString('en-US'));
+  setEl('o-ep',  fP(price(eb)));
+  setEl('o-ea',  fA(tokens(eb)));
+  setEl('o-ew',  fU(wall(eb)));
+  setEl('o-at',  fA(buy.auri));
+  setEl('o-abp', fP(usdc / buy.auri));
+
+  setEl('o-xb',    xb.toLocaleString('en-US'));
+  setEl('o-xp',    fP(price(xb)));
+  setEl('o-xa',    fA(tokens(xb)));
+  setEl('o-xw',    fU(wall(xb)));
+  setEl('o-xc',    fU(cumUsdc(xb), 0));
+  setEl('o-naive', fU(naiveUsdc));
+
+  setEl('o-psb',    sell.finalBin.toLocaleString('en-US'));
+  setEl('o-psp',    fP(price(sell.finalBin)));
+  setEl('o-sib',    '−' + impBins + ' bin' + (impBins !== 1 ? 's' : ''));
+  setEl('o-sip',    '−' + impPct.toFixed(2) + '%');
+  setEl('o-actual', fU(sell.usdc));
+  setEl('o-slip',   slip.toFixed(2) + '%');
+
+  setEl('o-inv',  fU(usdc));
+  setEl('o-rcv',  fU(sell.usdc));
+  setEl('o-pnl',  (pnl >= 0 ? '+' : '') + fU(pnl), pnl >= 0 ? 'green' : 'red');
+  setEl('o-roi',  fPct(roi), roi >= 0 ? 'green' : 'red');
+  setEl('o-mult', fX(mult));
+  setEl('o-loss', (impLoss >= 0 ? '+' : '') + fU(impLoss));
+
+  document.getElementById('results').classList.add('show');
+  drawChart(eb, xb, sell.finalBin);
+}
+
+/* ── Chart ── */
+function drawChart(entryBin, exitBin, postSellBin) {
+  const rangeSize = exitBin - entryBin;
+  const pad       = Math.max(30, Math.ceil(rangeSize * 0.12));
+  const minB      = Math.max(0, entryBin - Math.ceil(pad * 0.4));
+  const maxB      = Math.min(MAX_BIN, exitBin + pad);
+
+  /* Sample ~400 points for smooth curve */
+  const N    = 400;
+  const step = Math.max(1, Math.ceil((maxB - minB) / N));
+  const pts  = [];
+  for (let b = minB; b <= maxB; b += step) pts.push({ x: b, y: price(b) });
+
+  /* Ensure key bins are included */
+  [entryBin, exitBin, postSellBin].forEach(kb => {
+    if (kb >= minB && kb <= maxB && !pts.find(p => p.x === kb))
+      pts.push({ x: kb, y: price(kb) });
+  });
+  pts.sort((a, b) => a.x - b.x);
+
+  /* Custom plugin: vertical lines + sell impact shading */
+  const overlayPlugin = {
+    id: 'overlay',
+    afterDraw(chart) {
+      const { ctx, scales: { x: xs, y: ys } } = chart;
+
+      /* Sell impact shading */
+      if (exitBin !== postSellBin) {
+        const x1 = xs.getPixelForValue(Math.min(exitBin, postSellBin));
+        const x2 = xs.getPixelForValue(Math.max(exitBin, postSellBin));
+        ctx.save();
+        ctx.fillStyle = 'rgba(201,79,79,0.13)';
+        ctx.fillRect(x1, ys.top, x2 - x1, ys.bottom - ys.top);
+        ctx.strokeStyle = 'rgba(201,79,79,0.3)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([]);
+        ctx.strokeRect(x1, ys.top, x2 - x1, ys.bottom - ys.top);
+        ctx.restore();
+      }
+
+      const lines = [
+        { bin: entryBin,    color: '#4d7ec4', label: 'Entry'     },
+        { bin: exitBin,     color: '#c8a227', label: 'Target'    },
+        { bin: postSellBin, color: '#38b07a', label: 'Post-sell' },
+      ];
+
+      lines.forEach(({ bin, color, label }) => {
+        const xPx = xs.getPixelForValue(bin);
+        if (xPx < xs.left - 2 || xPx > xs.right + 2) return;
+
+        /* Dashed vertical line */
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth   = 1.5;
+        ctx.setLineDash([4, 5]);
+        ctx.beginPath();
+        ctx.moveTo(xPx, ys.top);
+        ctx.lineTo(xPx, ys.bottom);
+        ctx.stroke();
+        ctx.restore();
+
+        /* Label */
+        ctx.save();
+        ctx.fillStyle  = color;
+        ctx.font       = '600 9px "IBM Plex Mono"';
+        ctx.textAlign  = 'left';
+        ctx.setLineDash([]);
+        ctx.fillText(label, xPx + 5, ys.top + 13);
+        ctx.restore();
+
+        /* Dot on curve */
+        const yPx = ys.getPixelForValue(price(bin));
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(xPx, yPx, 5, 0, Math.PI * 2);
+        ctx.fillStyle   = color;
+        ctx.strokeStyle = '#07070d';
+        ctx.lineWidth   = 2;
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        /* Price label on Y axis */
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.font      = '9px "IBM Plex Mono"';
+        ctx.textAlign = 'right';
+        ctx.fillText(price(bin).toFixed(2) + '$', xs.left - 6, yPx + 3);
+        ctx.restore();
+      });
+    }
+  };
+
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+
+  chartInst = new Chart(
+    document.getElementById('chart').getContext('2d'),
+    {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: pts,
+          showLine: true,
+          borderColor: 'rgba(200,162,39,0.75)',
+          backgroundColor: 'rgba(200,162,39,0.05)',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.15,
+          fill: 'origin',
+        }]
+      },
+      options: {
+        animation: { duration: 350 },
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            mode: 'nearest',
+            backgroundColor: '#0d0d18',
+            borderColor: '#1b1b2e',
+            borderWidth: 1,
+            titleColor: '#8a8a9a',
+            bodyColor:  '#dddcda',
+            titleFont: { family: '"IBM Plex Mono"', size: 9 },
+            bodyFont:  { family: '"IBM Plex Mono"', size: 10 },
+            callbacks: {
+              title: items => `Bin ${Math.round(items[0].raw.x)}`,
+              label: item  => `${item.raw.y.toFixed(4)} USDC/AURI`,
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            min: minB,
+            max: maxB,
+            grid: { color: '#1b1b2e' },
+            ticks: {
+              color: '#8a8a9a',
+              font: { family: '"IBM Plex Mono"', size: 9 },
+              maxTicksLimit: 8,
+              callback: val => `bin ${val}`,
+            }
+          },
+          y: {
+            type: 'logarithmic',
+            grid: { color: '#1b1b2e' },
+            ticks: {
+              color: '#8a8a9a',
+              font: { family: '"IBM Plex Mono"', size: 9 },
+              callback: val => {
+                if (val >= 1000) return val.toFixed(0) + '$';
+                if (val >= 100)  return val.toFixed(0) + '$';
+                if (val >= 10)   return val.toFixed(1) + '$';
+                return val.toFixed(2) + '$';
+              }
+            }
+          }
+        }
+      },
+      plugins: [overlayPlugin]
+    }
+  );
+}
+
+/* Auto-calculate on load */
+window.addEventListener('DOMContentLoaded', () => run());
+</script>
+</body>
+</html>
