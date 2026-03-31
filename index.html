@@ -1,1933 +1,786 @@
-<!doctype html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#F7F8FB" />
-  <title>AURION (AURI) — фиксированная эмиссия, концентрированная ликвидность</title>
-  <meta name="description" content="AURION (AURI) on Solana. Fixed supply, concentrated DLMM liquidity, verifiable on-chain data via DEXScreener, Meteora." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURION — Protocol-Backed Token on Solana</title>
+<meta name="description" content="AURION (AURI): fixed supply, S-curve DLMM liquidity, burned mint authority, zero team allocation. Every parameter verifiable on-chain.">
+<meta property="og:title" content="AURION — Protocol-Backed Token on Solana">
+<meta property="og:description" content="Fixed supply. S-curve liquidity. Burned mint. Zero team tokens. All verifiable on Solana Mainnet.">
+<meta property="og:image" content="https://alexandrsrs.github.io/AURION/og_preview_v3.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AURION — Protocol-Backed Token on Solana">
+<meta name="twitter:description" content="Fixed supply. S-curve liquidity. Burned mint. Zero team tokens. All verifiable on Solana Mainnet.">
+<meta name="twitter:image" content="https://alexandrsrs.github.io/AURION/og_preview_v3.png">
+<link rel="icon" href="https://raw.githubusercontent.com/Alexandrsrs/aurion-assets/main/Aurion.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06080d;--bg2:#0c1018;--bg3:#121822;--bg4:#1a2233;--bg5:#222d40;
+  --text:#e8eaf0;--text2:#8b93a8;--text3:#5a6378;--text4:#3d4558;
+  --teal:#2dd4a8;--teal2:#5aecc8;--teal-glow:rgba(45,212,168,.15);--teal-dim:rgba(45,212,168,.06);
+  --amber:#f0a040;--amber2:#ffc06a;--amber-glow:rgba(240,160,64,.12);
+  --coral:#f06850;--coral2:#ff8a75;--coral-glow:rgba(240,104,80,.10);
+  --blue:#4a8eff;--blue2:#70a8ff;--blue-glow:rgba(74,142,255,.1);
+  --green:#34d399;--green2:#6ee7b7;--green-glow:rgba(52,211,153,.12);
+  --red:#f87171;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.10);
+  --font:'Outfit',system-ui,sans-serif;--mono:'JetBrains Mono','SF Mono',monospace;
+  --maxw:1060px;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-  <!--
-    UPDATE GUIDE (edit these constants inside <script> below):
-      - TOKEN_NAME / TOKEN_SYMBOL: display name and ticker
-      - MINT: token mint address (SPL)
-      - TG_LINK: Telegram link
-      - POOL_ADDR: Meteora DLMM pool address (LB Pair)
-      - METEORA_DLMM_PROGRAM_ID: DLMM program owner
-  -->
+/* AMBIENT */
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(140px)}
+.orb-1{width:550px;height:550px;background:var(--teal);top:-15%;left:-12%;opacity:.06}
+.orb-2{width:420px;height:420px;background:var(--amber);bottom:5%;right:-8%;opacity:.045}
+.orb-3{width:320px;height:320px;background:var(--blue);top:42%;left:38%;opacity:.03}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+.page{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;position:relative;z-index:1}
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+/* NAV */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(16px);background:rgba(6,8,13,.82);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.nav-brand img{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(45,212,168,.25)}
+.nav-brand span{font-weight:600;font-size:15px;letter-spacing:.03em}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{font-size:12px;color:var(--text3);text-decoration:none;padding:7px 11px;border-radius:8px;transition:.2s;font-weight:500}
+.nav-links a:hover{color:var(--text);background:var(--bg4)}
+.nav-cta{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:10px;background:var(--teal);color:var(--bg);font-size:12px;font-weight:600;text-decoration:none;transition:.2s;white-space:nowrap}
+.nav-cta:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(45,212,168,.3)}
+@media(max-width:700px){.nav-links{display:none}}
 
-  <style>
-    :root{
-      --bg:#F7F8FB;
-      --card:#FFFFFF;
-      --text:#0B1220;
-      --muted:#4B5563;
-      --muted2:#6B7280;
-      --border:#E5E7EB;
-      --accent:#B7791F;
-      --accent2:#1D4ED8;
-      --success:#16A34A;
-      --danger:#DC2626;
-      --radius:14px;
-      --maxw:1120px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:'Noto Sans','Noto Sans SC','Noto Sans Devanagari',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif;
-      color:var(--text);
-      background:var(--bg);
-      line-height:1.6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-    a{color:inherit}
-    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
-    nav{
-      position:sticky;top:0;z-index:30;
-      backdrop-filter:saturate(160%) blur(10px);
-      background:rgba(247,248,251,.88);
-      border-bottom:1px solid var(--border);
-    }
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
-    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:160px}
-    .brand img{width:44px;height:44px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
-    .hero-logo-slot{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-    .hero-logo{width:76px;height:76px;border-radius:18px;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 16px 40px rgba(0,0,0,.18)}
-    @media (max-width:860px){.hero-logo{width:64px;height:64px}}
+/* SECTION */
+.sec{padding:4rem 0 0}
+.sec-title{font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:1.2rem;display:flex;align-items:center;gap:12px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
 
-    .brand-name{font-weight:800;letter-spacing:.02em}
-    .nav-links{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-    .nav-links a{
-      font-size:13px;
-      padding:8px 10px;
-      border-radius:10px;
-      color:var(--muted);
-      text-decoration:none;
-      transition:.15s;
-    }
-    .nav-links a:hover{background:#fff;color:var(--text);box-shadow:0 10px 25px rgba(0,0,0,.06);transform:translateY(-1px)}
-    .right{display:flex;align-items:center;gap:10px}
-    .lang-bar{display:flex;gap:2px;padding-left:12px;margin-left:6px;border-left:1px solid var(--border)}
-    .lang-btn{
-      border:1px solid transparent;
-      background:transparent;
-      cursor:pointer;
-      font-size:12px;
-      font-weight:800;
-      padding:6px 8px;
-      border-radius:10px;
-      color:var(--muted);
-      transition:.15s;
-    }
-    .lang-btn:hover{background:#fff;border-color:var(--border);color:var(--text);transform:translateY(-1px)}
-    .lang-btn.active{background:rgba(183,121,31,.12);border-color:rgba(183,121,31,.25);color:var(--accent)}
-    .tg-btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;
-      border-radius:12px;
-      text-decoration:none;
-      background:var(--text);
-      color:#fff;
-      font-size:13px;
-      font-weight:800;
-      transition:.15s;
-      white-space:nowrap;
-    }
-    .tg-btn:hover{transform:translateY(-1px);box-shadow:0 16px 40px rgba(0,0,0,.18)}
-    .tg-btn svg{width:16px;height:16px}
-    @media(max-width:980px){.nav-links{display:none}}
-    .hero{padding:54px 0 18px}
-    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}
-    @media(max-width:980px){.hero-grid{grid-template-columns:1fr}}
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:0 10px 24px rgba(0,0,0,.05);
-      transition:.18s;
-    }
-    .card:hover{transform:translateY(-2px);box-shadow:0 18px 42px rgba(0,0,0,.08)}
-    .hero-main{padding:26px}
-    .hero-title{margin:0 0 10px;font-size:40px;line-height:1.12;letter-spacing:-.02em}
-    .hero-tag{margin:0 0 10px;font-size:16px;font-weight:800;color:var(--accent)}
-    .hero-sub{margin:0;color:var(--muted);font-size:15px;max-width:70ch}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-    .badge{
-      font-size:12px;
-      font-weight:800;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#F1F5F9;
-      border:1px solid var(--border);
-      color:var(--muted);
-    }
-    .badge.accent{background:rgba(183,121,31,.12);border-color:rgba(183,121,31,.25);color:var(--accent)}
-    .stats{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .stat{padding:12px;border:1px solid var(--border);border-radius:12px;background:#fff}
-    .stat-k{font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--muted2)}
-    .stat-v{margin-top:6px;font-size:16px;font-weight:900;letter-spacing:-.01em}
-    .stat-v.small{font-size:13px;font-weight:800;color:var(--muted)}
-    .stat-v a{text-decoration:none}
-    .copy{
-      border:1px solid var(--border);
-      background:#fff;
-      border-radius:10px;
-      padding:6px 10px;
-      font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-      transition:.15s;
-    }
-    .copy:hover{border-color:rgba(183,121,31,.35);box-shadow:0 10px 25px rgba(0,0,0,.06);transform:translateY(-1px)}
-    .copy.ok{border-color:rgba(22,163,74,.45);color:var(--success);background:rgba(22,163,74,.08)}
-    .section{padding:42px 0}
-    .section h2{margin:0 0 12px;font-size:28px;letter-spacing:-.01em}
-    .section p{margin:0;color:var(--muted);max-width:88ch}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
-    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:16px}
-    @media(max-width:980px){.grid-2,.grid-3{grid-template-columns:1fr}}
-    .item{padding:18px}
-    .item h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
-    .item p{margin:0;color:var(--muted);font-size:14px;line-height:1.75}
-    .small{font-size:12px;color:var(--muted2)}
-    .ul{margin:14px 0 0;padding-left:18px;color:var(--muted);line-height:1.8}
-    .ul li{margin:6px 0}
-    .table-wrap{margin-top:16px;overflow:hidden}
-    table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);background:#fff}
-    th,td{padding:12px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13px;vertical-align:top}
-    th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);background:#F8FAFC}
-    tr:last-child td{border-bottom:none}
-    .addr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .addr .val{font-weight:900;letter-spacing:.02em}
-    .addr a{text-decoration:none}
-    .pill{font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;background:#F1F5F9;border:1px solid var(--border);color:var(--muted)}
-    .pill.accent{background:rgba(29,78,216,.10);border-color:rgba(29,78,216,.18);color:var(--accent2)}
-    .iframe-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:#fff;margin-top:14px}
-    .iframe-wrap iframe{width:100%;height:460px;border:0;display:block}
-    .status{font-size:12px;color:var(--muted2);margin-top:8px}
-    .chart-card{padding:18px}
-    .chart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
-    .select{border:1px solid var(--border);padding:8px 10px;border-radius:10px;background:#fff;font-size:13px;font-weight:800;color:var(--text)}
-    .canvas-wrap{padding:6px 0 0}
-    .legend{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    .leg{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
-    .sw{width:10px;height:10px;border-radius:3px}
-    .sw.a{background:rgba(183,121,31,.55)}
-    .sw.u{background:rgba(29,78,216,.55)}
-    .sw.act{background:rgba(183,121,31,1)}
-    footer{padding:26px 0 40px}
-    footer .legal{font-size:11px;color:#6B7280;line-height:1.55}
-  </style>
+/* HERO */
+.hero{padding:5rem 0 3rem;text-align:center}
+.hero-logo{width:72px;height:72px;border-radius:50%;border:2.5px solid rgba(45,212,168,.3);box-shadow:0 0 40px rgba(45,212,168,.12);margin:0 auto 1.5rem}
+.hero-tag{display:inline-flex;gap:8px;margin-bottom:1.2rem}
+.tag{font-size:9.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px}
+.tag-teal{color:var(--teal);background:var(--teal-glow);border:1px solid rgba(45,212,168,.2)}
+.tag-amber{color:var(--amber);background:var(--amber-glow);border:1px solid rgba(240,160,64,.2)}
+.hero h1{font-size:clamp(2.2rem,5.5vw,3.2rem);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:1rem;background:linear-gradient(135deg,var(--text) 30%,var(--teal2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:15.5px;color:var(--text2);line-height:1.75;max-width:620px;margin:0 auto 2rem}
+.hero-desc strong{color:var(--teal2);font-weight:500}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:12px;font-size:13px;font-weight:600;text-decoration:none;transition:.2s;border:none;cursor:pointer;font-family:var(--font)}
+.btn-primary{background:var(--teal);color:var(--bg)}
+.btn-primary:hover{background:var(--teal2);transform:translateY(-1px);box-shadow:0 8px 30px rgba(45,212,168,.25)}
+.btn-secondary{background:var(--bg4);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal2);transform:translateY(-1px)}
+
+/* LIVE STATS */
+.live-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;border-radius:16px;overflow:hidden;background:var(--border);margin-bottom:2rem}
+.live-stat{background:var(--bg2);padding:1.15rem .7rem;text-align:center;position:relative}
+.live-stat::after{content:'';position:absolute;bottom:0;left:18%;right:18%;height:1px;background:linear-gradient(90deg,transparent,var(--teal-dim),transparent)}
+.ls-v{font-family:var(--mono);font-size:clamp(.78rem,1.7vw,1.05rem);font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-v.ct{color:var(--teal2)}.ls-v.ca{color:var(--amber2)}.ls-v.cb{color:var(--blue2)}.ls-v.cc{color:var(--coral2)}.ls-v.cg{color:var(--green2)}.ls-v.cr{color:var(--red)}
+.ls-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:500}
+.ls-sub{font-size:9px;color:var(--text4);margin-top:2px;font-family:var(--mono)}
+
+/* CARD */
+.card{background:linear-gradient(175deg,var(--bg2) 0%,var(--bg3) 100%);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 8%,var(--teal-glow) 50%,transparent 92%)}
+.card.amber-top::before{background:linear-gradient(90deg,transparent 8%,var(--amber-glow) 50%,transparent 92%)}
+.card.blue-top::before{background:linear-gradient(90deg,transparent 8%,var(--blue-glow) 50%,transparent 92%)}
+.card.coral-top::before{background:linear-gradient(90deg,transparent 8%,var(--coral-glow) 50%,transparent 92%)}
+.card-title{font-size:16px;font-weight:600;margin-bottom:.4rem}
+.card-sub{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:1rem}
+
+/* PRINCIPLES GRID */
+.principles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.principle{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.3rem;position:relative;overflow:hidden;transition:border-color .3s}
+.principle:hover{border-color:var(--border2)}
+.principle::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+.principle:nth-child(1)::before{background:var(--teal)}
+.principle:nth-child(2)::before{background:var(--amber)}
+.principle:nth-child(3)::before{background:var(--blue)}
+.principle:nth-child(4)::before{background:var(--coral)}
+.pr-icon{font-size:20px;margin-bottom:.6rem}
+.pr-h{font-size:14px;font-weight:600;margin-bottom:.4rem}
+.pr-p{font-size:12.5px;color:var(--text2);line-height:1.7}
+.pr-p strong{color:var(--text);font-weight:500}
+
+/* PROTOCOL GRID */
+.proto-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--border);border-radius:14px;overflow:hidden}
+.proto-row{background:var(--bg2);padding:.85rem 1.1rem;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.proto-k{font-size:12px;color:var(--text3);flex-shrink:0}
+.proto-v{font-family:var(--mono);font-size:11px;color:var(--text2);text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proto-v a{color:var(--teal);text-decoration:none;transition:color .2s}
+.proto-v a:hover{color:var(--teal2)}
+.ok{color:var(--teal)}
+
+/* ADDRESSES TABLE */
+.addr-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.addr-table th,.addr-table td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.addr-table th{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);background:var(--bg4);font-weight:600}
+.addr-table td{font-size:12px;background:var(--bg2)}
+.addr-table tr:last-child td{border-bottom:none}
+.addr-val{font-family:var(--mono);font-size:11px;color:var(--text2);word-break:break-all}
+.addr-val a{color:var(--teal);text-decoration:none}
+.addr-val a:hover{color:var(--teal2);text-decoration:underline}
+.copy-btn{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;transition:.2s;font-family:var(--mono);margin-left:8px;white-space:nowrap}
+.copy-btn:hover{border-color:var(--teal);color:var(--teal2)}
+.copy-btn.ok{border-color:rgba(52,211,153,.4);color:var(--green);background:rgba(52,211,153,.08)}
+
+/* CHART SECTION */
+.chart-card{background:linear-gradient(175deg,var(--bg2) 0%,var(--bg3) 100%);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.chart-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 8%,var(--amber-glow) 50%,transparent 92%)}
+.chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:1rem;flex-wrap:wrap}
+.chart-title{font-size:14px;font-weight:500}
+.chart-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.legend{display:flex;gap:16px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3);font-family:var(--mono)}
+.ldot{width:8px;height:3px;border-radius:2px}
+
+/* MILESTONES */
+.milestones{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.milestone{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;position:relative;overflow:hidden;transition:border-color .3s}
+.milestone:hover{border-color:var(--border2)}
+.milestone::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+.milestone:nth-child(1)::before{background:var(--teal)}
+.milestone:nth-child(2)::before{background:var(--blue)}
+.milestone:nth-child(3)::before{background:var(--amber)}
+.milestone:nth-child(4)::before{background:var(--coral)}
+.ms-bins{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:5px}
+.ms-price{font-family:var(--mono);font-size:17px;font-weight:500;margin-bottom:2px}
+.ms-note{font-size:10.5px;color:var(--text3);line-height:1.4}
+
+/* DEXScreener embed */
+.dex-embed{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:var(--bg2);margin-top:1rem}
+.dex-embed iframe{width:100%;height:420px;border:0;display:block}
+
+/* DISCLAIMER */
+.disc{padding:1.4rem 1.6rem;border:1px solid var(--border);border-radius:12px;background:var(--bg2);font-size:11px;color:var(--text3);line-height:1.9;font-family:var(--mono)}
+.disc-hd{display:block;font-size:9px;text-transform:uppercase;letter-spacing:2.2px;color:var(--teal);font-weight:600;margin-bottom:.7rem}
+.disc p{margin-bottom:.6rem}.disc p:last-child{margin-bottom:0}
+.disc strong{color:var(--text2);font-weight:500}
+
+/* RESOURCES */
+.resources{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.res-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-decoration:none;color:var(--text);transition:.25s;display:block}
+.res-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 8px 30px rgba(45,212,168,.08)}
+.res-icon{font-size:22px;margin-bottom:.6rem}
+.res-h{font-size:13px;font-weight:600;margin-bottom:.3rem}
+.res-p{font-size:11px;color:var(--text3);line-height:1.5}
+
+/* FOOTER */
+.foot{text-align:center;padding:2.5rem 0 3rem;border-top:1px solid var(--border);margin-top:3rem}
+.foot-links{display:flex;justify-content:center;gap:24px;margin-bottom:.8rem;font-size:13px;flex-wrap:wrap}
+.foot-links a{color:var(--text3);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--teal2)}
+.foot-sign{font-size:11px;color:var(--text4);letter-spacing:2px;font-family:var(--mono);margin-top:.5rem}
+.foot-copy{font-size:10px;color:var(--text4);margin-top:.6rem}
+
+/* FORMULA */
+.formula-box{text-align:center;padding:1.1rem;border:1px solid var(--border);border-radius:12px;background:var(--bg2);margin:1rem 0}
+.formula-main{font-family:var(--mono);font-size:12.5px;color:var(--text2);line-height:1.6}
+.hl-t{color:var(--teal2)}.hl-a{color:var(--amber2)}.hl-b{color:var(--blue2)}.hl-c{color:var(--coral2)}
+.formula-note{font-size:10.5px;color:var(--text3);margin-top:4px}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .55s ease-out both}
+.d1{animation-delay:.07s}.d2{animation-delay:.13s}.d3{animation-delay:.19s}
+.d4{animation-delay:.25s}.d5{animation-delay:.31s}.d6{animation-delay:.37s}.d7{animation-delay:.43s}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  .live-stats{grid-template-columns:repeat(3,1fr)}
+  .principles{grid-template-columns:1fr}
+  .milestones{grid-template-columns:repeat(2,1fr)}
+  .proto-grid{grid-template-columns:1fr}
+  .resources{grid-template-columns:1fr}
+  .hero{padding:3.5rem 0 2rem}
+}
+@media(max-width:500px){
+  .live-stats{grid-template-columns:repeat(2,1fr)}
+  .milestones{grid-template-columns:1fr}
+  .hero h1{font-size:1.8rem}
+}
+
+/* LOADING PULSE */
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.loading{animation:pulse 1.4s ease-in-out infinite;color:var(--text4) !important}
+
+/* HONEST WARNINGS */
+.warn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:1rem}
+.warn-item{display:flex;align-items:flex-start;gap:10px;background:rgba(240,160,64,.05);border:1px solid rgba(240,160,64,.15);border-radius:10px;padding:11px 14px}
+.warn-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.warn-text{font-size:11.5px;color:var(--text2);line-height:1.6}
+</style>
 </head>
 <body>
 
+<div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+<!-- NAV -->
 <nav>
-  <div class="wrap nav-inner">
-    <a class="brand" href="#top" aria-label="AURION">
-      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD/wAARCAPAA8ADAREAAhEBAxEB/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3ykAtACUALQAUAJQAUALQAlABQAtACUAFAC0AJQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAUAJQAtACUAFABQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAtACUAFABQAUAFABQAUAFABQAUAFAC0AJQAUALigBKACgBcUAJQAUAFABQAUALigBKACgBaAEoAWgBKADFABQAtACUAFAC0AJQAUAFABQAUALQAUAFABQAUAJQAtACUALQAUAFABQAUAFABQAUAFAB3oAKAEoAWgAoAKACgBKAFoABQAUAJQAtABQAlAC0AFACUAFAC0AJQAtACUAFAC0AFABQAUAFABQAUAFABQAlAC0AJQAUALQAlABQAtABQAUAFABQAUAFABQAlAC0AFABQAlABQAUALQAUAFABQAlAC0AFABQAUAFACUALQAUAFABQAUAFAAKACgAoASgBaACgAoAKACgAoAKAEoAUUAJQAtABQAUAFABQAUAFABQAUAFABQAUAFABQAUAJQAtABQAUAFABQAUAFABQAUAFABQAUAFABQAlAC0AFABQAUAFABQAUAFABQAUAFABQAUAFACUAFAC0AFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABigAoAKACgAoAKACgAoAKACgAoAKADFABQAUAFABQAUAFMApAFABQAUAFABigAoAKACgAxQAUAAoAWmAUgCgAoAKAEoAWmAlIAoAKACgAoAWmAlIAoAWgBKACgAoAKACgAoAKACgAxQAUAFABjigAoABQAUAFABQAtABQAUAFMBKQBQAtACUALTAKAEoABQAtACGkAUALQAnegAoAKADNABQAUAFABQAUAFABQAtACUAFABQAtABQAmKADFAC0AFMAoAKACgAoAKACgBMUAAoAXtQAUAGKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgBKAFoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAMUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQACgAoAKACgAoAKACgAoAKACgAoAKACkAUwCkAlABQAlAC0AFABQACgBaYBQAUrAFABTAKACgAoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACUgCgAoAKACgAoABQAtMAoAKACgBKAFoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoASkAUAFABQAUAFAC0AFABQAUAHagAoAKYBQAlACikAUwDvQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlIAoAKACgAoAWgApgFIANABQAUAFABTAKACgAFABQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUALQAlABQAtACUAFABQAUAFABQAUAFAC0AJQAUALQAlABQAtACUALQAUAJQAUAFABQAUAFABQAUALQAlABQAUAFABQAUAFIBaYBQAlABQAUAFABQAtACUAFAC0AJQAUALQAlABQAUAFABQAtACUgCmAtACUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAAoAWgBKACgBaAEoAKACgAoAKACgAoASkAUAFABQAUAFAC0AFABTAKQBTAKADvQAUAFABQAUAFAAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFABTAKACgAoAKACgAoAKACgAoAKACgAoAKAAUAFABSAKACmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFAC0AJSAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACUgCgAoAKACgBaACmAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlABSAKACgAoAKAFFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgApAFMAoAKACgAoAKAAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFABQAtABQAlABQAUALQAlABQAUAFABQAUAFABQAUAFABQAUALQAlABQAvagBKACgAoAKACgBaAEoAKACgAoAKACgBaAEoAWgBKACgBaAEoAKAFoASkAUwCgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgApAJQAUAFABQAUAKKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFIApgFABSAKYBQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUABoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBQAUwCgAoAKACgAoAKACgApAJQAUAFABQAUAKKYBQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABSABQAUwCgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKAEpMAoAKACgAoAKAFFMAoAKACgAoAKACgAoAKACgAoAWgBKACgAoAKAFoASgAoAKACgAoAWgBKACgAoAKACgBaAEoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAWgBKACgAoAKACgAoAKACgBaAEoAKAFoASgAoAKACgAoAWgBKQBTAWgBKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgAoAKACgAoAKAFoASgAoAKACgBKTAKACgBKAFoAKAFpgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCmAUAGaACgApAFABTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgBaAEpAFMAoAKACgAoAKADNIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABmgAoAKACgAoAKAE70gCgAoAKACgAoAUUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAKACgAoAKACkAUwCkAUwCgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACkAUwCgAoAWgBKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACkAtMBKQBQAUwCkAUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFABQAUAFMAoAKQCUAFABQAUAFABQAtMAoAKACgAoAKACgAoAKACgAoAKACgBaAEoAKAFoASgAoAWgBKACgAoAKACgAoAKACgAoAKACgBaAEpAFABTAKACgAoAKACgBaAEoAKACgApAFMAoAKACgBaAEoAKQBTAKACgAoAKACgAoAKACgAoAKAFoAKAEoAKACgAoAKACgAoAWgBKACgAoAKACgAoAKACgAoAKACgAoAWgBKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAO9ABSAKYBQAUALQAlABQAtACUAFABQAdqAEpAFABQAUAFABQAuaYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABQAUAFABSAKYBQAUAFABSAKACgApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIAoAKYBQAUgCmAUgCmAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFIApgFACUgCgBKAFoAKACgBaYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABSAKACmAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABSAKYBQACgApAFABQgCmAUgCgApgFABQAUAFABQAUAFAAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKAEpAJQAtABQAUAFAC0wCgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAWgBKACgAoAKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgAoAKAFoASgAoAKACgAoAWgBKACgAoAKACgAoAKACgBaAEoAKACgAoAKAFoASgAoAWgBKACgAoAKACgBaAEoAKQC0wEoAKACgAoAKQBTAKACgBaAEoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgApAJQAlAC0AFABQAtMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBQAUAFMAoAKACgAoAKACgAoAKACgAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABSAKACgApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlIAoAKACgAoAKAFpgFABQAUAFABQAUAFABQAUAFABQAUAFABSAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABSAKYBQAUAFABQAUAFABQAUAFABQAUgEoAKACgAoAKAFpgFABQAUAFABQAUAFABQAUALQAlABSAKACmAUALQAlABQAUAFABQAUAFABQAtACUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIBaYCUALQAUAJQAUALQAlABSAKYBQAUAFABQAUAFABQAUgCmAUAFAC0AJQAUAFABQAUAFABQAtACUAFABQAUALQAlIAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAtACUAFABQAUAFABQAUAJSYBQAUAFABQAUALTAKACkAUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBTAKACgAoAKACkAUwCgAoAKACkAUwCgAoAKACgAoAKACgAoAKACgApAFABTAKACgAoAKACgAoAKACkAUwCgAoAKACkAUwCgAoAKQBmgAoAKYBQAUAFABQAUAFABQAUAFIApgFABQAUAFIA70AFABTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKTASgAoAKACgAoAKYC0AFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABSAKYBSAKACmAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUgCmAUgCgApgFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAHagApAFMAoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgBKQBQAUAFABQAUAKKYBQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAUALQAlIApgFABQAtABQAlABQAtACUAFIBaYBQAlAC0AJQAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAtACUAFAC0AJQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAtACUAFABQAUAFAC0AJQAUAFABQAUALQAlABQAUAFABQAtACUAFABQAUAFAC0AJQAlIAoAKACgAoAOlABQAtMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMBaAEoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKADNABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFIApgFABQAUAFAAaAEpAFABQAUAFABQAuKACmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAYoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgA70AFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAJSAKACgAoAKACgBaYC0AJQAUAFABQAUALQAlABSAKYBQAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAtACUAFABQAUAFAC0AJQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAlACUgCgAoABQAUAFAAKYC0AFABQAUAFABQAUAFABSAKYBQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAhoAWgAzQAUAAoAKACgAoAKACgAoAKACgBKAFoASgBc0AFABQAZoAKACgAoAKACgAoAKACgAzQAZoAM0AFABQAUAFABmgAoAKADNABmgAoAKACgA6UAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACUAFIBKAFoAKACgAoAUUwCkAUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMBKAFoAKACgA70AFABQAUAFABQAUAFABQAUAFABQAUAFACUALigAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAQUALQAUAFABQAUAFABQAlAC0AFABQAlAC0AFABQAUAFABQAUAFABQAUAFABSAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlIAoAKACgA7UAFAC0wCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAWgBKAAUAFABQAUAFABQAUAFABQAUAFABigAoAKACgAoAKACgAoAKACgAxQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAtACUAFABQAUAFABQAUAGKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAWgBKAFoASgAoAKAFoASgAoAKACgAoAWgBKACgBaAEoASkAUAJQAtABQAUAKKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAAoAKACgAoAKACkAUAFMBM4oAXNABQAlGgC5paAFF0AcUXQBkUXQBmldAGaOZAGRRdBYTNHMgDIpc6HYM0c8QDcPUUvaRCw0zRr1dR9SKPaRCzGG7t1+9PEPq4pe1iPlZC2radH9+/tV+syj+tL20e4uVkLeINGT72rWI+twn+NP20O4+VssWWoWmowmayuIriIMULxMGXI6jIrRNPYRaNAgzRcBM0XQBkVLml1HYie6gj+/NGv1YCp9rDuHKwS7t5OEnjb6MDR7aIcpLkHvVc6YWDIqroQZFMBaAILq7t7K3ae6njhhXG6SRtqj6k1MpKIFUa7pBxjVLP/v+v+NZe3h3K5WyVdW05/u39q30mX/Gj20e4crJFvbVvu3ER+jin7WIcrJRNG3R1P40/axFysduHtT9pELBmn7SIBmj2iCwZo50IXIp8yHYTIo5kIXIo5gDNO4Bmi6AKLoAougCjQApgGcUAJmkFhc0wCgApAGaYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABmgAoAKACgAoAKACgAoAKACgAoAKACgBDSAKAEoAKAFoAKAFpgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlAC0AIeKQBmk2BRv9Z03S03X17BAPSRwCfw6ms3Wg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c9J8DeHW0+1Op3ke28uVGxG6xR9QPqep/Adq9vC0FCN3ucNWfMzsq7uhiFMAoAKADNABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACUgCgBKACgBaACgBRTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACkAUAFMAoAKACgAoAKACgApAAoAKYBQAUAHagApAFABTAKACgAoAKQBQAUwCgAoAKAEpAea+O/Dn2Od9btE/cSH/AEtAPuN/z0+h7/n615eLoa8yOmjU6HGg15bR2IdSFsLikMKAEoAMUwGNEjOHIw69HUlWH4jmrU2upLimX4ta1q3ULDrN8qjsZA+P++ga2WImjN0osdJruuTKVk1q+IPZWVP/AEECm8TNgqMUZ5QPN50haWX/AJ6SsXb8zWMqkn1NFFIdisyhaQBigBaACiwXEp7gdL4N8O/2xfi+uUzYWr/KCOJpR291X9T9K9DCYdyfMzmrVLaI9UxxXsJHGLVAIaAFoAKACgAoAKACgAoAKACgAoAKACgAoAKACkAUAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKAEpAJQAtABQAUAFAC0wCgAoAKAFoASgAoAKACgAoAWgBKACgBaACgBKAFoASgAoAKACgAoAWgBKACgAoAKACkAtMBKACgAoAWgBKAFoASgAoAWgBKACgBaAEoAKACgAoAKACgApARyRJLE0cih0YFWVhkEHtUyjdajWh5F4n8NSeHbsNEC2mzNiF/wDnkT/A39D+FeNicO4u6OulVuYgrhsdItIQtAxKACmAUaAFABRqFwoC4tIQCgYtABQAlNLQDR0PQ7nxBqH2aHdHbxn/AEicfwD+6v8AtH9OtdeGoc7MatTlPYbSzgsbOK1toxFBEoVFUdAK9uEFFWRwt31ZYrQQUAFAAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAWgBKACgAoAKACgBaAEoAKAFoASgAoAKACgApAFMAoAKACgAoAKACgAoAKAFoASgBKQBQAUAFABQAUAKKYBQAUAFABQAUAFABQAUAFABQAUAFABmgAoAKACgAoAKACgAoAKQBTAKACgAoAKACkAUwCgAoAKACgAoAKACkAUAFMAoAKACgAoAKACgAoAKACgBKQC9qAILq0gvrWS2uYllhkUq6MMgiolDnVmNOx5N4l8MXPh2UzJvm0wn5ZurRf7L+3o3515GIwzi7o7KVVPRmHmuJpI3uLUjCgQUAFABQAUAFABSGLQAtMYUJX2Ea2geHrvxDP+5zFZq2JbnHHuqere/QfpXZQw0pmFWqo6Hq2naZa6VZR2lnEIoU6AdSe5J7k+tezCkoKyOOUrl2tCQpgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCgApgFABQAUAFABQAUAFABQAUAJSAKACgBO9AC0AFAC0wCgAoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoASkFxjxq6MjqGVhgqRkEUpRT3DVbHn+v/D9kL3WhYA6tZscD/gB7fQ8fSvNrYS+sTohWtucO6vFO8E0bwzp96KRdrL+H9a86VNrRnUp82wZrIoWgAoGFAhaBiUALQAlFgAZaRI1VnlfhI0UszH2A5NXCm3ohOfLudnoXgKe623GtZih6i0Rvmb/fYdB7D869Khg7ayOSpW7HocEEVvCkMMaxxINqogwFHoBXpRioqyOd3e5LVdBAaYBQAUAFABQAUAFABQAUAFAB3oAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACkACgApgFIApgFABQAUAFABQAUAFABQAlIAoAKACgAoAKAFpgFABQAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAtACUAFABQAUAFAB0oAKACgApAFACYpMDO1XQ9O1qER31skuPuv0Zfow5FZzownuVGbRw+p/Dm8hLPpV4k6dobn5WH0cdfxFcFTB9jojX7nMXmk6npxP23TrmFR1fZvT/vpciuOWHmjdVYsprLE5IWRCR23Vi4SRXOh+CexpcrKuGD6UrMVxjSRp96RF+rCmoSYcyLlnp1/qJxZWFzcf7SxlV/76bArWGHnLZEOrFHT6d8PL+fD6jdJap3jg+d/puPA/AGuyngn9owlX7Ha6R4e0zREIsrZVdh80rfM7fVjz+Fd9OhCGxhKbZqYrZIgXpTAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAlABQAtACUAFAC0AJQAUALQAlACUgCgAoAKACgAoAUUwCgAoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKAEpWAMUmrgUrrR9Nvc/abC2mJ7vEpP8qzdGL6FKcjOfwT4ckOTpNuD/s5H8jUPDQ7D9pIRfBHhtDkaTAT75P8AM0LCwD2kjQttC0qzx9m061iI6FYlB/OrjQiugueRfwBwBV8qQrhVaCAcUALTABQAlIApgLQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABSAKACmAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACUgEoAWgAoAKACgBaACmAUAFABQAUAFABQAUAFIApgFABQAUAFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFIApgFABQAUAJQACgBRQAUAFABQAUAFABQAUAFABQAUAFABigAoABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABSAKYBQAUAFABQAUAJSASgBaAAUAFABQAtABTAKACgBaAEoAKACgAoAKAFoASgBaACgBKACgAoAKACkAtMBKACgAoAKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgApAFABTAKACgBaAEoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoAKAEoAKAFoASgAoAWgBKACkAUwCgAoAWgBKACgAoAKACgAoAKACgBaAEoAKACgAoAKACgAoAKACgAoAKQCUAFABQAUAFACigApgFABQAUAFABQAUAFABQAUAFABQAUAFABSAKYBQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFIApgFABQAUAFAAaACgA7UgCmAUAFABQAZpAHamAdKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBQAtMBKQBTAKACgAoAKACgApALTASgAoAKACgAoAKACgApAFMAoAKADNABQAUAFABQAUAFABQAUAFABQAlIAoASgBaACgAoAWgApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABSAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABSAKYBQAd6ACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAEpAJQAUALQAUALQAA0AFMAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAWgBKACgBaAEoAKACgAoAKACgAoAKAFoASgAoAWgBKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAAUAFABQAUAFABQAUALQAlAAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAWgBKAEpAFACUAKKACgAoAWgApgFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAZoAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAAUAFABSAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgBM0gCgBKACgBaACgBRTAKACgAoAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAKACgAoAKQBTAKACgBaAEoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACkAUwCgAoAMUAFIAoAKYBQAUAFABSAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUAGKACgApAFABTAKACgAoAKACgAoAKQBQAUwCgAoAKACgAoAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAKACgAoAKACgAoAKACgAoASkAUAFABQAUAFAC0wCgAoAKACgAoAKAFoASgAoAKACgBaQBTASgAoAWgBKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgAoAKQBTAKACgBaAEoAKACgAoAKACgAoAKACgAoAKACgApAFMA7UAFABQAtACUAFABQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAtIBKYBQAUAFABQAUAFABQAUAFABQAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUALQAlABQAUAFACUgCgBKAFoAKACgAFMBaACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoASkAUAJQAtABQAUAKKYBSAKACmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCgAoAKYBQAUAFABSAKACmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCgApgFABQAUAFABQAUAFABQAUAFIAoAKYBQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAJSASgAoAWgAoAKAFoAKACgAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAlABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUALQAlABQAtACUAFABSAKACgApgFABQAtACUAFAC0AJQAUAFABQAUAFABQAUAFABQAUAFABQAUALSASgApgFABQAUAFABQAUAFABQAUALQAlJgFAC0wEoAKAFoASgAoAWgBKACgAoAKACkAtMBKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAEpAFABQAUAFABQACgBaACgAFABTAKACgAoAKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgAoAKACgAoAKACgAoAKQBQAUwCgAoAKACgAoAKACgAoAKACgApAFABQAUwCgApALQAlABQAUwCgAzQAUAFABQAUAFIApgFABQAUAFABQACgApAFABTAKACgAoAKACgAoAKACgAoAWgBKTAKACmAUAFABQAUAFABQAUAFABQAUgCgApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACUgCgBKACgBaAF70AGKACmAUgCmAUAFABQAUAFABQAUAFIApgFABQAUAFABSsAUAFMAoAKACgAoAKACgAoAKACgApAFABTADQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABSAKACmAUgCgApgFABQAUAFABSAKYBSAKACmAUAFABQAUAFABQAUAFABQAUAFABQAUgCgApgFABQAtACUgCgApgFABQAUAFABQAUAFABQAUAFIAoAKYBSAKACmAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlABSASgAoAWgAoAWgAoAKYBQAUAFABQAUAFABQAUALQAlABQAtACUAFABQAUAFAC0AFACUALQAlABQAUAFABQAUAFABSAKYBQAUALQAlABQAUAFABQAUAFABQAtACUAFABQAUAFAC0AJQAUALQAlABQAtACUAFABQAUAFABQAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAUALQAlAC0AJQAUAFABQAUAFAC0AJQAUAFABSAKACmAUAFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAUAFABQAnSkAUAJQAUALQAUALQAUwDNABQAUAFIApgFABmgApAFMAoAKACgAoAKQBTAKACgBaAEoAKACgAoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgAoAKACgAoAKQBTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAAUgCmAUAFABQAUAFABQAUAFABQAGgApAFMAoAKACgAoAKACgAoASkAUAFABQAUAGKAAUALQAlAC0AFAAaACmAUgCgAFABTAKACgAoAKACgApAFABQAUwCgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgBKACkAUAJQAtABQAUAL3oAKACgApgFABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAAoAWgBKACgBaAEoAKACgAoAKAFoASgAoAWgBKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoAKAEoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAFABQAUAFABQAUAFAC0AJQAUAFABQACgBaAEoAKACgAoAKACgAoABQAUAFABQAtACUAFAC0AJQAUALQAlABQAUAFABQAUABoASkAUAFACUALQAUAAoAWgAoAKACmAUAFABQAUAAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACkAUAFABTAKACgAoAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAM0AFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAZoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoADQA2kAtACUALQAUAFAAKAFoASgBaACmAlAC0AFABQACkAUwCkAUAFMAoAKQBTAKACgAoAKACgAoAKACgAoAKACkAUwCgAoAKACgAoAKACgAoAKACgApAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKADtQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUgCmAUAFABQAUAFABQAUAFABQAUAFIBKAEoAKAFoAKACgBaACgAoAKACmAUAFABQAUAApAFMAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAWgBKACkAUwCgAoAWgBKACgBaAEoAKACgAoAKQC0wEoAKAFoASgAoAKACgAFABQAUAFABQAUAFABQAUAFIApgFAAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAWgBKACgAoAKAEpAFABQAUAFABQAUALQAUAApgJQAUgFzQAUwCgApAFABTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKQBTAKACgAoAM0AFIApgFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFAAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoASkAUAFACUALQAUAFABQAUAFABQAUAFABQAUALQAUAFABTAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAFAB2oAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAP5UAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFIApgFABQAUAFABQAUABoASkAUAFACUALQAUALQAUAJQAUAFABQAUAFABQAUALQAUAFABQAUAFMAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgBaAEoAKACgAoAKACgAoAKACgAoAKACgAoABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFACZpAFABQAUAFABmgAzQAUAFABQAUAFABQAUAFABQAtABQAUAFABQAUwCgAoAKADNABQAZoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABmgAoAKACgAoAKACgAoAKACgAoAKACkAUAFMAoAKADNABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAlAC0gEoASgAoAWgAoABQAUAFABigBcUAJTAKACkAUAFAB2oAOlAC0AFABQAUAFABQAUAFMAoAMUgCmAUAFABQAUAFABQAUAFABQAUAGKACgAoAKACgAoAKQBTAKQCUALTAKACgAoAKACgAoAKACgAoAKACgAoAKADvQAUAFABQAUAFABQAUAGKACgAoAKADFABQAUAFABQAUAFIApgFIAoAKYBQAd6QBTAKACgAoAKACgAoAKACgAoAKAAUAFABQAUAFABQACgAoAKACgAoAKACgAxQAUAFABQAUAFABQAlIAoASgAoAKAFoAKAAUALQAdKACgApgFABQAUgCgAoAKYBQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAlABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUALQAlABQAUAFAC0AJQAUAFABQAUAFABQAUALQAUAJQAUAFABQAUAFABQAtACUAFAC0AJQAUAFABQAUAFABQAooAKAEoAKACgAoAKACgAoAKAFoASgAoAKACgAoAKACgAoAKACgAoAKACgAyKLgGaACgAoAKAEpAFABQAUAJQAtABQAUAFABQAZpgLmgBKQBQAUAFAC0AFABTAKACgAoABQAZoAKACgAoAM0AAoAKAA0AFABQAZoAKACgAzQAZoAKACgAoAKACgAoAKACgAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAGaADNABQAA0AFAB3oAKACgAoAKACgAzQAUAFABQAUAFABQAUAFABQAUAFABQAZpAFMAoAKADNABQAnegBc0AFABQAUAFABmgAoAKACgAoAM0AJQAtACZoAXNABQAGgAoAKAEJ4pMA4oAT0PagYpOKBCdO9IYuaYhM0AJnmgBaAFoASgBaAEoAKAFoAKAEoAWgAoAKACgAoABQAUAGaACgAzQAUAFABQAUAFABQAUAFABQAd6AAUAGaADNACUALQAUAFABQAUAFABQAUAFABmgBKAFoAKACgAFABQAUAAoAKACgAoAKACgAzQAUAFAAKACgAoAKADtQAUAFABQAUAHegApgFIAoAKACgAoAKACgAoAKACgAoAKAEoAUUAFABQAUAFABQAgoAWgBKAFoAKACgAoAKAEoAWgAoASgBaACgANACUALQAlAC0AFABQAZoAKAENABnFAB1+lIYHmmIMGgA70AGCKQxMUxC0ALQAlABQAtABQAUAJQAUALQAUAJQAUALQAUAFACd6ACgBaAEoAWgAoAKACgAoASgBaAEoAWgBKAFoASgAoAKAFoAKACgAoASgBaACgAoAKAEoAWgAoASgAoAWgBKACgBaAEoAKAFoASgA70AFAC0AJQAtABQAlABQAtACCgBaAEoAKAFoAKAEoAXNABQAlAC0AFACUAFABQAUALQAUAJQAUAFAC0AFACUAFAC0AJQAtABQAUAFACUALQAUAFABQAlAC0AJQAtABQAUAFABQAUAFABQAlABQAtABQAlAC0AFACUAFABQAtACUAFABQAtACUAFABQAUAGaAFoASgAoAWgBKACgAoAKAAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAZoAKACgAoAKACgAoAKACgAoAKACgA70ALmgBKACgAoAKACgAoAM0AFABQAUAFABQAUAFAC0AJQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQB//Z" alt="AURI" />
-      <div class="brand-name">AURION</div>
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top">
+      <img src="https://raw.githubusercontent.com/Alexandrsrs/aurion-assets/main/Aurion.png" alt="AURION">
+      <span>AURION</span>
     </a>
-
-    <div class="nav-links" aria-label="Navigation">
-      <a href="#rules" data-i18n="nav_rules">Правила</a>
-      <a href="#token" data-i18n="nav_token">Токен</a>
-      <a href="#market" data-i18n="nav_market">Рынок</a>
-      <a href="#liquidity" data-i18n="nav_liq">Ликвидность</a>
-      <a href="#addresses" data-i18n="nav_addr">Адреса</a>
-      <a href="#contact" data-i18n="nav_contact">Контакты</a>
+    <div class="nav-links">
+      <a href="#architecture">Architecture</a>
+      <a href="#market">Market</a>
+      <a href="#liquidity">Liquidity</a>
+      <a href="#addresses">Addresses</a>
+      <a href="#resources">Resources</a>
     </div>
-
-    <div class="right">
-      <div class="lang-bar" aria-label="Language">
-        <button class="lang-btn" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="zh">中文</button>
-        <button class="lang-btn" data-lang="ru">RU</button>
-        <button class="lang-btn" data-lang="hi">हिंदी</button>
-      </div>
-      <a class="tg-btn" id="tg-btn" href="https://t.me/AURION2025" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M21.9 4.6c.2-.9-.7-1.6-1.5-1.2L2.8 11c-1 .4-.9 1.9.1 2.2l4.6 1.5 1.8 5.6c.3 1 1.7 1.2 2.3.3l2.6-3.7 4.9 3.6c.8.6 2 .1 2.2-.9L21.9 4.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.4 14.6 19.9 6.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        <span data-i18n="nav_tg">Telegram</span>
-      </a>
-    </div>
+    <a class="nav-cta" href="https://jup.ag/swap/USDC-5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank" rel="noopener">Trade on Jupiter ↗</a>
   </div>
 </nav>
 
 <div id="top"></div>
 
-<header class="hero">
-  <div class="wrap hero-grid">
-    <div class="card hero-main">
-        <div id="hero-logo-slot" class="hero-logo-slot" aria-hidden="true"></div>
-      <div class="hero-tag" data-i18n="hero_tagline">
-        Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные
-      </div>
-      <h1 class="hero-title" data-i18n="hero_title">
-        AURION
-      </h1>
-      <p class="hero-sub" data-i18n="hero_intro">
-        AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены — это запрещено на уровне протокола. Все параметры проверяемы на блокчейне прямо с этой страницы.
-      </p>
-      <div class="badges" aria-label="Highlights">
-        <span class="badge accent" data-i18n="badge_fixed">Фиксированная эмиссия</span>
-        <span class="badge" data-i18n="badge_no_team">0% команде</span>
-        <span class="badge" data-i18n="badge_dlmm">Meteora DLMM</span>
-        <span class="badge" data-i18n="badge_onchain">Проверяемо on‑chain</span>
-        <span class="badge" data-i18n="badge_no_freeze">Без заморозки</span>
-        <span class="badge" data-i18n="badge_locked_liq">Ликвидность под контролем протокола</span>
-      </div>
+<!-- HERO -->
+<div class="page">
+<section class="hero anim">
+  <img class="hero-logo" src="https://raw.githubusercontent.com/Alexandrsrs/aurion-assets/main/Aurion.png" alt="AURION">
+  <div class="hero-tag">
+    <span class="tag tag-teal">Solana Mainnet</span>
+    <span class="tag tag-amber">Meteora DLMM</span>
+  </div>
+  <h1>Trust through code,<br>not promises</h1>
+  <p class="hero-desc">
+    AURION is a <strong>protocol-backed token</strong> on Solana with a structural price floor, S-curve liquidity model, permanently burned mint authority, and zero team allocation. Every parameter is enforced by on-chain code and independently verifiable.
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://jup.ag/swap/USDC-5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank" rel="noopener">Trade on Jupiter ↗</a>
+    <a class="btn btn-secondary" href="#architecture">Explore architecture ↓</a>
+    <a class="btn btn-secondary" href="https://alexandrsrs.github.io/AURION/liquidity_v3.html" target="_blank" rel="noopener">Interactive chart ↗</a>
+  </div>
+</section>
+
+<!-- LIVE STATS -->
+<div class="live-stats anim d1">
+  <div class="live-stat"><div class="ls-v ct loading" id="ls-price">—</div><div class="ls-l">Price</div><div class="ls-sub" id="ls-change">—</div></div>
+  <div class="live-stat"><div class="ls-v ca loading" id="ls-mcap">—</div><div class="ls-l">FDV</div><div class="ls-sub">1B × price</div></div>
+  <div class="live-stat"><div class="ls-v cb loading" id="ls-tvl">—</div><div class="ls-l">Liquidity</div><div class="ls-sub" id="ls-tvl-sub">pool reserves</div></div>
+  <div class="live-stat"><div class="ls-v loading" id="ls-vol">—</div><div class="ls-l">Volume 24h</div><div class="ls-sub" id="ls-txns">—</div></div>
+  <div class="live-stat"><div class="ls-v ct loading" id="ls-bin">—</div><div class="ls-l">Active Bin</div><div class="ls-sub" id="ls-bin-price">—</div></div>
+  <div class="live-stat"><div class="ls-v ca loading" id="ls-holders">—</div><div class="ls-l">Holders</div><div class="ls-sub"><a href="https://solscan.io/token/5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ#holders" target="_blank" rel="noopener" style="color:var(--text4);font-size:9px">verify ↗</a></div></div>
+</div>
+
+<!-- ARCHITECTURE / PRINCIPLES -->
+<section class="sec anim d2" id="architecture">
+  <div class="sec-title">Architectural guarantees</div>
+  <div class="principles">
+    <div class="principle">
+      <div class="pr-icon">⬡</div>
+      <div class="pr-h">Mint authority permanently revoked</div>
+      <div class="pr-p">Total supply is fixed at <strong>1,000,000,000 AURI</strong>. Mint Authority is set to <strong>null</strong> — irreversibly. No one, including the founder, can ever create additional tokens. Verify on <a href="https://solscan.io/token/5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank" rel="noopener" style="color:var(--teal)">Solscan ↗</a></div>
     </div>
-
-    <div class="card stats" aria-label="Key stats">
-      <div class="stat">
-        <div class="stat-k" data-i18n="stat_supply">Эмиссия</div>
-        <div class="stat-v">1 000 000 000 AURI</div>
-        <div class="small" data-i18n="stat_supply_note">фиксирована</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-k" data-i18n="stat_mint">Mint</div>
-        <div class="stat-v small">
-          <a id="mint-link" href="#" target="_blank" rel="noopener"><span id="mint-short">—</span></a>
-          <button class="copy" id="copy-mint" data-i18n="btn_copy">Копировать</button>
-        </div>
-        <div class="small" id="mint-full" style="word-break:break-all;"></div>
-      </div>
+    <div class="principle">
+      <div class="pr-icon">◇</div>
+      <div class="pr-h">Zero team allocation</div>
+      <div class="pr-p">No vesting, no insider addresses, no pre-sale. The founder holds <strong>zero tokens</strong> — this is architecturally enforced, not a promise. The entire supply is deployed as pool liquidity. The team earns only from the 0.03% swap fee.</div>
+    </div>
+    <div class="principle">
+      <div class="pr-icon">◈</div>
+      <div class="pr-h">USDC withdrawal is impossible</div>
+      <div class="pr-p">The on-chain program contains <strong>no instruction</strong> for withdrawing buyer USDC from the pool. This is not a lock — the capability simply does not exist in the code. The program binary is byte-verified on-chain.</div>
+    </div>
+    <div class="principle">
+      <div class="pr-icon">△</div>
+      <div class="pr-h">S-curve liquidity model</div>
+      <div class="pr-p">The USDC wall grows +0.3% per bin while price grows only +0.15%. Each successive price level requires <strong>more capital to reach</strong>. Price accelerates initially, then decelerates — an S-curve governed by math, not market psychology.</div>
     </div>
   </div>
-</header>
+</section>
 
-<main>
-  <!-- RULES -->
-  <section class="section" id="rules">
-    <div class="wrap">
-      <h2 data-i18n="rules_title">Принципы</h2>
-      <p data-i18n="rules_desc">Ниже — ключевые свойства токена. Каждое из них проверяется без необходимости доверять словам команды.</p>
+<!-- S-CURVE MODEL -->
+<section class="sec anim d3" id="model">
+  <div class="sec-title">S-curve model</div>
+  <div class="card">
+    <div class="card-title">Three constants define everything</div>
+    <div class="card-sub">The entire AURION economy derives from one formula with three on-chain constants. No phases, no conditions, no switches.</div>
 
-      <div class="grid-2">
-        <div class="card item">
-          <h3 data-i18n="rule1_title">Эмиссия заблокирована навсегда</h3>
-          <p data-i18n="rule1_desc">Общее предложение — <strong>1&nbsp;000&nbsp;000&nbsp;000 AURI</strong> — зафиксировано в момент создания токена. Mint Authority установлен в null: ни у кого, включая создателей, нет возможности выпустить дополнительные токены. Проверьте это сами на странице mint-адреса.</p>
-        </div>
-        <div class="card item">
-          <h3 data-i18n="rule2_title">Нет распределения команде</h3>
-          <p data-i18n="rule2_desc">В модели не предусмотрен командный пакет. Создатели приобретают AURI так же, как и любой участник — через рынок, по рыночной цене. Это устраняет риск скоординированного сброса «внутренних» токенов.</p>
-        </div>
+    <div class="formula-box">
+      <div class="formula-main">
+        <span class="hl-t">price(b)</span> = 1.0015<sup>b</sup> &nbsp;&nbsp;|&nbsp;&nbsp;
+        <span class="hl-a">wall(b)</span> = 1000 × 1.003<sup>b</sup> &nbsp;&nbsp;|&nbsp;&nbsp;
+        <span class="hl-b">tokens(b)</span> = 1000 × 1.001498<sup>b</sup>
       </div>
-
-      <div class="grid-2">
-        <div class="card item">
-          <h3 data-i18n="rule3_title">Ликвидность не может быть выведена</h3>
-          <p data-i18n="rule3_desc">LP-позиция в пуле Meteora DLMM принадлежит только протоколу. Инструкции на вывод отсутствуют. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне.</p>
-        </div>
-        <div class="card item">
-          <h3 data-i18n="rule4_title">Концентрированная ликвидность DLMM</h3>
-          <p data-i18n="rule4_desc">Meteora DLMM автоматически концентрирует ликвидность вблизи текущей рыночной цены — активного бина. Это снижает проскальзывание при обменах, по сравнению с классическими пулами с равномерным распределением. Актуальное распределение по бинам показано на графике ниже.</p>
-        </div>
-      </div>
+      <div class="formula-note">bin_step = 0.15% &nbsp;·&nbsp; wall₀ = 1,000 USDC &nbsp;·&nbsp; factor = 1.003 &nbsp;·&nbsp; eff = factor/price_step ≈ 1.001498</div>
     </div>
-  </section>
 
-  <!-- TOKEN -->
-  <section class="section" id="token">
-    <div class="wrap">
-      <h2 data-i18n="token_title">Параметры токена</h2>
-      <p data-i18n="token_desc">Технические параметры и настройки. Decimals и TVL загружаются из данных пула после открытия страницы.</p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="token_table_col1">Параметр</th>
-              <th data-i18n="token_table_col2">Значение</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td data-i18n="token_row_network">Сеть</td>
-              <td data-i18n="token_val_network">Solana Mainnet</td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_standard">Стандарт</td>
-              <td data-i18n="token_val_standard">SPL Token</td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_supply">Общая эмиссия</td>
-              <td data-i18n="token_val_supply">1&nbsp;000&nbsp;000&nbsp;000 AURI</td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_decimals">Decimals</td>
-              <td><span id="token-decimals" data-i18n="token_val_decimals_placeholder">загрузка…</span></td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_mint_auth">Mint Authority</td>
-              <td data-i18n="token_val_mint_auth">null — дополнительный выпуск невозможен</td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_freeze_auth">Freeze Authority</td>
-              <td data-i18n="token_val_freeze_auth">null — заморозка аккаунтов невозможна</td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_launch">Параметры запуска DLMM</td>
-              <td data-i18n="token_val_launch">
-                Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100&nbsp;000 USDC; с каждым следующим бином он уменьшается на 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.
-              </td>
-            </tr>
-            <tr>
-              <td data-i18n="token_row_sources">Источники данных</td>
-              <td data-i18n="token_val_sources">DEXScreener (рынок) · Meteora DLMM API (пул) · Jupiter Price API (справочная цена)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card item" style="margin-top:14px;">
-        <h3 data-i18n="tokenomics_title">Токеномика</h3>
-        <p data-i18n="tokenomics_desc">
-          Эмиссия зафиксирована в момент создания токена и не может быть изменена. Команде не выделены токены — всё предложение формирует ликвидность пула, доступную для торговли на открытом рынке. Концентрированная ликвидность Meteora DLMM обеспечивает узкий спред и минимальное проскальзывание при обменах вблизи текущей цены.
-        </p>
-        <ul class="ul">
-          <li data-i18n="tok_b1">Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — фиксирована и не изменится.</li>
-          <li data-i18n="tok_b2">Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.</li>
-          <li data-i18n="tok_b3">Дополнительный выпуск: невозможен — Mint Authority установлен в null.</li>
-          <li data-i18n="tok_b4">Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена.</li>
-          <li data-i18n="tok_b5">Торговля: через DEX-агрегаторы (Jupiter и др.) или напрямую через интерфейс Meteora.</li>
-          <li data-i18n="tok_b6">Шаг цены 0,15% и уменьшение целевого объёма в USDC на 0,1% с каждым бином создают выраженный дефляционный эффект.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- MARKET -->
-  <section class="section" id="market">
-    <div class="wrap">
-      <h2 data-i18n="market_title">Рынок</h2>
-      <p data-i18n="market_desc">Цена, объём и ликвидность загружаются напрямую из DEXScreener для пары, привязанной к пулу AURI/USDC. Страница не показывает расчётных или прогнозных данных — только то, что есть в сети прямо сейчас.</p>
-
-      <div class="card chart-card" style="margin-top:14px;">
-        <div class="chart-head">
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <span class="pill accent" data-i18n="market_chart_title">График (DEXScreener)</span>
-            <a class="pill" id="dex-link" href="#" target="_blank" rel="noopener">DEXScreener</a>
-          </div>        </div>
-        <div class="iframe-wrap">
-          <iframe id="dex-iframe" title="DEXScreener" loading="lazy"></iframe>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- LIQUIDITY -->
-  <section class="section" id="liquidity">
-    <div class="wrap">
-      <h2 data-i18n="liq_title">Ликвидность в пуле</h2>
-      <p data-i18n="liq_desc">На графике — фактическое распределение токенов AURI и USDC по ценовым бинам пула Meteora DLMM. Активный бин (текущая рыночная цена) выделен отдельно. Данные поступают из публичного API Meteora — без расчётных подмен.</p>
-
-      <div class="grid-3" style="margin-top:16px;">
-        <div class="card item">
-          <div class="stat-k" data-i18n="liq_meta_pool">Адрес пула</div>
-          <div class="stat-v small">
-            <a id="pool-link" href="#" target="_blank" rel="noopener"><span id="pool-short">—</span></a>
-            <button class="copy" id="copy-pool" data-i18n="btn_copy">Копировать</button>
-          </div>
-          <div class="small" id="pool-full" style="word-break:break-all;"></div>
-        </div>
-        <div class="card item">
-          <div class="stat-k" data-i18n="liq_meta_bin">Активный бин</div>
-          <div class="stat-v" id="active-bin">—</div>
-          <div class="small" id="bin-step">—</div>
-        </div>
-        <div class="card item">
-          <div class="stat-k" data-i18n="liq_meta_fee">Base fee</div>
-          <div class="stat-v" id="base-fee">—</div>
-          <div class="small" id="pool-tvl">—</div>
-        </div>
-      </div>
-
-      <div class="card chart-card" style="margin-top:14px;">
-        <div class="chart-head">
-          <div class="legend">
-            <span class="leg"><span class="sw act"></span><span data-i18n="leg_active">Активный бин</span></span>
-            <span class="leg"><span class="sw a"></span><span id="leg-auri">AURION</span></span>
-            <span class="leg"><span class="sw u"></span><span id="leg-usdc">USDC</span></span>
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <span class="small" data-i18n="liq_range">Диапазон</span>
-            <select class="select" id="range-select">
-              <option value="50" data-i18n="liq_range_50">±50 бинов</option>
-              <option value="120" selected data-i18n="liq_range_120">±120 бинов</option>
-              <option value="250" data-i18n="liq_range_250">±250 бинов</option>
-              <option value="all" data-i18n="liq_range_all">Все бины с ликвидностью</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="small" style="margin-bottom:8px;" data-i18n="liq_chart_note">Подсказка: наведите курсор, чтобы увидеть значения. Ось X — bin id.</div>
-        <div class="status" id="liq-status">—</div>
-
-        <div class="canvas-wrap">
-          <canvas id="liq-chart" height="260"></canvas>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ADDRESSES -->
-  <section class="section" id="addresses">
-    <div class="wrap">
-      <h2 data-i18n="addr_title">Адреса для проверки</h2>
-      <p data-i18n="addr_desc">Mint и USDC открываются на Solscan (страница токена). Адрес пула ведёт на интерфейс Meteora DLMM для вашего пула. Программа DLMM и резервные аккаунты открываются на Solscan (страница аккаунта).</p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="token_table_col1">Параметр</th>
-              <th data-i18n="token_table_col2">Значение</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td data-i18n="addr_label_mint">Mint (AURI)</td>
-              <td>
-                <div class="addr">
-                  <a id="addr-mint-link" href="#" target="_blank" rel="noopener"><span class="val" id="addr-mint">—</span></a>
-                  <button class="copy" id="addr-mint-copy" data-i18n="btn_copy">Копировать</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td data-i18n="addr_label_usdc">USDC mint</td>
-              <td>
-                <div class="addr">
-                  <a id="addr-usdc-link" href="#" target="_blank" rel="noopener"><span class="val" id="addr-usdc">—</span></a>
-                  <button class="copy" id="addr-usdc-copy" data-i18n="btn_copy">Копировать</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td data-i18n="addr_label_pool">Meteora DLMM pool</td>
-              <td>
-                <div class="addr">
-                  <a id="addr-pool-link" href="#" target="_blank" rel="noopener"><span class="val" id="addr-pool">—</span></a>
-                  <button class="copy" id="addr-pool-copy" data-i18n="btn_copy">Копировать</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td data-i18n="addr_label_program">Meteora DLMM program</td>
-              <td>
-                <div class="addr">
-                  <a id="addr-prog-link" href="#" target="_blank" rel="noopener"><span class="val" id="addr-prog">—</span></a>
-                  <button class="copy" id="addr-prog-copy" data-i18n="btn_copy">Копировать</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td data-i18n="addr_label_reserve_x">Reserve X</td>
-              <td>
-                <div class="addr">
-                  <a id="addr-rx-link" href="#" target="_blank" rel="noopener"><span class="val" id="addr-rx">—</span></a>
-                  <button class="copy" id="addr-rx-copy" data-i18n="btn_copy">Копировать</button>
-                </div>
-                <div class="small" id="rx-note">—</div>
-              </td>
-            </tr>
-            <tr>
-              <td data-i18n="addr_label_reserve_y">Reserve Y</td>
-              <td>
-                <div class="addr">
-                  <a id="addr-ry-link" href="#" target="_blank" rel="noopener"><span class="val" id="addr-ry">—</span></a>
-                  <button class="copy" id="addr-ry-copy" data-i18n="btn_copy">Копировать</button>
-                </div>
-                <div class="small" id="ry-note">—</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section class="section" id="contact">
-    <div class="wrap">
-      <h2 data-i18n="contact_title">Контакты</h2>
-      <p data-i18n="contact_desc">Официальный канал сообщества — Telegram. Вопросы, предложения и обратная связь приветствуются.</p>
-
-      <div class="card item" style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-        <div>
-          <div class="stat-k" data-i18n="contact_tg">Telegram</div>
-          <div class="stat-v small"><a id="tg-link" href="https://t.me/AURION2025" target="_blank" rel="noopener">https://t.me/AURION2025</a></div>
-        </div>
-        <a class="tg-btn" id="tg-btn-2" href="https://t.me/AURION2025" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M21.9 4.6c.2-.9-.7-1.6-1.5-1.2L2.8 11c-1 .4-.9 1.9.1 2.2l4.6 1.5 1.8 5.6c.3 1 1.7 1.2 2.3.3l2.6-3.7 4.9 3.6c.8.6 2 .1 2.2-.9L21.9 4.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.4 14.6 19.9 6.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <span data-i18n="nav_tg">Telegram</span>
-        </a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <div class="legal" data-i18n="legal">
-      Информация на сайте предоставляется «как есть» и носит исключительно информационный характер. Она не является инвестиционной рекомендацией, публичной офертой или предложением купить либо продать активы. AURION (AURI) — высокорисковый криптоактив; возможна полная потеря вложенных средств. Создатели не дают обещаний доходности и не несут ответственности за убытки. Убедитесь в соблюдении требований вашей юрисдикции (в том числе режима MiCA в ЕС) и при необходимости проконсультируйтесь со специалистом.
+    <div class="card-sub" style="margin-bottom:0">
+      Because <strong style="color:var(--teal2)">factor (1.003)</strong> exceeds <strong style="color:var(--amber2)">price_step (1.0015)</strong>, the USDC depth of each bin grows faster than the price. Clearing bin 0 costs 1,000 USDC. Clearing bin 2,000 costs 399,821 USDC. This is a mathematical property of the protocol — not a market hypothesis.
     </div>
   </div>
+
+  <!-- MILESTONES -->
+  <div class="milestones">
+    <div class="milestone">
+      <div class="ms-bins">Bin 2,000 — current range</div>
+      <div class="ms-price" style="color:var(--teal2)">$20.04</div>
+      <div class="ms-note">12.67M AURI deployed (1.27%)<br>$133.3M cumulative USDC needed</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-bins">Bin 3,000</div>
+      <div class="ms-price" style="color:var(--blue2)">$89.71</div>
+      <div class="ms-note">58.9M AURI (5.89%)<br>$2.67B cumulative USDC needed</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-bins">Bin 4,000</div>
+      <div class="ms-price" style="color:var(--amber2)">$401.62</div>
+      <div class="ms-note">265.5M AURI (26.55%)<br>$53.4B cumulative USDC needed</div>
+    </div>
+    <div class="milestone">
+      <div class="ms-bins">Bin 4,885 — terminal</div>
+      <div class="ms-price" style="color:var(--coral2)">~$1,515</div>
+      <div class="ms-note">1B AURI (100% supply)<br>$757.2B cumulative USDC needed</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section class="sec anim d3">
+  <div class="sec-title">Tokenomics</div>
+  <div class="card blue-top">
+    <div class="card-title">Supply distribution</div>
+    <div class="card-sub">Fully architectural. No hidden wallets, no vesting schedules.</div>
+    <div class="proto-grid" style="margin-bottom:1rem">
+      <div class="proto-row"><span class="proto-k">Total supply</span><span class="proto-v">1,000,000,000 AURI</span></div>
+      <div class="proto-row"><span class="proto-k">Decimals</span><span class="proto-v">6</span></div>
+      <div class="proto-row"><span class="proto-k">In pool (bins 0–2000)</span><span class="proto-v">12,672,722 AURI (1.27%)</span></div>
+      <div class="proto-row"><span class="proto-k">In vault (pending deployment)</span><span class="proto-v">987,327,278 AURI (98.73%)</span></div>
+      <div class="proto-row"><span class="proto-k">Team allocation</span><span class="proto-v"><span class="ok">0 — architecturally impossible</span></span></div>
+      <div class="proto-row"><span class="proto-k">Investors / seed</span><span class="proto-v"><span class="ok">None</span></span></div>
+      <div class="proto-row"><span class="proto-k">Terminal coverage</span><span class="proto-v">4,886 bins → entire 1B supply</span></div>
+      <div class="proto-row"><span class="proto-k">Terminal price</span><span class="proto-v">~$1,515 USDC/AURI</span></div>
+    </div>
+    <div class="card-sub" style="margin-bottom:.3rem">
+      <strong style="color:var(--text)">Fee structure:</strong> 0.03% per swap. USDC fees go to the team wallet (threshold: 10 USDC). AURI fees are returned to the vault. This is the team's only revenue source.
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section class="sec anim d4" id="market">
+  <div class="sec-title">Market</div>
+  <div class="card amber-top">
+    <div class="card-title">Price chart</div>
+    <div class="card-sub">Live data from DEXScreener for the AURI/USDC pair. No calculated or forecast figures — only what exists on-chain right now.</div>
+    <div class="dex-embed">
+      <iframe id="dex-iframe" title="DEXScreener" loading="lazy" src="https://dexscreener.com/solana/9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof?embed=1&theme=dark&trades=0&info=0"></iframe>
+    </div>
+    <div style="margin-top:.8rem;text-align:right">
+      <a href="https://dexscreener.com/solana/9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof" target="_blank" rel="noopener" style="font-size:11px;color:var(--text3);text-decoration:none">Open on DEXScreener ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- LIQUIDITY -->
+<section class="sec anim d4" id="liquidity">
+  <div class="sec-title">Pool liquidity</div>
+  <div class="chart-card">
+    <div class="chart-head">
+      <div>
+        <div class="chart-title">AURI per bin — S-curve distribution</div>
+        <div class="chart-sub">Tokens placed at each price level grow with every bin. USDC wall grows faster, creating resistance.</div>
+      </div>
+      <div class="legend">
+        <div class="li"><div class="ldot" style="background:var(--teal)"></div>AURI/bin</div>
+        <div class="li"><div class="ldot" style="background:var(--amber)"></div>Price (USDC)</div>
+      </div>
+    </div>
+    <div style="position:relative;height:300px">
+      <canvas id="liqChart"></canvas>
+    </div>
+    <div style="margin-top:.8rem;text-align:right">
+      <a href="https://alexandrsrs.github.io/AURION/liquidity_v3.html" target="_blank" rel="noopener" style="font-size:11px;color:var(--teal);text-decoration:none;font-weight:500">Full interactive chart ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROTOCOL PARAMETERS -->
+<section class="sec anim d5">
+  <div class="sec-title">Protocol parameters</div>
+  <div class="proto-grid" style="margin-bottom:1.5rem">
+    <div class="proto-row"><span class="proto-k">Blockchain</span><span class="proto-v">Solana Mainnet</span></div>
+    <div class="proto-row"><span class="proto-k">Pool protocol</span><span class="proto-v">Meteora DLMM</span></div>
+    <div class="proto-row"><span class="proto-k">Mint authority</span><span class="proto-v"><span class="ok">Permanently revoked (null)</span></span></div>
+    <div class="proto-row"><span class="proto-k">Freeze authority</span><span class="proto-v"><span class="ok">Permanently revoked (null)</span></span></div>
+    <div class="proto-row"><span class="proto-k">USDC withdrawal</span><span class="proto-v"><span class="ok">No such instruction exists</span></span></div>
+    <div class="proto-row"><span class="proto-k">Team allocation</span><span class="proto-v"><span class="ok">Zero — architecturally enforced</span></span></div>
+    <div class="proto-row"><span class="proto-k">Upgrade authority</span><span class="proto-v" style="color:var(--amber2)">Active (intentional at early stage)</span></div>
+    <div class="proto-row"><span class="proto-k">Program binary</span><span class="proto-v"><span class="ok">Byte-verified on-chain</span></span></div>
+    <div class="proto-row"><span class="proto-k">Price floor</span><span class="proto-v">$1.00 USDC (bin 0)</span></div>
+    <div class="proto-row"><span class="proto-k">Bin step</span><span class="proto-v">+0.15% per bin (bin_step=15)</span></div>
+    <div class="proto-row"><span class="proto-k">Wall growth factor</span><span class="proto-v">+0.30% per bin (factor=1.003)</span></div>
+    <div class="proto-row"><span class="proto-k">Starting wall depth</span><span class="proto-v">1,000 USDC (bin 0)</span></div>
+    <div class="proto-row"><span class="proto-k">Pool fee</span><span class="proto-v">0.03% per swap</span></div>
+    <div class="proto-row"><span class="proto-k">Current bins deployed</span><span class="proto-v">0–2000 (2,001 bins)</span></div>
+    <div class="proto-row"><span class="proto-k">Total bins (full supply)</span><span class="proto-v">4,886</span></div>
+    <div class="proto-row"><span class="proto-k">Launch date</span><span class="proto-v">10 December 2025</span></div>
+  </div>
+</section>
+
+<!-- ADDRESSES -->
+<section class="sec anim d5" id="addresses">
+  <div class="sec-title">On-chain addresses</div>
+  <div class="card-sub" style="margin-bottom:1rem">Every address below is publicly verifiable. Token addresses link to Solscan token pages. Accounts and programs link to Solscan account pages. The pool address opens the Meteora DLMM interface.</div>
+  <table class="addr-table">
+    <thead><tr><th>Name</th><th>Address</th></tr></thead>
+    <tbody>
+      <tr><td>AURI Mint</td><td><div class="addr-val"><a href="https://solscan.io/token/5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank" rel="noopener">5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ</a><button class="copy-btn" data-copy="5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ">Copy</button></div></td></tr>
+      <tr><td>Aurion Program</td><td><div class="addr-val"><a href="https://solscan.io/account/AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t" target="_blank" rel="noopener">AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t</a><button class="copy-btn" data-copy="AZtBB5RUeRNDCkLErRXZ3whRYrHQhsChonE11bqC5k6t">Copy</button></div></td></tr>
+      <tr><td>LB Pair (Pool)</td><td><div class="addr-val"><a href="https://www.meteora.ag/dlmm/9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof" target="_blank" rel="noopener">9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof</a><button class="copy-btn" data-copy="9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof">Copy</button></div></td></tr>
+      <tr><td>USDC Reserve</td><td><div class="addr-val"><a href="https://solscan.io/account/CyGYg8sSAV6TPypR41qqFxMkUsF8JZZnjNwwjrdRkowu" target="_blank" rel="noopener">CyGYg8sSAV6TPypR41qqFxMkUsF8JZZnjNwwjrdRkowu</a><button class="copy-btn" data-copy="CyGYg8sSAV6TPypR41qqFxMkUsF8JZZnjNwwjrdRkowu">Copy</button></div></td></tr>
+      <tr><td>AURI Reserve</td><td><div class="addr-val"><a href="https://solscan.io/account/4QXAkcC2q5W7t3Gv5VJroK4k8rzVhAFUXoxcuEPDnDK8" target="_blank" rel="noopener">4QXAkcC2q5W7t3Gv5VJroK4k8rzVhAFUXoxcuEPDnDK8</a><button class="copy-btn" data-copy="4QXAkcC2q5W7t3Gv5VJroK4k8rzVhAFUXoxcuEPDnDK8">Copy</button></div></td></tr>
+      <tr><td>VAULT (Unbacked)</td><td><div class="addr-val"><a href="https://solscan.io/account/EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy" target="_blank" rel="noopener">EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy</a><button class="copy-btn" data-copy="EQxpkhQEwBA26jJFTrvtBttzPwEJ1CU2S4Q161zmBPjy">Copy</button></div></td></tr>
+      <tr><td>Admin Wallet</td><td><div class="addr-val"><a href="https://solscan.io/account/gswxmvJpKKKEvZYLKCUxpxW7FctDegaQLRpj2MpxR8y" target="_blank" rel="noopener">gswxmvJpKKKEvZYLKCUxpxW7FctDegaQLRpj2MpxR8y</a><button class="copy-btn" data-copy="gswxmvJpKKKEvZYLKCUxpxW7FctDegaQLRpj2MpxR8y">Copy</button></div></td></tr>
+      <tr><td>Team Wallet</td><td><div class="addr-val"><a href="https://solscan.io/account/3XbvBVv7WuJmYsHNVaZgS3itkpYL2b5uFogccUr8PNiy" target="_blank" rel="noopener">3XbvBVv7WuJmYsHNVaZgS3itkpYL2b5uFogccUr8PNiy</a><button class="copy-btn" data-copy="3XbvBVv7WuJmYsHNVaZgS3itkpYL2b5uFogccUr8PNiy">Copy</button></div></td></tr>
+      <tr><td>Meteora DLMM Program</td><td><div class="addr-val"><a href="https://solscan.io/account/LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo" target="_blank" rel="noopener">LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo</a><button class="copy-btn" data-copy="LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo">Copy</button></div></td></tr>
+      <tr><td>USDC Mint</td><td><div class="addr-val"><a href="https://solscan.io/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" target="_blank" rel="noopener">EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</a><button class="copy-btn" data-copy="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v">Copy</button></div></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- HONEST WARNINGS -->
+<section class="sec anim d5">
+  <div class="sec-title">Honest disclosures</div>
+  <div class="warn-grid">
+    <div class="warn-item"><span class="warn-icon">⚠</span><div class="warn-text"><strong style="color:var(--amber2)">Upgrade authority is active.</strong> This is an intentional decision at this early stage. It will be revoked after stabilization.</div></div>
+    <div class="warn-item"><span class="warn-icon">⚠</span><div class="warn-text"><strong style="color:var(--amber2)">Solo founder.</strong> The project is built and maintained by a single developer. This is a bus-factor risk.</div></div>
+    <div class="warn-item"><span class="warn-icon">⚠</span><div class="warn-text"><strong style="color:var(--amber2)">No utility token.</strong> AURI does not grant governance rights, staking rewards, or access to any service.</div></div>
+    <div class="warn-item"><span class="warn-icon">⚠</span><div class="warn-text"><strong style="color:var(--amber2)">No guaranteed returns.</strong> AURION does not promise profitability. The model is deterministic and predictable — any investor can calculate parameters independently.</div></div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section class="sec anim d6" id="resources">
+  <div class="sec-title">Resources</div>
+  <div class="resources">
+    <a class="res-card" href="https://alexandrsrs.github.io/AURION/liquidity_v3.html" target="_blank" rel="noopener">
+      <div class="res-icon">📊</div>
+      <div class="res-h">Liquidity Architecture</div>
+      <div class="res-p">Interactive S-curve explorer. AURI per bin, USDC wall, cumulative distribution, cost-per-step.</div>
+    </a>
+    <a class="res-card" href="https://alexandrsrs.github.io/AURION/calculator.html" target="_blank" rel="noopener">
+      <div class="res-icon">🧮</div>
+      <div class="res-h">Position Calculator</div>
+      <div class="res-p">Simulate entry and exit with buy-side and sell-side price impact. Full P&L modeling.</div>
+    </a>
+    <a class="res-card" href="https://www.coingecko.com/en/coins/aurion" target="_blank" rel="noopener">
+      <div class="res-icon">📈</div>
+      <div class="res-h">CoinGecko</div>
+      <div class="res-p">Market data, historical charts, and community metrics from CoinGecko.</div>
+    </a>
+    <a class="res-card" href="https://jup.ag/swap/USDC-5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank" rel="noopener">
+      <div class="res-icon">⚡</div>
+      <div class="res-h">Jupiter</div>
+      <div class="res-p">Swap USDC ↔ AURI through Jupiter aggregator. No platform fee.</div>
+    </a>
+    <a class="res-card" href="https://t.me/auri_global" target="_blank" rel="noopener">
+      <div class="res-icon">💬</div>
+      <div class="res-h">Telegram (EN)</div>
+      <div class="res-p">English community channel. Updates, discussion, and direct access to the founder.</div>
+    </a>
+    <a class="res-card" href="https://t.me/AURION2025" target="_blank" rel="noopener">
+      <div class="res-icon">💬</div>
+      <div class="res-h">Telegram (RU)</div>
+      <div class="res-p">Russian community channel with detailed technical updates.</div>
+    </a>
+  </div>
+</section>
+
+<!-- LEGAL -->
+<section class="sec anim d7">
+  <div class="sec-title">Legal notice</div>
+  <div class="disc">
+    <span class="disc-hd">⬡ Disclaimer</span>
+    <p><strong>For informational purposes only.</strong> This website is provided "as is" and does not constitute investment advice, a public offer, or a solicitation to buy or sell any asset or security in any jurisdiction.</p>
+    <p><strong>High-risk asset.</strong> AURION (AURI) is a crypto asset with no guaranteed returns. Complete loss of invested funds is possible. The founders make no return promises and accept no liability for losses arising from the use of this information or the purchase of AURI tokens.</p>
+    <p><strong>Regulatory classification.</strong> AURI is not a utility token, governance token, stablecoin, or meme coin. Under MiCA (EU), it is most closely classified as "other crypto-asset." It is not an asset-referenced token (ART). Because it does not promise returns, the risk of classification as a security under the Howey test is reduced — but not eliminated.</p>
+    <p><strong>No financial advice.</strong> Nothing on this website should be interpreted as financial, legal, or tax advice. Consult a qualified professional before making any investment decision. Ensure compliance with the laws and regulations of your jurisdiction.</p>
+    <p><strong>Data sources.</strong> Market data is sourced from DEXScreener and Meteora DLMM APIs. Pool parameters are loaded from on-chain state. All data is presented without modification, but may be delayed or incomplete. Verify independently on Solana Mainnet before making any decision.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot anim d7">
+  <div class="foot-links">
+    <a href="https://alexandrsrs.github.io/AURION/liquidity_v3.html" target="_blank">Liquidity chart</a>
+    <a href="https://alexandrsrs.github.io/AURION/calculator.html" target="_blank">Calculator</a>
+    <a href="https://jup.ag/swap/USDC-5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank">Jupiter</a>
+    <a href="https://solscan.io/token/5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ" target="_blank">Solscan</a>
+    <a href="https://t.me/auri_global" target="_blank">Telegram</a>
+    <a href="https://x.com/theauri" target="_blank">X / Twitter</a>
+    <a href="https://github.com/Alexandrsrs" target="_blank">GitHub</a>
+  </div>
+  <div class="foot-sign">Regards, AURION</div>
+  <div class="foot-copy">© 2025–2026 AURION Project. All on-chain data is public and independently verifiable.</div>
 </footer>
+</div><!-- /page -->
 
 <script>
-// ===== CONFIG =====
-  const TOKEN_NAME = 'AURION';
-  const TOKEN_SYMBOL = 'AURI';
+/* ═══════════════════════════════════════════════
+   AURION — Main Site Script
+   Live data: DEXScreener + Meteora DLMM API
+   Chart: S-curve model visualization
+   ═══════════════════════════════════════════════ */
 
-  const MINT = '5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ';
-  const TOTAL_SUPPLY = 1000000000; // displayed as static text
+const MINT = '5KGXQoYYtu8htnijj1Fhqxiew2K3GQxDeiP9iBMdx5mJ';
+const POOL = '9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof';
+const TOTAL_SUPPLY = 1_000_000_000;
+const PROXY = 'https://api.allorigins.win/raw?url=';
 
-  const TG_LINK = 'https://t.me/AURION2025';
+// S-curve model constants
+const BS = 1.0015, W0 = 1000, F = 1.003, EFF = F / BS;
+const priceAt = b => Math.pow(BS, b);
+const wallAt = b => W0 * Math.pow(F, b);
+const tokensAt = b => W0 * Math.pow(EFF, b);
 
-  // Optional: set your Meteora DLMM pool address here. If empty or wrong, the site will try to discover it.
-  const POOL_ADDR = '9kCyXTNBgHaNekeLwrwy18jTihLU9jwsWWT2retrPuof';
+// ── Helpers ──
+function $(id) { return document.getElementById(id); }
 
-  const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
-
-  // Meteora DLMM program id (Mainnet). Source: Meteora developer guide.
-  const METEORA_DLMM_PROGRAM_ID = 'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo';
-
-  // Public data sources (Meteora legacy API is most reliable for browsers)
-  const DEX_PAIR_API = 'https://api.dexscreener.com/latest/dex/pairs/solana/';
-  const DEX_TOKEN_PAIRS_API = 'https://api.dexscreener.com/token-pairs/v1/solana/';
-  const DEX_EMBED_BASE = 'https://dexscreener.com/solana/';
-  const METEORA_DATA_API = 'https://dlmm.datapi.meteora.ag';
-  const METEORA_LEGACY_API = 'https://dlmm-api.meteora.ag';
-  const METEORA_POOL_UI_BASE = 'https://www.meteora.ag/dlmm/';
-  const SOLSCAN_TOKEN_BASE = 'https://solscan.io/token/';
-  const SOLSCAN_ACCOUNT_BASE = 'https://solscan.io/account/';
-  const CORS_PROXY_RAW = 'https://api.allorigins.win/raw?url=';
-  const JUP_PRICE_V2 = 'https://lite-api.jup.ag/price/v2';
-
-  // ===== i18n =====
-
-  const T = {
-    ru: {
-      nav_rules: 'Принципы',
-      nav_token: 'Параметры',
-      nav_market: 'Рынок',
-      nav_liq: 'Ликвидность',
-      nav_addr: 'Адреса',
-      nav_contact: 'Контакты',
-      nav_tg: 'Telegram',
-      hero_tagline: 'Фиксированная эмиссия · Концентрированная ликвидность · Открытые данные',
-      hero_title: 'AURION',
-      hero_intro: 'AURION (AURI) — токен на Solana с фиксированной эмиссией и ликвидностью в пуле Meteora DLMM. Ни у кого нет возможности напечатать новые токены — это запрещено на уровне протокола. Все ключевые параметры проверяемы на блокчейне прямо с этой страницы.',
-      badge_fixed: 'Фиксированная эмиссия',
-      badge_no_team: '0% команде',
-      badge_dlmm: 'Meteora DLMM',
-      badge_onchain: 'Проверяемо on‑chain',
-      badge_no_freeze: 'Без заморозки',
-      badge_locked_liq: 'Ликвидность под контролем протокола',
-      stat_supply: 'Эмиссия',
-      stat_supply_note: 'SPL Token · Solana Mainnet',
-      stat_mint: 'Mint',
-      stat_price: 'Цена (DEXScreener)',
-      stat_liquidity: 'Ликвидность',
-      stat_jup_price: 'Цена (Jupiter, справочно)',
-      stat_updated: 'Обновлено',
-      btn_copy: 'Копировать',
-      btn_copied: 'Скопировано ✓',
-      rules_title: 'Принципы',
-      rules_desc: 'Ниже — ключевые свойства токена. Каждое из них проверяется без необходимости доверять словам команды.',
-      rule1_title: 'Эмиссия заблокирована навсегда',
-      rule1_desc: 'Общее предложение — <strong>1&nbsp;000&nbsp;000&nbsp;000 AURI</strong> — зафиксировано в момент создания токена. Mint Authority установлен в null: ни у кого, включая создателей, нет возможности выпустить дополнительные токены. Проверьте это сами на странице mint-адреса.',
-      rule2_title: 'Нет распределения команде',
-      rule2_desc: 'В модели не предусмотрен командный пакет. Создатели приобретают AURI так же, как и любой участник — через рынок, по рыночной цене. Это устраняет риск скоординированного сброса «внутренних» токенов.',
-      rule3_title: 'Ликвидность не может быть выведена',
-      rule3_desc: 'LP-позиция в пуле Meteora DLMM принадлежит только протоколу. Инструкции на вывод отсутствуют. Ни один сторонний адрес не может вывести ликвидность. Структуру пула и его резервы всегда можно проверить в блокчейне.',
-      rule4_title: 'Концентрированная ликвидность DLMM',
-      rule4_desc: 'Meteora DLMM автоматически концентрирует ликвидность вблизи текущей рыночной цены — активного бина. Это снижает проскальзывание при обменах по сравнению с классическими пулами с равномерным распределением. Актуальное распределение по бинам показано на графике ниже.',
-      token_title: 'Параметры токена',
-      token_desc: 'Таблица ниже показывает фиксированные параметры токена. Decimals и TVL загружаются из данных пула после открытия страницы.',
-      token_table_col1: 'Поле',
-      token_table_col2: 'Значение',
-      token_row_standard: 'Стандарт',
-      token_val_standard: 'SPL Token',
-      token_row_network: 'Сеть',
-      token_val_network: 'Solana Mainnet',
-      token_row_supply: 'Общая эмиссия',
-      token_val_supply: '1&nbsp;000&nbsp;000&nbsp;000 AURI',
-      token_row_decimals: 'Decimals',
-      token_val_decimals_placeholder: 'загрузка из API…',
-      token_row_mint_auth: 'Mint Authority',
-      token_val_mint_auth: 'null — дополнительный выпуск невозможен',
-      token_row_freeze_auth: 'Freeze Authority',
-      token_val_freeze_auth: 'null — заморозка аккаунтов невозможна',
-      token_row_launch: 'Параметры запуска DLMM',
-      token_val_launch: 'Шаг цены между бинами: 0,15%. Стартовая цена: 1,00 USDC/AURI. Целевой объём в активном бине: ~100 000 USDC; с каждым следующим бином он уменьшается на 0,1%. Текущее состояние изменяется в результате торговли — актуальные данные отображаются на графике ниже.',
-      token_row_sources: 'Источники данных',
-      token_val_sources: 'DEXScreener (рынок) · Meteora DLMM (данные пула в блокчейне)',
-      tok_b1: 'Общая эмиссия: 1&nbsp;000&nbsp;000&nbsp;000 AURI — зафиксирована и не изменится.',
-      tok_b2: 'Команда: 0%. Нет скрытых пакетов, нет вестинга, нет «внутренних» адресов.',
-      tok_b3: 'Дополнительный выпуск: невозможен — Mint Authority установлен в null.',
-      tok_b4: 'Ликвидность сконцентрирована в пуле Meteora DLMM AURI/USDC и не может быть выведена.',
-      tok_b5: 'Торговля: через DEX-агрегаторы (Jupiter и др.) или напрямую через интерфейс Meteora.',
-      tok_b6: 'Шаг цены 0,15% и уменьшение целевого объёма в USDC на 0,1% с каждым бином создают выраженный дефляционный эффект.',
-      tokenomics_title: 'Токеномика',
-      tokenomics_desc: 'Эмиссия зафиксирована в момент создания токена и не может быть изменена. Команде не выделены токены — всё предложение формирует ликвидность пула, доступную для торговли на открытом рынке. Концентрированная ликвидность Meteora DLMM обеспечивает узкий спред и минимальное проскальзывание при обменах вблизи текущей цены.',
-      market_title: 'Рынок',
-      market_desc: 'Цена, объём и ликвидность загружаются напрямую из DEXScreener для пары, привязанной к пулу AURI/USDC. Страница не показывает расчётных или прогнозных данных — только то, что есть в сети прямо сейчас.',
-      market_chart_title: 'График цены (DEXScreener)',
-      market_stat_price: 'Цена',
-      market_stat_change: 'Изменение за 24 ч',
-      market_stat_liq: 'Ликвидность',
-      market_stat_vol: 'Объём за 24 ч',
-      market_updated: 'Обновлено:',
-      jup_note: 'Цена Jupiter — справочная. Может отличаться от фактической цены исполнения сделки.',
-      liq_title: 'Ликвидность в пуле',
-      liq_desc: 'Данные поступают из протокола Meteora (DLMM) и блокчейна (по bin ID) — без расчётных подмен. Текущий active bin подсвечен.',
-      liq_meta_pool: 'Адрес пула',
-      liq_meta_bin: 'Активный бин',
-      liq_meta_fee: 'Шаг бина',
-      liq_meta_step: 'Шаг бина',
-      liq_meta_tvl: 'TVL',
-      liq_range: 'Диапазон',
-      liq_range_50: '±50 бинов',
-      liq_range_120: '±120 бинов',
-      liq_range_250: '±250 бинов',
-      liq_range_all: 'Все бины с ликвидностью',
-      liq_chart_note: 'Наведите курсор на столбец, чтобы увидеть значения. Данные обновляются каждую минуту.',
-      liq_status_loading: 'Загрузка данных пула…',
-      liq_status_ok: 'Данные загружены',
-      liq_status_error: 'Не удалось загрузить данные пула',
-      leg_active: 'Активный бин',
-      addr_title: 'Адреса',
-      addr_desc: 'Mint и USDC открываются на Solscan (страница токена). Адрес пула ведёт на интерфейс Meteora DLMM для вашего пула. Программа DLMM и резервные аккаунты открываются на Solscan (страница аккаунта).',
-      addr_label_mint: 'Mint (AURI)',
-      addr_label_usdc: 'USDC (mint)',
-      addr_label_pool: 'LB Pair (пул Meteora DLMM)',
-      addr_label_program: 'Программа DLMM',
-      addr_label_reserve_x: 'Reserve X',
-      addr_label_reserve_y: 'Reserve Y',
-      contact_title: 'Контакты',
-      contact_desc: 'Официальный канал сообщества — Telegram. Вопросы, предложения и обратная связь приветствуются.',
-      contact_tg: 'Telegram',
-      legal: 'Информация на сайте предоставляется «как есть» и носит исключительно информационный характер. Она не является инвестиционной рекомендацией, публичной офертой или предложением купить либо продать активы. AURION (AURI) — высокорисковый криптоактив; возможна полная потеря вложенных средств. Создатели не дают обещаний доходности и не несут ответственности за убытки. Убедитесь в соблюдении требований вашей юрисдикции (в том числе режима MiCA в ЕС) и при необходимости проконсультируйтесь со специалистом.'
-    },
-    en: {
-      nav_rules: 'Principles',
-      nav_token: 'Parameters',
-      nav_market: 'Market',
-      nav_liq: 'Liquidity',
-      nav_addr: 'Addresses',
-      nav_contact: 'Contact',
-      nav_tg: 'Telegram',
-      hero_tagline: 'Fixed supply · Concentrated liquidity · Transparent data',
-      hero_title: 'AURION',
-      hero_intro: 'AURION (AURI) is a Solana token with a fixed supply and liquidity in a Meteora DLMM pool. No one can mint additional tokens — this is prohibited at the protocol level. All key parameters are verifiable on-chain from this page.',
-      badge_fixed: 'Fixed supply',
-      badge_no_team: '0% to team',
-      badge_dlmm: 'Meteora DLMM',
-      badge_onchain: 'Verifiable on-chain',
-      badge_no_freeze: 'No freeze authority',
-      badge_locked_liq: 'Protocol-controlled liquidity',
-      stat_supply: 'Supply',
-      stat_supply_note: 'SPL Token · Solana Mainnet',
-      stat_mint: 'Mint',
-      stat_price: 'Price (DEXScreener)',
-      stat_liquidity: 'Liquidity',
-      stat_jup_price: 'Price (Jupiter, reference)',
-      stat_updated: 'Updated',
-      btn_copy: 'Copy',
-      btn_copied: 'Copied ✓',
-      rules_title: 'Principles',
-      rules_desc: "Below are the key properties of the token. Each of them is verifiable — with no need to take the team’s word for it.",
-      rule1_title: 'Supply is permanently fixed',
-      rule1_desc: 'Total supply — <strong>1,000,000,000 AURI</strong> — was set at the moment of token creation. Mint Authority is set to null: nobody, including the creators, can issue additional tokens. Verify this on the mint address page.',
-      rule2_title: 'No team allocation',
-      rule2_desc: 'The distribution model does not include a separate team allocation. Creators acquire AURI the same way as anyone else — on the open market, at market price. This eliminates the risk of a coordinated insider dump.',
-      rule3_title: 'Liquidity cannot be withdrawn',
-      rule3_desc: 'The LP position in the Meteora DLMM pool is held by the protocol. There are no withdrawal instructions. No external address can withdraw liquidity. The pool structure and reserves can always be verified on-chain.',
-      rule4_title: 'Concentrated DLMM liquidity',
-      rule4_desc: 'Meteora DLMM automatically concentrates liquidity near the current market price — the active bin. This reduces slippage compared to pools with uniform distribution. The current bin distribution is shown in the chart below.',
-      token_title: 'Token parameters',
-      token_desc: 'Technical parameters and settings. Decimals and TVL are loaded from the pool API after the page opens.',
-      token_table_col1: 'Field',
-      token_table_col2: 'Value',
-      token_row_standard: 'Standard',
-      token_val_standard: 'SPL Token',
-      token_row_network: 'Network',
-      token_val_network: 'Solana Mainnet',
-      token_row_supply: 'Total supply',
-      token_val_supply: '1,000,000,000 AURI',
-      token_row_decimals: 'Decimals',
-      token_val_decimals_placeholder: 'loading from API…',
-      token_row_mint_auth: 'Mint Authority',
-      token_val_mint_auth: 'null — additional minting is impossible',
-      token_row_freeze_auth: 'Freeze Authority',
-      token_val_freeze_auth: 'null — freezing accounts is impossible',
-      token_row_launch: 'DLMM launch parameters',
-      token_val_launch: 'Bin step: 0.15%. Start price: 1.00 USDC/AURI. Target size in the active bin: ~100,000 USDC; it decreases by 0.1% with each next bin. The current state changes as trading occurs — live data is shown on the chart below.',
-      token_row_sources: 'Data sources',
-      token_val_sources: 'DEXScreener (market) · Meteora DLMM (on-chain pool data)',
-      tok_b1: 'Total supply: 1,000,000,000 AURI — fixed and will not change.',
-      tok_b2: 'Team: 0%. No hidden allocations, no vesting, no insider addresses.',
-      tok_b3: 'Additional minting: impossible — Mint Authority is set to null.',
-      tok_b4: 'Liquidity is concentrated in the Meteora DLMM AURI/USDC pool and cannot be withdrawn.',
-      tok_b5: 'Trading: via DEX aggregators (Jupiter etc.) or directly through the Meteora interface.',
-      tok_b6: 'A 0.15% price step and a 0.1% decrease of the USDC target size per bin create a pronounced deflationary effect.',
-      tokenomics_title: 'Tokenomics',
-      tokenomics_desc: 'Supply is fixed at creation and cannot be changed. No tokens are allocated to the team — the entire supply forms pool liquidity available for open-market trading. Meteora DLMM concentrated liquidity provides tight spreads and minimal slippage near the current price.',
-      market_title: 'Market',
-      market_desc: 'Price, volume, and liquidity are loaded directly from DEXScreener for the AURI/USDC pair. The page shows only on-chain data — no calculated or forecast figures.',
-      market_chart_title: 'Price chart (DEXScreener)',
-      market_stat_price: 'Price',
-      market_stat_change: '24h change',
-      market_stat_liq: 'Liquidity',
-      market_stat_vol: '24h volume',
-      market_updated: 'Updated:',
-      jup_note: 'Jupiter price is a reference value and may differ from the actual execution price.',
-      liq_title: 'Pool liquidity',
-      liq_desc: 'Data is pulled from Meteora DLMM and the blockchain (by bin ID) — no calculated substitutes. The current active bin is highlighted.',
-      liq_meta_pool: 'Pool address',
-      liq_meta_bin: 'Active bin',
-      liq_meta_fee: 'Bin step',
-      liq_meta_step: 'Bin step',
-      liq_meta_tvl: 'TVL',
-      liq_range: 'Range',
-      liq_range_50: '±50 bins',
-      liq_range_120: '±120 bins',
-      liq_range_250: '±250 bins',
-      liq_range_all: 'All bins with liquidity',
-      liq_chart_note: 'Hover a bar to see exact values. Data refreshes every minute.',
-      liq_status_loading: 'Loading pool data…',
-      liq_status_ok: 'Data loaded',
-      liq_status_error: 'Failed to load pool data',
-      leg_active: 'Active bin',
-      addr_title: 'Addresses',
-      addr_desc: 'Mint and USDC open on Solscan (token page). The pool address opens the Meteora DLMM UI for your pool. The DLMM program and reserve accounts open on Solscan (account page).',
-      addr_label_mint: 'Mint (AURI)',
-      addr_label_usdc: 'USDC (mint)',
-      addr_label_pool: 'LB Pair (Meteora DLMM pool)',
-      addr_label_program: 'DLMM program',
-      addr_label_reserve_x: 'Reserve X',
-      addr_label_reserve_y: 'Reserve Y',
-      contact_title: 'Contact',
-      contact_desc: 'The official community channel is Telegram. Questions, suggestions, and feedback are welcome.',
-      contact_tg: 'Telegram',
-      legal: 'This website is provided "as is" for informational purposes only. It does not constitute investment advice, a public offer, or a solicitation to buy or sell assets. AURION (AURI) is a high-risk crypto asset; complete loss of funds is possible. The creators make no return promises and accept no liability for losses. Ensure compliance with your local laws and regulations (including MiCA in the EU) and consult a professional if needed.'
-    },
-    zh: {
-      nav_rules: '原则',
-      nav_token: '参数',
-      nav_market: '市场',
-      nav_liq: '流动性',
-      nav_addr: '地址',
-      nav_contact: '联系',
-      nav_tg: 'Telegram',
-      hero_tagline: '固定发行量 · 集中流动性 · 透明数据',
-      hero_title: 'AURION',
-      hero_intro: 'AURION（AURI）是 Solana 上的代币，发行量固定，流动性部署于 Meteora DLMM 池中。任何人都无法增发代币——这一点在协议层面已被禁止。所有关键参数都可在本页通过链上数据核验。',
-      badge_fixed: '固定发行量',
-      badge_no_team: '团队 0%',
-      badge_dlmm: 'Meteora DLMM',
-      badge_onchain: '链上可核验',
-      stat_supply: '发行量',
-      stat_supply_note: 'SPL Token · Solana 主网',
-      stat_mint: 'Mint',
-      stat_price: '价格',
-      stat_liquidity: '流动性',
-      stat_jup_price: 'Jupiter（参考）',
-      stat_updated: '更新',
-      btn_copy: '复制',
-      btn_copied: '已复制',
-      rules_title: '原则',
-      rules_desc: '下方列出代币的关键属性。每一项都可核验，无需信任团队的口头承诺。',
-      rule1_title: '发行量永久固定',
-      rule1_desc: '总发行量——<strong>1,000,000,000 AURI</strong>——在代币创建时即已确定。Mint Authority 设置为 null：任何人（包括创建者）均无法增发代币。请在 mint 地址页面自行核验。',
-      rule2_title: '无团队预留',
-      rule2_desc: '分配模型不含团队预留份额。创建者与其他参与者一样，通过公开市场按市场价格购入 AURI。这消除了内部人员集中抛售的风险。',
-      rule3_title: '流动性无法被取出',
-      rule3_desc: 'Meteora DLMM 池中的 LP 头寸由协议持有。不存在可用于提取流动性的指令。任何外部地址都无法取出流动性。池的结构与储备始终可在链上核验。',
-      rule4_title: '流动性位于 Meteora DLMM',
-      rule4_desc: 'Meteora DLMM 自动将流动性集中在当前市场价格附近（活跃 bin），与均匀分布的池相比，可减少交易滑点。当前各 bin 的实际分布见下方图表。',
-      token_title: '代币参数',
-      token_desc: '参数与数据来源概览。',
-      token_table_col1: '字段',
-      token_table_col2: '值',
-      token_row_standard: '标准',
-      token_val_standard: 'SPL Token',
-      token_row_network: '网络',
-      token_val_network: 'Solana 主网',
-      token_row_supply: '总发行量',
-      token_val_supply: '1,000,000,000 AURI',
-      token_row_decimals: 'Decimals',
-      token_val_decimals_placeholder: '来自 mint / 池 API',
-      token_row_mint_auth: 'Mint Authority',
-      token_val_mint_auth: 'null（已关闭铸造）',
-      token_row_freeze_auth: 'Freeze Authority',
-      token_val_freeze_auth: 'null（已关闭冻结）',
-      token_row_launch: '启动参数',
-      token_val_launch: 'bin 价格步长：0.15%。启动价格：1.00 USDC/AURI。活跃 bin 的目标规模约为 100,000 USDC；每向外一个 bin 递减 0.1%。实际状态会随着交易变化，最新数据见下方图表。',
-      token_row_sources: '数据来源',
-      token_val_sources: 'DEXScreener（市场） • Meteora DLMM（链上池数据）',
-      tok_b1: '发行量：1,000,000,000 AURI。不会增发。',
-      tok_b2: '团队持有：0 AURI。所有代币都在 DLMM 池中。',
-      tok_b3: '启动价：1.00 USDC/AURI。bin 步长：0.15%。',
-      tok_b4: '流动性集中在 Meteora DLMM 的 AURI/USDC 池中，无法被取出。',
-      tok_b5: '市场数据与价格图表：DEXScreener。',
-      tok_b6: '0.15% 的价格步长与每个 bin 0.1% 的 USDC 目标规模递减，会形成明显的通缩效应。',
-      tokenomics_title: '代币经济',
-      tokenomics_desc: '发行量固定，无团队预留。初始分配与提供流动性相关；后续分配通过公开市场购买完成。',
-      market_title: '市场',
-      market_desc: '市场统计与价格图来自 DEXScreener（与该池对应的交易对）。',
-      market_chart_title: '图表（DEXScreener）',
-      market_stat_price: '价格',
-      market_stat_change: '24小时变化',
-      market_stat_liq: '流动性',
-      market_stat_vol: '24小时成交量',
-      market_updated: '更新：',
-      jup_note: 'Jupiter 价格仅作参考，可能与实际成交价不同。',
-      liq_title: '池内流动性',
-      liq_desc: '数据来自 Meteora DLMM 与链上状态（按 bin ID）——无任何计算替代。当前 active bin 已高亮。',
-      liq_meta_pool: '池地址',
-      liq_meta_bin: 'Active bin',
-      liq_meta_fee: 'Bin step',
-      liq_meta_step: 'Bin step',
-      liq_meta_tvl: 'TVL',
-      liq_range: '范围',
-      liq_range_50: '±50',
-      liq_range_120: '±120',
-      liq_range_250: '±250',
-      liq_range_all: '全部',
-      liq_chart_note: '将鼠标悬停在柱状图上可查看精确数值。数据会自动刷新。',
-      liq_status_loading: '加载中...',
-      liq_status_ok: '已加载',
-      liq_status_error: '加载失败',
-      leg_active: 'Active bin',
-      addr_title: '地址',
-      addr_desc: 'Mint 跳转至 Solscan（Token）。池地址跳转至 Meteora DLMM 界面。程序与储备账户跳转至 Solscan（Account）。',
-      addr_label_mint: 'Mint（AURI）',
-      addr_label_usdc: 'USDC（mint）',
-      addr_label_pool: 'LB Pair（Meteora DLMM 池）',
-      addr_label_program: '程序（DLMM）',
-      addr_label_reserve_x: 'Reserve X',
-      addr_label_reserve_y: 'Reserve Y',
-      contact_title: '联系',
-      contact_desc: '官方社区渠道为 Telegram，欢迎提问、建议与反馈。',
-      contact_tg: 'Telegram',
-      legal: '本网站按“原样”提供，仅用于信息披露，不构成投资建议、要约或招揽。加密资产风险极高，AURION（AURI）可能导致全部资金损失。创建者不承诺任何回报，亦不对损失承担责任。请确保符合当地法律法规（包括欧盟 MiCA）并在需要时咨询专业人士。'
-    },
-    hi: {
-      nav_rules: 'सिद्धांत',
-      nav_token: 'पैरामीटर',
-      nav_market: 'बाज़ार',
-      nav_liq: 'तरलता',
-      nav_addr: 'पते',
-      nav_contact: 'संपर्क',
-      nav_tg: 'Telegram',
-      hero_tagline: 'फिक्स्ड सप्लाई · केंद्रित तरलता · पारदर्शी डेटा',
-      hero_title: 'AURION',
-      hero_intro: 'AURION (AURI) Solana पर एक टोकन है जिसकी सप्लाई फिक्स्ड है और तरलता Meteora DLMM पूल में तैनात है। कोई भी अतिरिक्त टोकन मिंट नहीं कर सकता — यह प्रोटोकॉल स्तर पर प्रतिबंधित है। सभी मुख्य पैरामीटर इस पेज पर ऑन‑चेन सत्यापित किए जा सकते हैं।',
-      badge_fixed: 'फिक्स्ड सप्लाई',
-      badge_no_team: 'टीम 0%',
-      badge_dlmm: 'Meteora DLMM',
-      badge_onchain: 'सत्यापन योग्य',
-      stat_supply: 'सप्लाई',
-      stat_supply_note: 'SPL Token',
-      stat_mint: 'Mint',
-      stat_price: 'कीमत',
-      stat_liquidity: 'तरलता',
-      stat_jup_price: 'Jupiter (संदर्भ)',
-      stat_updated: 'अपडेट',
-      btn_copy: 'कॉपी',
-      btn_copied: 'कॉपी हो गया',
-      rules_title: 'सिद्धांत',
-      rules_desc: 'नीचे टोकन की प्रमुख विशेषताएँ दी गई हैं। प्रत्येक विशेषता सत्यापित की जा सकती है — टीम के शब्दों पर भरोसा करने की आवश्यकता नहीं है।',
-      rule1_title: 'सप्लाई फिक्स्ड है',
-      rule1_desc: 'कुल सप्लाई: <strong>1,000,000,000 AURI</strong>। अतिरिक्त minting बंद है (Mint Authority: null)।',
-      rule2_title: 'टीम के लिए अलग आवंटन नहीं',
-      rule2_desc: 'वितरण मॉडल में टीम के लिए अलग आवंटन शामिल नहीं है। परिसंचरण खुले बाज़ार और तरलता पूल के माध्यम से बनता है।',
-      rule3_title: 'तरलता निकाली नहीं जा सकती',
-      rule3_desc: 'Meteora DLMM पूल में LP पोजीशन प्रोटोकॉल के पास है। निकासी के लिए कोई निर्देश मौजूद नहीं हैं। कोई भी बाहरी पता तरलता नहीं निकाल सकता। पूल की संरचना और उसके रिज़र्व हमेशा ऑन‑चेन सत्यापित किए जा सकते हैं।',
-      rule4_title: 'Meteora DLMM में तरलता',
-      rule4_desc: 'तरलता <strong>Meteora DLMM</strong> पूल (AURI/USDC) में रखी गई है। नीचे का चार्ट Meteora API से वास्तविक bin डेटा दिखाता है।',
-      token_title: 'टोकन पैरामीटर',
-      token_desc: 'पैरामीटर और डेटा स्रोतों का सारांश।',
-      token_table_col1: 'फ़ील्ड',
-      token_table_col2: 'मान',
-      token_row_standard: 'स्टैंडर्ड',
-      token_val_standard: 'SPL Token',
-      token_row_network: 'नेटवर्क',
-      token_val_network: 'Solana Mainnet',
-      token_row_supply: 'कुल सप्लाई',
-      token_val_supply: '1,000,000,000 AURI',
-      token_row_decimals: 'Decimals',
-      token_val_decimals_placeholder: 'mint / पूल API से',
-      token_row_mint_auth: 'Mint Authority',
-      token_val_mint_auth: 'null (minting बंद)',
-      token_row_freeze_auth: 'Freeze Authority',
-      token_val_freeze_auth: 'null (freezing बंद)',
-      token_row_launch: 'लॉन्च पैरामीटर',
-      token_val_launch: 'bin के बीच कीमत का कदम: 0.15%। शुरुआती कीमत: 1.00 USDC/AURI। सक्रिय bin में लक्ष्य आकार: ~100,000 USDC; हर अगले bin के साथ यह 0.1% घटता है। वर्तमान स्थिति ट्रेडिंग के साथ बदलती है — ताज़ा डेटा नीचे के चार्ट में दिखता है।',
-      token_row_sources: 'डेटा स्रोत',
-      token_val_sources: 'DEXScreener (बाज़ार) • Meteora DLMM (ऑन‑चेन पूल डेटा)',
-      tok_b1: 'कुल सप्लाई: 1,000,000,000 AURI। अतिरिक्त मिंटिंग नहीं होगी।',
-      tok_b2: 'टीम होल्डिंग: 0 AURI। सभी टोकन DLMM पूल में हैं।',
-      tok_b3: 'शुरुआती कीमत: 1.00 USDC/AURI। bin‑step: 0.15%।',
-      tok_b4: 'तरलता Meteora DLMM AURI/USDC पूल में केंद्रित है और निकाली नहीं जा सकती।',
-      tok_b5: 'बाज़ार आँकड़े और कीमत चार्ट: DEXScreener।',
-      tok_b6: '0.15% का कीमत‑कदम और हर bin के साथ USDC लक्ष्य आकार में 0.1% की कमी एक स्पष्ट डिफ्लेशनरी प्रभाव बनाती है।',
-      tokenomics_title: 'टोकनॉमिक्स',
-      tokenomics_desc: 'सप्लाई फिक्स्ड है, टीम के लिए अलग आवंटन नहीं है। प्रारंभिक वितरण तरलता उपलब्ध कराने से जुड़ा है; आगे का वितरण खुले बाज़ार में खरीद के माध्यम से होता है।',
-      market_title: 'बाज़ार',
-      market_desc: 'बाज़ार आँकड़े और कीमत का चार्ट DEXScreener से (इस पूल से संबंधित जोड़ी) लोड होता है।',
-      market_chart_title: 'चार्ट (DEXScreener)',
-      market_stat_price: 'कीमत',
-      market_stat_change: '24h बदलावट',
-      market_stat_liq: 'तरलता',
-      market_stat_vol: '24h वॉल्यूम',
-      market_updated: 'अपडेट:',
-      jup_note: 'Jupiter की कीमत केवल संदर्भ के लिए है; यह वास्तविक लेन-देन कीमत से अलग हो सकती है।',
-      liq_title: 'पूल तरलता',
-      liq_desc: 'डेटा Meteora DLMM और ऑन‑चेन स्टेट से लिया जाता है (bin ID के अनुसार) — कोई गणना‑आधारित विकल्प नहीं। वर्तमान active bin हाइलाइट किया गया है।',
-      liq_meta_pool: 'पूल पता',
-      liq_meta_bin: 'Active bin',
-      liq_meta_fee: 'Bin step',
-      liq_meta_step: 'Bin step',
-      liq_meta_tvl: 'TVL',
-      liq_range: 'रेंज',
-      liq_range_50: '±50',
-      liq_range_120: '±120',
-      liq_range_250: '±250',
-      liq_range_all: 'सभी',
-      liq_chart_note: 'किसी बार पर होवर करें ताकि सटीक मान दिखें। डेटा अपने आप अपडेट होता है।',
-      liq_status_loading: 'लोड हो रहा है...',
-      liq_status_ok: 'लोड हो गया',
-      liq_status_error: 'लोड नहीं हुआ',
-      leg_active: 'Active bin',
-      addr_title: 'पते',
-      addr_desc: 'Mint Solscan (Token) पर खुलता है। पूल पता Meteora DLMM UI पर खुलता है। प्रोग्राम और reserve खाते Solscan (Account) पर खुलते हैं।',
-      addr_label_mint: 'Mint (AURI)',
-      addr_label_usdc: 'USDC (mint)',
-      addr_label_pool: 'LB Pair (Meteora DLMM pool)',
-      addr_label_program: 'Program (DLMM)',
-      addr_label_reserve_x: 'Reserve X',
-      addr_label_reserve_y: 'Reserve Y',
-      contact_title: 'संपर्क',
-      contact_desc: 'आधिकारिक सामुदायिक चैनल Telegram है। प्रश्न, सुझाव और फ़ीडबैक स्वागत योग्य हैं।',
-      contact_tg: 'Telegram',
-      legal: 'यह वेबसाइट “as is” केवल जानकारी के लिए है; यह निवेश सलाह, ऑफर या solicitation नहीं है। क्रिप्टो संपत्तियाँ उच्च जोखिम वाली हैं और AURION (AURI) में पूरा नुकसान संभव है। निर्माता किसी भी रिटर्न का वादा नहीं करते और नुकसान के लिए उत्तरदायी नहीं हैं। कृपया अपनी स्थानीय कानूनी आवश्यकताओं (EU में MiCA सहित) का पालन करें और आवश्यकता होने पर विशेषज्ञ से सलाह लें।'
-    }
-  };
-
-
-
-  const state = {
-    lang: 'ru',
-    poolAddr: null,
-    poolMeta: null,
-    bins: null,
-    activeBin: null,
-    auriIsX: true,
-    decX: null,
-    decY: null,
-    lastDexPair: null,
-    liqChart: null
-  };
-
-  function t(key) {
-    return (T[state.lang] && T[state.lang][key]) || (T.en && T.en[key]) || '';
-  }
-
-  function applyLang() {
-    document.documentElement.lang = state.lang;
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const val = t(key);
-      if (val !== undefined && val !== null) el.innerHTML = val;
-    });
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === state.lang);
-    });
-    document.title = state.lang === 'ru'
-      ? 'AURION (AURI) — фиксированная эмиссия, концентрированная ликвидность'
-      : (state.lang === 'zh'
-        ? 'AURION（AURI）— 固定发行量，集中流动性'
-        : (state.lang === 'hi'
-          ? 'AURION (AURI) — फिक्स्ड सप्लाई, केंद्रित तरलता'
-          : 'AURION (AURI) — fixed supply, concentrated liquidity'));
-  }
-
-  function shortAddr(addr) {
-    if (!addr) return '—';
-    return addr.slice(0, 4) + '…' + addr.slice(-4);
-  }
-
-  function solscanTokenLink(mint) {
-    return SOLSCAN_TOKEN_BASE + mint;
-  }
-
-  function solscanAccountLink(addr) {
-    return SOLSCAN_ACCOUNT_BASE + addr;
-  }
-
-  function meteoraPoolLink(poolAddr) {
-    return METEORA_POOL_UI_BASE + poolAddr;
-  }
-
-  async function fetchJson(url, timeoutMs = 12000) {
-    const tryOnce = async (u) => {
-      const ctrl = new AbortController();
-      const to = setTimeout(() => ctrl.abort(), timeoutMs);
-      try {
-        const res = await fetch(u, {
-          signal: ctrl.signal,
-          cache: 'no-store',
-          headers: { 'accept': 'application/json' }
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return await res.json();
-      } finally {
-        clearTimeout(to);
-      }
-    };
-
-    try {
-      return await tryOnce(url);
-    } catch (e1) {
-      // Some public APIs block browser requests via CORS; retry through a proxy.
-      const proxied = CORS_PROXY_RAW + encodeURIComponent(url);
-      try {
-        return await tryOnce(proxied);
-      } catch (e2) {
-        throw e1;
-      }
-    }
-  }
-
-  function fmtUsd(n, max = 6) {
-    if (n === null || n === undefined || Number.isNaN(n)) return '—';
-    const abs = Math.abs(n);
-    const digits = abs >= 1 ? 2 : max;
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: digits
-    }).format(n);
-  }
-
-  function fmtCompact(n, maxFrac = 2) {
-    if (n === null || n === undefined || Number.isNaN(n)) return '—';
-    const abs = Math.abs(n);
-    let val = n;
-    let suf = '';
-    if (abs >= 1e12) { val = n / 1e12; suf = 'T'; }
-    else if (abs >= 1e9) { val = n / 1e9; suf = 'B'; }
-    else if (abs >= 1e6) { val = n / 1e6; suf = 'M'; }
-    else if (abs >= 1e3) { val = n / 1e3; suf = 'K'; }
-    return new Intl.NumberFormat(undefined, {
-      maximumFractionDigits: maxFrac
-    }).format(val) + suf;
-  }
-
-  function setLastUpdated(label) {
-  const ts = new Date();
-  const str = ts.toLocaleString();
-
-  const el1 = document.getElementById('last-updated');
-  if (el1) el1.textContent = str;
-
-  const el2 = document.getElementById('market-updated');
-  if (el2) el2.textContent = str;
-
-  const st = document.getElementById('data-status');
-  if (st) st.textContent = label || '—';
+function fmtUsd(v, d) {
+  if (v == null || !isFinite(v)) return '—';
+  d = d ?? (v >= 1 ? 2 : 6);
+  return '$' + v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtCompact(v) {
+  if (v == null || !isFinite(v)) return '—';
+  const a = Math.abs(v);
+  if (a >= 1e12) return '$' + (v/1e12).toFixed(1) + 'T';
+  if (a >= 1e9)  return '$' + (v/1e9).toFixed(2) + 'B';
+  if (a >= 1e6)  return '$' + (v/1e6).toFixed(2) + 'M';
+  if (a >= 1e3)  return '$' + (v/1e3).toFixed(1) + 'K';
+  return '$' + v.toFixed(2);
+}
+function fmtNum(v) {
+  if (v == null || !isFinite(v)) return '—';
+  return v.toLocaleString('en-US');
+}
+function num(x) {
+  if (x == null) return null;
+  const v = Number(x);
+  return isFinite(v) ? v : null;
 }
 
-
-  function bindCopyButton(btn, valueGetter) {
-    btn.addEventListener('click', async () => {
-      const v = valueGetter();
-      if (!v) return;
-      try {
-        await navigator.clipboard.writeText(v);
-        btn.classList.add('ok');
-        btn.textContent = t('btn_copied');
-        setTimeout(() => {
-          btn.classList.remove('ok');
-          btn.textContent = t('btn_copy');
-        }, 1100);
-      } catch (e) {
-        // Clipboard may be blocked; do nothing.
-      }
-    });
+async function fetchJson(url, ms) {
+  ms = ms || 12000;
+  const tryOnce = async u => {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), ms);
+    try {
+      const r = await fetch(u, { signal: c.signal, cache: 'no-store', headers: { accept: 'application/json' } });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return await r.json();
+    } finally { clearTimeout(t); }
+  };
+  try { return await tryOnce(url); }
+  catch (e1) {
+    try { return await tryOnce(PROXY + encodeURIComponent(url)); }
+    catch { throw e1; }
   }
+}
 
-  function pickBestDexPair(pairs) {
-    const arr = Array.isArray(pairs) ? pairs : [];
-    const sol = arr.filter(p => (p && (p.chainId || '').toLowerCase() === 'solana'));
-    if (!sol.length) return null;
+// ── Copy buttons ──
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const val = btn.dataset.copy;
+    if (!val) return;
+    try {
+      await navigator.clipboard.writeText(val);
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1200);
+    } catch {}
+  });
+});
 
-    // Prefer the known pool address when possible.
-    const byPool = POOL_ADDR ? sol.filter(p => (p.pairAddress || '') === POOL_ADDR) : [];
-    const poolCandidates = byPool.length ? byPool : sol;
-
-    // Prefer USDC quote (by mint address first, then by symbol).
-    const byUsdcMint = poolCandidates.filter(p => p.quoteToken && (p.quoteToken.address === USDC_MINT));
-    const byUsdcSym  = poolCandidates.filter(p => ((p.quoteToken && p.quoteToken.symbol) || '').toUpperCase() === 'USDC');
-
-    const candidates = byUsdcMint.length ? byUsdcMint : (byUsdcSym.length ? byUsdcSym : poolCandidates);
-
-    let best = null;
-    let bestScore = -1;
-
-    for (const p of candidates) {
-      const liq = num(p.liquidity && p.liquidity.usd);
-      const vol = num(p.volume && p.volume.h24);
-      const score = (liq || 0) * 1e9 + (vol || 0);
-      if (score > bestScore) {
-        bestScore = score;
-        best = p;
-      }
+// ── DEXScreener data ──
+async function loadDex() {
+  try {
+    let data = await fetchJson('https://api.dexscreener.com/latest/dex/pairs/solana/' + POOL);
+    let pair = data?.pairs?.[0];
+    if (!pair) {
+      const byToken = await fetchJson('https://api.dexscreener.com/token-pairs/v1/solana/' + MINT);
+      if (Array.isArray(byToken) && byToken.length) pair = byToken[0];
     }
-
-    return best;
-  }
-
-  function dexEmbedUrl(pairAddress) {
-    return DEX_EMBED_BASE + pairAddress + '?embed=1&theme=light&trades=0&info=0';
-  }
-
-  async function loadDexScreener(){
-    const pairEl = document.getElementById('m-pair');
-    const priceEl = document.getElementById('m-price');
-    const liqEl   = document.getElementById('m-liq');
-    const volEl   = document.getElementById('m-vol');
-    const txEl    = document.getElementById('m-tx');
-    const chgEl   = document.getElementById('m-change');
-    const iframeEl= document.getElementById('dex-iframe');
-    const linkEl  = document.getElementById('dex-link');
-
-    const setEmbed = (pairAddr)=>{
-      if(!pairAddr) return;
-      if(linkEl) linkEl.href = DEX_EMBED_BASE + pairAddr;
-      if(iframeEl) iframeEl.src = dexEmbedUrl(pairAddr);
-    };
-
-    // Fallback: show something even if API calls fail
-    setEmbed(POOL_ADDR);
-
-    let pair = null;
-
-    try{
-      const byPair = await fetchJson(DEX_PAIR_API + POOL_ADDR, 12000);
-      if(byPair && Array.isArray(byPair.pairs) && byPair.pairs.length){
-        pair = pickBestDexPair(byPair.pairs);
-      }
-    }catch(e){ /* ignore and try token lookup */ }
-
-    if(!pair){
-      const byToken = await fetchJson(DEX_TOKEN_PAIRS_API + MINT, 12000);
-      if(!Array.isArray(byToken) || !byToken.length) throw new Error('No pairs');
-      pair = pickBestDexPair(byToken);
-    }
-
-    state.lastDexPair = pair;
-
-    const pairAddr = pair.pairAddress || pair.address || pair.pair_address || POOL_ADDR;
-    setEmbed(pairAddr);
-
-    if(pairEl){
-      const base = pair.baseToken?.symbol || '';
-      const quote = pair.quoteToken?.symbol || '';
-      const name = (base && quote) ? `${base}/${quote}` : (pairAddr ? shortAddr(pairAddr) : '—');
-      pairEl.textContent = name;
-    }
+    if (!pair) return;
 
     const price = num(pair.priceUsd);
-    if(priceEl) priceEl.textContent = (price!=null) ? ('$' + fmtNum(price)) : '—';
-
-    const liq = num(pair.liquidity?.usd);
-    if(liqEl) liqEl.textContent = (liq!=null) ? ('$' + fmtNum(liq)) : '—';
-
-    const vol = num(pair.volume?.h24);
-    if(volEl) volEl.textContent = (vol!=null) ? ('$' + fmtNum(vol)) : '—';
-
-    const txs = (pair.txns && pair.txns.h24) ? (num(pair.txns.h24.buys)||0) + (num(pair.txns.h24.sells)||0) : null;
-    if(txEl) txEl.textContent = (txs!=null) ? fmtNum(txs) : '—';
+    const el = $('ls-price');
+    if (el && price != null) { el.textContent = fmtUsd(price); el.classList.remove('loading'); }
 
     const chg = num(pair.priceChange?.h24);
-    if(chgEl) chgEl.textContent = (chg!=null) ? ((chg>0?'+':'') + chg.toFixed(2) + '%') : '—';
-  }
-
-
-  async function resolvePoolAddress() {
-  if (state.poolAddr) return state.poolAddr;
-
-  const mintOf = (tok) => {
-    if (!tok) return null;
-    return tok.address || tok.mint || tok.mint_address || tok.mintAddress || tok.token_mint || tok.tokenMint || null;
-  };
-
-  // 1) Prefer the configured pool address if it resolves via the legacy DLMM API.
-  if (POOL_ADDR && POOL_ADDR.trim()) {
-    try {
-      const meta = await fetchJson(`${METEORA_LEGACY_API}/pair/${POOL_ADDR}`, 12000);
-      const tx = meta.token_x || meta.tokenX || null;
-      const ty = meta.token_y || meta.tokenY || null;
-      const xMint = mintOf(tx) || meta.token_x_mint || meta.mint_x || meta.mintX || null;
-      const yMint = mintOf(ty) || meta.token_y_mint || meta.mint_y || meta.mintY || null;
-      // Only accept if the pool действительно содержит наш mint.
-      if (xMint === MINT || yMint === MINT) {
-        state.poolAddr = POOL_ADDR;
-        state.poolMeta = meta;
-        return state.poolAddr;
-      }
-    } catch (e) {
-      // ignore — try discovery below
+    const chgEl = $('ls-change');
+    if (chgEl && chg != null) {
+      chgEl.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '% (24h)';
+      chgEl.style.color = chg >= 0 ? 'var(--green)' : 'var(--red)';
     }
-  }
 
-  // 2) Discover the pool by the mint pair (AURI + USDC) using the group endpoint.
-  try {
-    const pairMints = [MINT, USDC_MINT].slice().sort();
-    const lexical = `${pairMints[0]}-${pairMints[1]}`;
-    const res = await fetchJson(`${METEORA_LEGACY_API}/pair/group_pair/${lexical}`, 15000);
-    const arr = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
-    if (arr && arr.length) {
-      let best = arr.find((p) => (p.address || p.pair_address) === POOL_ADDR) || null;
-      if (!best) {
-        best = arr.slice().sort((a, b) => {
-          const av = Number(a.reserve_usd || a.tvl || 0);
-          const bv = Number(b.reserve_usd || b.tvl || 0);
-          return bv - av;
-        })[0];
-      }
-      const addr = best && (best.address || best.pair_address);
-      if (addr) {
-        state.poolAddr = addr;
-        state.poolMeta = best;
-        return state.poolAddr;
-      }
-    }
-  } catch (e) {
-    // ignore — try pagination below
-  }
+    const fdv = price != null ? price * TOTAL_SUPPLY : null;
+    const mcEl = $('ls-mcap');
+    if (mcEl && fdv != null) { mcEl.textContent = fmtCompact(fdv); mcEl.classList.remove('loading'); }
 
-  // 3) Fallback: paginated endpoint with allowlist of token mints.
-  try {
-    const qs = [
-      'page=0',
-      'limit=50',
-      'include_unknown=true',
-      `include_token_mints=${encodeURIComponent(MINT)}`,
-      `include_token_mints=${encodeURIComponent(USDC_MINT)}`
-    ].join('&');
+    const liq = num(pair.liquidity?.usd);
+    const liqEl = $('ls-tvl');
+    if (liqEl && liq != null) { liqEl.textContent = fmtCompact(liq); liqEl.classList.remove('loading'); }
 
-    const res = await fetchJson(`${METEORA_LEGACY_API}/pair/all_with_pagination?${qs}`, 15000);
-    const arr = (res && (res.data || res.pairs)) || [];
-    if (Array.isArray(arr) && arr.length) {
-      const best = arr.find((p) => (p.address || p.pair_address) === POOL_ADDR) || arr[0];
-      const addr = best && (best.address || best.pair_address);
-      if (addr) {
-        state.poolAddr = addr;
-        state.poolMeta = best;
-        return state.poolAddr;
-      }
-    }
-  } catch (e) {
-    // ignore
-  }
+    const vol = num(pair.volume?.h24);
+    const volEl = $('ls-vol');
+    if (volEl && vol != null) { volEl.textContent = fmtCompact(vol); volEl.classList.remove('loading'); }
 
-  throw new Error('Pool not found in Meteora API');
+    const buys = num(pair.txns?.h24?.buys) || 0;
+    const sells = num(pair.txns?.h24?.sells) || 0;
+    const txEl = $('ls-txns');
+    if (txEl) txEl.textContent = fmtNum(buys + sells) + ' txns';
+
+  } catch (e) { console.warn('DEXScreener error:', e); }
 }
 
+// ── Meteora pool data ──
+async function loadMeteora() {
+  try {
+    const meta = await fetchJson('https://dlmm-api.meteora.ag/pair/' + POOL);
+    if (!meta) return;
 
-
-  function injectHeroLogo(){
-    const slot = document.getElementById('hero-logo-slot');
-    if(!slot) return;
-    if(slot.childElementCount) return;
-
-    const src = document.querySelector('.brand img');
-    if(!src) return;
-
-    const img = src.cloneNode(true);
-    img.classList.add('hero-logo');
-    img.removeAttribute('width');
-    img.removeAttribute('height');
-    img.alt = (typeof TOKEN_NAME === 'string' ? TOKEN_NAME : 'Token') + ' logo';
-    slot.appendChild(img);
-  }
-
-
-  function updateAddrUI() {
-    // mint
-    document.getElementById('mint-short').textContent = shortAddr(MINT);
-    document.getElementById('mint-full').textContent = MINT;
-    document.getElementById('mint-link').href = solscanTokenLink(MINT);
-
-    document.getElementById('addr-mint').textContent = MINT;
-    document.getElementById('addr-mint-link').href = solscanTokenLink(MINT);
-
-    // usdc
-    document.getElementById('addr-usdc').textContent = USDC_MINT;
-    document.getElementById('addr-usdc-link').href = solscanTokenLink(USDC_MINT);
-
-    // program
-    document.getElementById('addr-prog').textContent = METEORA_DLMM_PROGRAM_ID;
-    document.getElementById('addr-prog-link').href = solscanAccountLink(METEORA_DLMM_PROGRAM_ID);
-
-    // telegram
-    document.getElementById('tg-btn').href = TG_LINK;
-    document.getElementById('tg-btn-2').href = TG_LINK;
-    document.getElementById('tg-link').href = TG_LINK;
-    document.getElementById('tg-link').textContent = TG_LINK;
-  }
-
-  function setPoolUI(addr) {
-    if (!addr) return;
-
-    document.getElementById('pool-short').textContent = shortAddr(addr);
-    document.getElementById('pool-full').textContent = addr;
-    document.getElementById('pool-link').href = meteoraPoolLink(addr);
-
-    document.getElementById('addr-pool').textContent = addr;
-    document.getElementById('addr-pool-link').href = meteoraPoolLink(addr);
-  }
-
-  function num(x) {
-    if (x === null || x === undefined) return null;
-
-    if (typeof x === 'number') return Number.isFinite(x) ? x : null;
-
-    if (typeof x === 'bigint') {
-      const v = Number(x);
-      return Number.isFinite(v) ? v : null;
+    const activeBin = num(meta.active_bin_id ?? meta.activeBinId);
+    const binEl = $('ls-bin');
+    if (binEl && activeBin != null) {
+      binEl.textContent = fmtNum(activeBin);
+      binEl.classList.remove('loading');
     }
 
-    if (typeof x === 'string') {
-      const v = Number(x);
-      return Number.isFinite(v) ? v : null;
+    const bpEl = $('ls-bin-price');
+    if (bpEl && activeBin != null) {
+      bpEl.textContent = fmtUsd(priceAt(activeBin), 4) + '/AURI';
     }
 
-    if (typeof x === 'object') {
-      // BN.js / BigNumber-like objects
-      if (typeof x.toNumber === 'function') {
-        try {
-          const v = x.toNumber();
-          return Number.isFinite(v) ? v : null;
-        } catch (e) { /* ignore */ }
-      }
-      if (typeof x.toString === 'function') {
-        const v = Number(x.toString());
-        return Number.isFinite(v) ? v : null;
-      }
-    }
-
-    return null;
-  }
-
-  function bpsToPct(bps) {
-    const v = num(bps);
-    if (v === null) return null;
-    return v / 100;
-  }
-
-  async function loadPoolMeta() {
-  const addr = await resolvePoolAddress().catch(() => null);
-  if (!addr) return;
-
-  setPoolUI(addr);
-
-  const mintOf = (tok) => {
-    if (!tok) return null;
-    return tok.address || tok.mint || tok.mint_address || tok.mintAddress || tok.token_mint || tok.tokenMint || null;
-  };
-  const decimalsOf = (tok) => (tok && typeof tok.decimals === 'number') ? tok.decimals : null;
-
-  let meta = state.poolMeta;
-  // If we only have a partial object (e.g., from a list endpoint), refetch the full pair info.
-  const needsFull =
-    !meta ||
-    ((!meta.token_x && !meta.tokenX) || (!meta.token_y && !meta.tokenY)) ||
-    (meta.pool_config == null && meta.bin_step == null && meta.binStep == null);
-
-  if (needsFull) {
-    try {
-      meta = await fetchJson(`${METEORA_LEGACY_API}/pair/${addr}`, 12000);
-      state.poolMeta = meta;
-    } catch (e) {
-      // If the full fetch fails, keep whatever we have.
-    }
-  }
-
-  if (!meta) return;
-
-  const tx = meta.token_x || meta.tokenX || {};
-  const ty = meta.token_y || meta.tokenY || {};
-  const xMint = mintOf(tx) || meta.token_x_mint || meta.mint_x || meta.mintX || null;
-  const yMint = mintOf(ty) || meta.token_y_mint || meta.mint_y || meta.mintY || null;
-
-  // Determine which side is AURI to avoid swapped series/labels.
-  if (xMint === MINT) state.auriIsX = true;
-  else if (yMint === MINT) state.auriIsX = false;
-  else if (xMint === USDC_MINT) state.auriIsX = false;
-  else if (yMint === USDC_MINT) state.auriIsX = true;
-
-  const decX = decimalsOf(tx) ?? (xMint === USDC_MINT ? 6 : (xMint === MINT ? 9 : 9));
-  const decY = decimalsOf(ty) ?? (yMint === USDC_MINT ? 6 : (yMint === MINT ? 9 : 6));
-  state.decX = decX;
-  state.decY = decY;
-
-  const tokenDecimalsEl = document.getElementById('token-decimals');
-  if (tokenDecimalsEl) tokenDecimalsEl.textContent = String(state.auriIsX ? decX : decY);
-
-  // Pool meta line (step / active bin). Use multiple field names for compatibility.
-  const rawStep =
-    (meta.pool_config && meta.pool_config.bin_step != null) ? meta.pool_config.bin_step :
-    (meta.bin_step != null) ? meta.bin_step :
-    (meta.binStep != null) ? meta.binStep :
-    null;
-
-  const stepStr = (rawStep == null) ? '—' : String(rawStep).replace('.', ',') + '%';
-  const binStepEl = document.getElementById('bin-step');
-  if (binStepEl) binStepEl.textContent = t('liq_meta_step') + ': ' + stepStr;
-
-  const activeBin =
-    (meta.active_bin_id != null) ? meta.active_bin_id :
-    (meta.activeBinId != null) ? meta.activeBinId :
-    (meta.active_bin != null) ? meta.active_bin :
-    null;
-
-  const activeBinEl = document.getElementById('active-bin');
-  if (activeBinEl) activeBinEl.textContent = (activeBin == null) ? '—' : String(activeBin);
-
-  // Reserve/program addresses (static links).
-  const reserveX = meta.reserve_x || meta.reserveX || null;
-  const reserveY = meta.reserve_y || meta.reserveY || null;
-  const prog = meta.program_id || meta.programId || PROG_ID;
-
-    const rxVal = document.getElementById('addr-rx');
-  const ryVal = document.getElementById('addr-ry');
-  const progVal = document.getElementById('addr-prog');
-  if (rxVal && reserveX) rxVal.textContent = reserveX;
-  if (ryVal && reserveY) ryVal.textContent = reserveY;
-  if (progVal && prog) progVal.textContent = prog;
-
-const rxLink = document.getElementById('addr-rx-link');
-  const ryLink = document.getElementById('addr-ry-link');
-  const progLink = document.getElementById('addr-prog-link');
-
-  if (rxLink && reserveX) rxLink.href = solscanAccount(reserveX);
-  if (ryLink && reserveY) ryLink.href = solscanAccount(reserveY);
-  if (progLink && prog) progLink.href = solscanAccount(prog);
-
-  // Notes near reserve addresses — show which token it corresponds to.
-  const symX = tx.symbol || (xMint === USDC_MINT ? 'USDC' : (xMint === MINT ? TOKEN_SYMBOL : 'X'));
-  const symY = ty.symbol || (yMint === USDC_MINT ? 'USDC' : (yMint === MINT ? TOKEN_SYMBOL : 'Y'));
-
-  const rxNote = document.getElementById('rx-note');
-  const ryNote = document.getElementById('ry-note');
-  if (rxNote) rxNote.textContent = symX;
-  if (ryNote) ryNote.textContent = symY;
-
-  // Chart legend labels (always показываем наш тикер + USDC).
-  const legA = document.getElementById('leg-auri');
-  const legU = document.getElementById('leg-usdc');
-  if (legA) legA.textContent = TOKEN_SYMBOL;
-  if (legU) legU.textContent = 'USDC';
+  } catch (e) { console.warn('Meteora error:', e); }
 }
 
-
-
-
-
-  function chooseAmountInterpretation(bins, meta) {
-    // Try to detect if amounts are raw base units or UI amounts using pool totals.
-    if (!bins || !bins.length || !meta) return { xScale: 'raw', yScale: 'raw' };
-
-    const totalX = num(meta.token_x_amount);
-    const totalY = num(meta.token_y_amount);
-
-    const sumX = bins.reduce((acc, b) => acc + (b.amountX || 0), 0);
-    const sumY = bins.reduce((acc, b) => acc + (b.amountY || 0), 0);
-
-    let xScale = 'raw';
-    let yScale = 'raw';
-
-    if (totalX && totalX > 0 && state.decX !== null) {
-      const sumUi = sumX / Math.pow(10, state.decX);
-      const rRaw = Math.abs(sumUi - totalX) / totalX;
-      const rUi  = Math.abs(sumX - totalX) / totalX;
-      xScale = (rUi < rRaw) ? 'ui' : 'raw';
-    } else {
-      xScale = (sumX > 1e10) ? 'raw' : 'ui';
-    }
-
-    if (totalY && totalY > 0 && state.decY !== null) {
-      const sumUi = sumY / Math.pow(10, state.decY);
-      const rRaw = Math.abs(sumUi - totalY) / totalY;
-      const rUi  = Math.abs(sumY - totalY) / totalY;
-      yScale = (rUi < rRaw) ? 'ui' : 'raw';
-    } else {
-      yScale = (sumY > 1e10) ? 'raw' : 'ui';
-    }
-
-    return { xScale, yScale };
-  }
-
-  function toUiAmount(v, decimals, scale) {
-    if (v === null || v === undefined) return 0;
-    const n = Number(v) || 0;
-    if (scale === 'ui') return n;
-    if (decimals === null || decimals === undefined) return n;
-    return n / Math.pow(10, decimals);
-  }
-
-  function buildLiquiditySeries(allBins, range, activeBin) {
-    if (!allBins || !allBins.length) return { labels: [], auri: [], usdc: [] };
-
-    const nonZero = allBins.filter(b => (b.auri > 0) || (b.usdc > 0));
-
-    let filtered = nonZero;
-    if (range !== 'all' && activeBin !== null && activeBin !== undefined) {
-      const r = Number(range);
-      filtered = nonZero.filter(b => Math.abs(b.binId - activeBin) <= r);
-    }
-
-    filtered.sort((a, b) => a.binId - b.binId);
-
-    const labels = filtered.map(b => String(b.binId));
-    const auri = filtered.map(b => b.auri);
-    const usdc = filtered.map(b => b.usdc);
-
-    return { labels, auri, usdc, bins: filtered };
-  }
-
-  function renderLiquidityChart(series, activeBin) {
-    const ctx = document.getElementById('liq-chart').getContext('2d');
-
-    const highlight = (labels, active) => (ctx) => {
-      const idx = ctx.dataIndex;
-      const id = Number(labels[idx]);
-      if (active !== null && active !== undefined && id === active) return 'rgba(183,121,31,0.95)';
-      return 'rgba(183,121,31,0.35)';
-    };
-
-    const highlight2 = (labels, active) => (ctx) => {
-      const idx = ctx.dataIndex;
-      const id = Number(labels[idx]);
-      if (active !== null && active !== undefined && id === active) return 'rgba(29,78,216,0.85)';
-      return 'rgba(29,78,216,0.35)';
-    };
-
-    if (state.liqChart) {
-      state.liqChart.data.labels = series.labels;
-      state.liqChart.data.datasets[0].data = series.auri;
-      state.liqChart.data.datasets[1].data = series.usdc;
-
-      state.liqChart.data.datasets[0].backgroundColor = highlight(series.labels, activeBin);
-      state.liqChart.data.datasets[1].backgroundColor = highlight2(series.labels, activeBin);
-
-      state.liqChart.update();
+// ── Holders count (attempt via public API) ──
+async function loadHolders() {
+  const el = $('ls-holders');
+  if (!el) return;
+  try {
+    // Try Helius public DAS or Solscan-like endpoint
+    const url = 'https://api.solscan.io/v2/token/holders?token=' + MINT + '&offset=0&size=1';
+    const data = await fetchJson(url, 8000);
+    const total = num(data?.data?.total ?? data?.total);
+    if (total != null) {
+      el.textContent = fmtNum(total);
+      el.classList.remove('loading');
       return;
     }
+  } catch {}
+  // Fallback: try alternative
+  try {
+    const url2 = 'https://public-api.solscan.io/token/holders?tokenAddress=' + MINT + '&offset=0&limit=1';
+    const data2 = await fetchJson(url2, 8000);
+    const total2 = num(data2?.total);
+    if (total2 != null) {
+      el.textContent = fmtNum(total2);
+      el.classList.remove('loading');
+      return;
+    }
+  } catch {}
+  el.textContent = 'View ↗';
+  el.classList.remove('loading');
+  el.style.fontSize = '11px';
+}
 
-    state.liqChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: series.labels,
-        datasets: [
-          {
-            label: TOKEN_SYMBOL,
-            data: series.auri,
-            yAxisID: 'y',
-            backgroundColor: highlight(series.labels, activeBin),
-            borderColor: 'rgba(183,121,31,0.75)',
-            borderWidth: 1
-          },
-          {
-            label: 'USDC',
-            data: series.usdc,
-            yAxisID: 'y1',
-            backgroundColor: highlight2(series.labels, activeBin),
-            borderColor: 'rgba(29,78,216,0.75)',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const label = ctx.dataset.label || '';
-                const v = ctx.parsed.y;
-                if (label === 'USDC') return label + ': ' + fmtUsd(v, 2);
-                return label + ': ' + fmtCompact(v, 4);
-              }
-            }
-          }
+// ── S-curve chart ──
+function buildLiqChart() {
+  const MAX = 2000;
+  const step = 25;
+  const pts = [];
+  for (let b = 0; b <= MAX; b += step) pts.push({ id: b, tokens: tokensAt(b), price: priceAt(b) });
+  if (pts[pts.length - 1].id !== MAX) pts.push({ id: MAX, tokens: tokensAt(MAX), price: priceAt(MAX) });
+
+  const ctx = $('liqChart').getContext('2d');
+  const grd = ctx.createLinearGradient(0, 0, 0, 300);
+  grd.addColorStop(0, 'rgba(45,212,168,.22)');
+  grd.addColorStop(0.7, 'rgba(45,212,168,.03)');
+  grd.addColorStop(1, 'rgba(45,212,168,0)');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: pts.map(p => p.id),
+      datasets: [
+        {
+          label: 'AURI/bin', data: pts.map(p => Math.round(p.tokens)),
+          borderColor: '#2dd4a8', borderWidth: 2.5, tension: .35, pointRadius: 0, pointHitRadius: 10,
+          fill: true, backgroundColor: grd, yAxisID: 'y'
         },
-        scales: {
-          x: {
-            ticks: { maxTicksLimit: 10 },
-            grid: { display: false }
-          },
-          y: {
-            position: 'left',
-            grid: { color: 'rgba(15,23,42,0.06)' },
-            ticks: {
-              callback: (v) => fmtCompact(v, 2)
-            }
-          },
-          y1: {
-            position: 'right',
-            grid: { drawOnChartArea: false },
-            ticks: {
-              callback: (v) => fmtCompact(v, 2)
-            }
+        {
+          label: 'Price', data: pts.map(p => Math.round(p.price * 100) / 100),
+          borderColor: '#f0a040', borderWidth: 1.5, tension: .35, pointRadius: 0, pointHitRadius: 10,
+          fill: false, borderDash: [5, 4], yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#121822ee', borderColor: 'rgba(255,255,255,.1)', borderWidth: 1,
+          titleFont: { family: '"JetBrains Mono"', size: 10 }, bodyFont: { family: '"JetBrains Mono"', size: 10.5 },
+          titleColor: '#8b93a8', bodyColor: '#e8eaf0', padding: { x: 12, y: 8 }, cornerRadius: 8, displayColors: false,
+          callbacks: {
+            title: i => 'Bin ' + i[0].label,
+            label: i => i.dataset.label === 'Price'
+              ? 'Price: ' + fmtUsd(i.raw)
+              : 'AURI: ' + Number(i.raw).toLocaleString()
           }
         }
-      }
-    });
-  }
-
-  async function loadMeteoraBins(){
-    const statusEl = document.getElementById('liq-status');
-
-    try{
-      if(statusEl) statusEl.textContent = t('liq_status_loading');
-
-      const addr = await resolvePoolAddress();
-      if(!addr) throw new Error('Pool address not resolved');
-
-      // Pool meta is needed for decimals + token orientation
-      if(!state.poolMeta) await loadPoolMeta();
-
-      const binsRaw = [];
-      const pushBin = (b)=>{
-        if(!b) return;
-        const id = (b.bin_id ?? b.binId ?? b.id);
-        if(id===undefined || id===null) return;
-
-        const x = (b.amount_x ?? b.amountX ?? b.xAmount ?? b.x_amount ?? b.token_x_amount ?? b.tokenXAmount ?? b.reserveX ?? b.x);
-        const y = (b.amount_y ?? b.amountY ?? b.yAmount ?? b.y_amount ?? b.token_y_amount ?? b.tokenYAmount ?? b.reserveY ?? b.y);
-
-        const binId = Number(id);
-        if(!isFinite(binId)) return;
-
-        binsRaw.push({ binId, amountX: num(x) ?? 0, amountY: num(y) ?? 0 });
-      };
-
-      // 1) Try Meteora REST cache first (deprecated, but fast if available)
-      let got = false;
-      try{
-        const d = await fetchJson(`${METEORA_LEGACY_API}/pair/${addr}/bin_arrays`, 20000);
-        if(Array.isArray(d)){
-          for(const ba of d){
-            const bins = ba?.bins || ba?.bin_states || ba?.binStates || ba?.data;
-            if(Array.isArray(bins)){
-              bins.forEach(pushBin);
-            }
-          }
-          got = binsRaw.length > 0;
-        }
-      }catch(e){ /* fall back */ }
-
-      // 2) Fallback: read bins on-chain via the official SDK
-      if(!got){
-        const rangeVal = document.getElementById('range-select')?.value || '150';
-        const res = await fetchBinsOnChain(addr, rangeVal);
-        if(res && Array.isArray(res.bins)){
-          res.bins.forEach(pushBin);
-        }
-        if(res && res.activeBinId!=null){
-          state.activeBin = Number(res.activeBinId);
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,.04)', drawTicks: false },
+          ticks: { color: '#5a6378', font: { family: '"JetBrains Mono"', size: 9.5 }, maxTicksLimit: 8 },
+          border: { display: false }
+        },
+        y: {
+          position: 'left',
+          grid: { color: 'rgba(255,255,255,.04)', drawTicks: false },
+          ticks: { color: 'rgba(45,212,168,.6)', font: { family: '"JetBrains Mono"', size: 9.5 },
+            callback: v => v >= 1000 ? Math.round(v/1000)+'K' : v },
+          border: { display: false }
+        },
+        y1: {
+          position: 'right', grid: { display: false },
+          ticks: { color: 'rgba(240,160,64,.6)', font: { family: '"JetBrains Mono"', size: 9.5 },
+            callback: v => '$' + (v >= 1000 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2)) },
+          border: { display: false }
         }
       }
-
-      // Determine active bin if it wasn't obtained from SDK
-      if(state.activeBin===null || state.activeBin===undefined){
-        const meta = state.poolMeta || {};
-        const active = meta.active_bin_id ?? meta.activeBinId ?? meta.activeBin ?? meta.active_bin ?? null;
-        state.activeBin = (active!==null && active!==undefined) ? Number(active) : null;
-      }
-
-      if(!binsRaw.length) throw new Error('No bin data');
-
-      const allBins = binsRaw.map(b=>{
-        const xUi = toUiAmount(b.amountX, state.decX, 'raw');
-        const yUi = toUiAmount(b.amountY, state.decY, 'raw');
-        const auri = state.auriIsX ? xUi : yUi;
-        const usdc = state.auriIsX ? yUi : xUi;
-        return { binId: b.binId, auri, usdc };
-      });
-
-      state.bins = allBins;
-
-      const activeEl = document.getElementById('active-bin');
-      if(activeEl) activeEl.textContent = (state.activeBin!==null && state.activeBin!==undefined) ? String(state.activeBin) : '—';
-
-      const range = document.getElementById('range-select')?.value || '150';
-      const series = buildLiquiditySeries(allBins, range, state.activeBin);
-      renderLiquidityChart(series, state.activeBin);
-
-      if(statusEl) statusEl.textContent = t('liq_status_ok');
-    }catch(e){
-      if(statusEl) statusEl.textContent = t('liq_status_error') + ` (${e?.message||e})`;
-      console.error(e);
     }
+  });
+}
 
-    async function fetchBinsOnChain(poolAddr, range){
-      // memoize SDK imports across refreshes
-      if(!state._dlmmSdkPromise){
-        const importFrom = async(urls)=>{
-          let lastErr;
-          for(const u of urls){
-            try{ return await import(u); }catch(e){ lastErr = e; }
-          }
-          throw lastErr || new Error('Import failed');
-        };
+// ── Init ──
+async function init() {
+  buildLiqChart();
+  await Promise.allSettled([loadDex(), loadMeteora(), loadHolders()]);
 
-        state._dlmmSdkPromise = (async()=>{
-          const web3 = await importFrom([
-            'https://esm.sh/@solana/web3.js@1.95.2?bundle',
-            'https://cdn.jsdelivr.net/npm/@solana/web3.js@1.95.2/+esm',
-            'https://esm.sh/@solana/web3.js?bundle',
-            'https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm'
-          ]);
+  // Refresh market data periodically
+  setInterval(() => loadDex().catch(() => {}), 30000);
+  setInterval(() => loadMeteora().catch(() => {}), 60000);
+}
 
-          const dlmmMod = await importFrom([
-            'https://esm.sh/@meteora-ag/dlmm?bundle',
-            'https://cdn.jsdelivr.net/npm/@meteora-ag/dlmm/+esm'
-          ]);
-
-          const DLMM = dlmmMod.default || dlmmMod.DLMM || dlmmMod.dlmm || dlmmMod;
-          return { web3, DLMM };
-        })();
-      }
-
-      const { web3, DLMM } = await state._dlmmSdkPromise;
-      const Connection = web3.Connection || web3.default?.Connection;
-      const PublicKey = web3.PublicKey || web3.default?.PublicKey;
-      if(!Connection || !PublicKey) throw new Error('web3.js not available');
-
-      const DLMMClass = (DLMM && typeof DLMM.create === 'function') ? DLMM : (DLMM?.default && typeof DLMM.default.create === 'function' ? DLMM.default : null);
-      if(!DLMMClass) throw new Error('DLMM SDK not available');
-
-      const RPCS = [
-        'https://rpc.ankr.com/solana',
-        'https://solana-rpc.publicnode.com',
-        'https://solana-mainnet.public.blastapi.io',
-        'https://api.mainnet-beta.solana.com'
-      ];
-
-      let conn = null;
-      for(const rpc of RPCS){
-        try{
-          const c = new Connection(rpc, { commitment:'confirmed' });
-          await c.getLatestBlockhash('confirmed');
-          conn = c;
-          break;
-        }catch(e){ /* try next */ }
-      }
-      if(!conn) throw new Error('RPC unavailable');
-
-      const dlmmPool = await DLMMClass.create(conn, new PublicKey(poolAddr));
-
-      // If pool meta couldn't be loaded, derive minimal info from the SDK
-      try{
-        const tx = dlmmPool.tokenX || dlmmPool.token_x || dlmmPool.tokenXInfo;
-        const ty = dlmmPool.tokenY || dlmmPool.token_y || dlmmPool.tokenYInfo;
-
-        const mx = tx?.mint?.toBase58 ? tx.mint.toBase58() : (tx?.mint || tx?.address);
-        const my = ty?.mint?.toBase58 ? ty.mint.toBase58() : (ty?.mint || ty?.address);
-
-        if(mx && my){
-          state.auriIsX = (String(mx) === MINT);
-          state.usdcIsY = (String(my) === USDC_MINT);
-        }
-
-        if(state.decX==null && typeof tx?.decimals === 'number') state.decX = tx.decimals;
-        if(state.decY==null && typeof ty?.decimals === 'number') state.decY = ty.decimals;
-      }catch(e){ /* ignore */ }
-
-      let result = null;
-
-      // 'all' can be heavy; try SDK method if it exists, otherwise fallback to a wide range
-      if(range === 'all' && typeof dlmmPool.getAllBins === 'function'){
-        try{
-          result = await dlmmPool.getAllBins();
-        }catch(e){
-          result = null;
-        }
-      }
-
-      if(!result){
-        let n = (range === 'all') ? 250 : parseInt(range || '150', 10);
-        if(!isFinite(n) || n < 10) n = 150;
-        try{
-          result = await dlmmPool.getBinsAroundActiveBin(n, n);
-        }catch(e){
-          result = await dlmmPool.getBinsAroundActiveBin(n);
-        }
-      }
-
-      const activeObj = result?.activeBin ?? result?.active_bin ?? result?.active ?? null;
-      const activeBinId = (activeObj && typeof activeObj === 'object')
-        ? (activeObj.binId ?? activeObj.bin_id ?? activeObj.id)
-        : activeObj;
-
-      const bins = result?.bins || result?.binStates || result?.bin_states || [];
-      return { activeBinId, bins };
-    }
-  }
-
-
-  function bindRange() {
-    const sel = document.getElementById('range-select');
-    sel.addEventListener('change', () => {
-      if (!state.bins) return;
-      const series = buildLiquiditySeries(state.bins, sel.value, state.activeBin);
-      renderLiquidityChart(series, state.activeBin);
-    });
-  }
-
-  async function refreshAll() {
-    try {
-      await loadDexScreener();
-    } catch (e) {
-      // ignore
-    }
-try {
-      await loadPoolMeta();
-      await loadMeteoraBins();
-    } catch (e) {
-      const statusEl = document.getElementById('liq-status');
-      statusEl.textContent = t('liq_status_error') + ' (' + (e && e.message ? e.message : 'error') + ')';
-    }
-  }
-
-  function init() {
-    // language
-    const saved = localStorage.getItem('auri_lang');
-    state.lang = (saved && T[saved]) ? saved : 'ru';
-    applyLang();
-
-    // language buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.lang = btn.dataset.lang;
-        localStorage.setItem('auri_lang', state.lang);
-        applyLang();
-      });
-    });
-
-    updateAddrUI();
-    injectHeroLogo();
-    bindRange();
-
-    // copy buttons
-    bindCopyButton(document.getElementById('copy-mint'), () => MINT);
-    bindCopyButton(document.getElementById('copy-pool'), () => state.poolAddr);
-
-    bindCopyButton(document.getElementById('addr-mint-copy'), () => MINT);
-    bindCopyButton(document.getElementById('addr-usdc-copy'), () => USDC_MINT);
-    bindCopyButton(document.getElementById('addr-pool-copy'), () => state.poolAddr);
-    bindCopyButton(document.getElementById('addr-prog-copy'), () => METEORA_DLMM_PROGRAM_ID);
-    bindCopyButton(document.getElementById('addr-rx-copy'), () => (state.poolMeta && state.poolMeta.reserve_x) ? state.poolMeta.reserve_x : null);
-    bindCopyButton(document.getElementById('addr-ry-copy'), () => (state.poolMeta && state.poolMeta.reserve_y) ? state.poolMeta.reserve_y : null);
-
-    // initial load + periodic refresh
-    refreshAll();
-
-    // Fast updates (price / market)
-    setInterval(() => {
-      loadDexScreener().catch(() => { });
-}, 30000);
-
-    // Slow updates (pool / bins)
-    setInterval(() => {
-      loadMeteoraBins().catch(() => { });
-    }, 60000);
-  }
-
-  init();
+init();
 </script>
-
 </body>
 </html>
